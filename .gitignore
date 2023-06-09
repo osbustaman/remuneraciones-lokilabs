@@ -1,0 +1,9 @@
+db.sqlite3
+.vscode/launch.json
+__pycache__
+env
+*.pyc
+*.jpg
+*.png
+
+**/migrations/!(__init__.py)
