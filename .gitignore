@@ -5,5 +5,10 @@ env
 *.pyc
 *.jpg
 *.png
+static/amanda
+static/gentella
 
+
+**/amanda/*.html
+**/gentella/*.html
 **/migrations/!(__init__.py)
