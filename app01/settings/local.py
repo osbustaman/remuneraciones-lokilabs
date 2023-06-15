@@ -6,8 +6,11 @@ from decouple import config
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-PORT_LOCALHOST = '8080'
-NAME_HOST = 'horus.desarollo'
+if config('WORK_ENVIRONMENT') == "local":
+    PORT_LOCALHOST = config('PORT_LOCALHOST')
+else:
+    PORT_LOCALHOST = ""
+NAME_HOST = config('NAME_HOST')
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

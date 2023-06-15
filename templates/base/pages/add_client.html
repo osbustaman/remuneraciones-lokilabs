@@ -1,0 +1,489 @@
+{% extends 'base/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block static_up %}
+<!-- bootstrap-daterangepicker -->
+<link href="{% statics_tag 'vendors/bootstrap-daterangepicker/daterangepicker.css' %}" rel="stylesheet">
+<!-- bootstrap-datetimepicker -->
+<link href="{% statics_tag 'vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css' %}" rel="stylesheet">
+<!-- Bootstrap Colorpicker -->
+<link href="{% statics_tag 'vendors/mjolnic-bootstrap-colorpicker/dist/css/bootstrap-colorpicker.min.css' %}" rel="stylesheet">
+
+<link href="{% statics_tag 'vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title_page %}Clientes{% endblock %}
+
+{% block sub_title_page %}
+{{ action }} cliente
+{% endblock %}
+
+{% block menu_action %}
+<ul class="nav navbar-right panel_toolbox">
+    <li>
+        <button type="submit" class="btn btn-info btn-sm" form="form">Guardar <i class="fa fa-floppy-o"></i></button>
+
+        {% if action|lower == 'editar' %}
+        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target=".bs-example-modal-lg">Agregar Admin <i class="fa fa-user"></i></button>
+        <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrlLink('{{ url_client }}')">Ir a Entorno <i class="fa fa-arrow-circle-right"></i></button>
+        {% endif %}
+
+        <button type="button" class="btn btn-info btn-sm"
+            onclick="redirectToUrl('{% url 'base_app:list-clients' %}')">Volver <i
+                class="fa fa-arrow-left"></i></button>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content_page %}
+
+<div class="x_content">
+    <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                aria-selected="true">Datos Cliente</a>
+        </li>
+        {% if action|lower == 'editar' %}
+        <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+                aria-selected="false">Administrador</a>
+        </li>
+        {% endif %}
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <form method="post" id="form" action="" enctype="multipart/form-data">
+                {% csrf_token %}
+            
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.nombre_cliente.id_for_label }}">{{ form.nombre_cliente.label }}</label>
+                            {{ form.nombre_cliente }}
+                            {% if form.nombre_cliente.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.nombre_cliente.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.rut_cliente.id_for_label }}">{{ form.rut_cliente.label }}</label>
+                            {{ form.rut_cliente }}
+                            {% if form.rut_cliente.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.rut_cliente.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.imagen_cliente.id_for_label }}">{{ form.imagen_cliente.label }}</label>
+                            {{ form.imagen_cliente }}
+                            {% if form.imagen_cliente.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.imagen_cliente.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+            
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.cliente_activo.id_for_label }}">{{ form.cliente_activo.label }}</label>
+                            {{ form.cliente_activo }}
+                            {% if form.cliente_activo.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.cliente_activo.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.fecha_ingreso.id_for_label }}">{{ form.fecha_ingreso.label }}</label>
+                            <div class='input-group date'>
+                                {{ form.fecha_ingreso }}
+                                <span class="input-group-addon">
+                                   <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            {% if form.fecha_ingreso.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.fecha_ingreso.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.fecha_termino.id_for_label }}">{{ form.fecha_termino.label }}</label>
+                            <div class='input-group date'>
+                                {{ form.fecha_termino }}
+                                <span class="input-group-addon">
+                                   <span class="fa fa-calendar"></span>
+                                </span>
+                            </div>
+                            {% if form.fecha_termino.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.fecha_termino.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+            
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.cantidad_usuarios.id_for_label }}">{{ form.cantidad_usuarios.label }}</label>
+                            {{ form.cantidad_usuarios }}
+                            {% if form.cantidad_usuarios.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.cantidad_usuarios.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.nombre_representante.id_for_label }}">{{ form.nombre_representante.label }}</label>
+                            {{ form.nombre_representante }}
+                            {% if form.nombre_representante.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.nombre_representante.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.rut_representante.id_for_label }}">{{ form.rut_representante.label }}</label>
+                            {{ form.rut_representante }}
+                            {% if form.rut_representante.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.rut_representante.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.correo_representante.id_for_label }}">{{ form.correo_representante.label }}</label>
+                            {{ form.correo_representante }}
+                            {% if form.correo_representante.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.correo_representante.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.telefono_representante.id_for_label }}">{{ form.telefono_representante.label }}</label>
+                            {{ form.telefono_representante }}
+                            {% if form.telefono_representante.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.telefono_representante.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.direccion_representante.id_for_label }}">{{ form.direccion_representante.label }}</label>
+                            {{ form.direccion_representante }}
+                            {% if form.direccion_representante.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.direccion_representante.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+            
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="{{ form.pais.id_for_label }}">{{ form.pais.label }}</label>
+                            {{ form.pais }}
+                            {% if form.pais.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.pais.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.region.id_for_label }}">{{ form.region.label }}</label>
+                            {{ form.region }}
+                            {% if form.region.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.region.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+            
+                        <div class="form-group">
+                            <label for="{{ form.comuna.id_for_label }}">{{ form.comuna.label }}</label>
+                            {{ form.comuna }}
+                            {% if form.comuna.errors %}
+                            <ul class="errorlist">
+                                {% for error in form.comuna.errors %}
+                                <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+            
+                    <div class="col-md-4">
+                        <!-- Columna vacía -->
+                    </div>
+                </div>
+            </form>
+        </div>
+        {% if action|lower == 'editar' %}
+        <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <table id="datatable" class="table table-striped table-bordered datatable" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Username</th>
+                        <th>Nombres</th>
+                        <th>Apellidos</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in list_users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.username|upper }}</td>
+                        <td>{{ user.first_name|upper }}</td>
+                        <td>{{ user.last_name|upper }}</td>
+                        <td>{{ user.email|upper }}</td>
+                        <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteAdmin('{% url 'base_app:delete_admin' client_id user.id %}')">Eliminar</button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% if action|lower == 'editar' %}
+<div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabel">Agregar Administrador</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="form_admin" name="form_admin" action="{% url 'base_app:add_admin' client_id %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form_admin.username.id_for_label }}">{{ form_admin.username.label }}</label>
+                                {{ form_admin.username }}
+                                {% if form_admin.username.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form_admin.username.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form_admin.first_name.id_for_label }}">{{ form_admin.first_name.label }}</label>
+                                {{ form_admin.first_name }}
+                                {% if form_admin.first_name.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form_admin.first_name.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form_admin.last_name.id_for_label }}">{{ form_admin.last_name.label }}</label>
+                                {{ form_admin.last_name }}
+                                {% if form_admin.last_name.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form_admin.last_name.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form_admin.email.id_for_label }}">{{ form_admin.email.label }}</label>
+                                {{ form_admin.email }}
+                                {% if form_admin.email.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form_admin.email.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="{{ form_admin.password.id_for_label }}">{{ form_admin.password.label }}</label>
+                                {{ form_admin.password }}
+                                {% if form_admin.password.errors %}
+                                <ul class="errorlist">
+                                    {% for error in form_admin.password.errors %}
+                                    <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="crear_usuario()">Guardar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block static_down %}
+<!-- bootstrap-daterangepicker -->
+<script src="{% statics_tag 'vendors/moment/min/moment.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/bootstrap-daterangepicker/daterangepicker.js' %}"></script>
+<!-- bootstrap-datetimepicker -->    
+<script src="{% statics_tag 'vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js' %}"></script>
+
+<!-- Datatables -->
+<script src="{% statics_tag 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+
+<script>
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+
+    const redirectToUrlLink = (url) => {
+        window.open(url, '_blank');
+    };
+
+    const crear_usuario = () => {
+        const username = $('#id_username').val();
+        const firstName = $('#id_first_name').val();
+        const lastName = $('#id_last_name').val();
+        const email = $('#id_email').val();
+        const password = $('#id_password').val();
+
+        const camposRequeridos = [
+            { campo: username, mensaje: "- Debe ingresar un usuario" },
+            { campo: firstName, mensaje: "- Debe ingresar el/los nombre(s)" },
+            { campo: lastName, mensaje: "- Debe ingresar el/los apellido(s)" },
+            { campo: email, mensaje: "- Debe ingresar el correo electrónico" },
+            { campo: password, mensaje: "- Debe ingresar la contraseña" },
+        ];
+
+        const errores = camposRequeridos.filter(function(campo) {
+            let dic = campo
+            if(dic.campo.length === 0){
+                return campo
+            }
+        });
+
+        if (errores.length > 0) {
+            const mensaje_error = errores.map(error => error.mensaje).join("<br/>");
+            $.alert({
+                title: 'Error!',
+                content: mensaje_error,
+            });
+            return;
+        }else{
+            $("#form_admin").submit()
+        }
+    }
+
+    const deleteAdmin = (url) => {
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Esta eguro de eliminar al usuario administrador?, para eliminar haga clic confirmar, de lo contrario cancelar',
+            buttons: {
+                confirmar: function () {
+                    location.href = url;
+                },
+                cancelar: function () {
+                    $.alert('Operación cancelada');
+                },
+            }
+        });
+    }
+
+    $('#id_fecha_ingreso, #id_fecha_termino').datetimepicker({
+        format: 'DD-MM-YYYY'
+    });
+</script>
+{% endblock %}

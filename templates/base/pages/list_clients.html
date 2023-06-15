@@ -1,0 +1,111 @@
+{% extends 'base/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block static_up %}
+<!-- Datatables -->
+
+<link href="{% statics_tag 'vendors/datatables.net-bs/css/dataTables.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css' %}"
+    rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css' %}" rel="stylesheet">
+<link href="{% statics_tag 'vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css' %}" rel="stylesheet">
+
+
+{% endblock %}
+
+{% block title_page %}Clientes{% endblock %}
+
+{% block sub_title_page %}
+Listado de clientes
+{% endblock %}
+
+{% block menu_action %}
+<ul class="nav navbar-right panel_toolbox">
+    <li>
+        <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'base_app:add-client' %}')">Nuevo cliente <i class="fa fa-plus-circle"></i></button>
+    </li>
+</ul>
+{% endblock %}
+
+{% block content_page %}
+<table id="datatable" class="table table-striped table-bordered datatable" style="width:100%">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>Rut</th>
+            <th>Base de datos</th>
+            <th>Fecha inscripción</th>
+            <th>Cliente activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for client in lst_clients %}
+        <tr>
+            <td>{{ client.id|upper }}</td>
+            <td>{{ client.nombre_cliente|upper }}</td>
+            <td>{{ client.rut_cliente|upper }}</td>
+            <td>{{ client.nombre_cliente|upper }}</td>
+            <td>{{ client.fecha_ingreso|date:"d/m/Y" }}</td>
+            <td>{% if client.cliente_activo == "S" %} SI {% else %} NO {% endif %}</td>
+            <td><button type="button" class="btn btn-info btn-sm" onclick="editClient('{% url 'base_app:edit_client' client.id %}')">Editar</button><button type="button"
+                    class="btn btn-danger btn-sm" onclick="deleteClient('{% url 'base_app:delete_client' client.id %}')">Eliminar</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<script>
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+
+    const editClient = (url) => {
+        location.href = url;
+    }
+
+    const deleteClient = (url) => {
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Esta eguro de eliminar al cliente?, para eliminar haga clic confirmar, de lo contrario cancelar',
+            buttons: {
+                confirmar: function () {
+                    location.href = url;
+                },
+                cancelar: function () {
+                    $.alert('Operación cancelada');
+                },
+            }
+        });
+    }
+
+    
+</script>
+
+{% endblock %}
+
+{% block static_down %}
+<!-- Datatables -->
+<script src="{% statics_tag 'vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/buttons.flash.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-keytable/js/dataTables.keyTable.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js' %}"></script>
+<script src="{% statics_tag 'vendors/datatables.net-scroller/js/dataTables.scroller.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/jszip/dist/jszip.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% statics_tag 'vendors/pdfmake/build/vfs_fonts.js' %}"></script>
+
+
+{% endblock %}

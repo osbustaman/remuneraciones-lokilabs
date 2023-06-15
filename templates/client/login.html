@@ -1,0 +1,63 @@
+{% load static_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Login Usuario</title>
+
+    <!-- vendor css -->
+    <link href="{% statics_tag_amanda 'lib/font-awesome/css/font-awesome.css' %}" rel="stylesheet">
+    <link href="{% statics_tag_amanda 'lib/Ionicons/css/ionicons.css' %}" rel="stylesheet">
+    <link href="{% statics_tag_amanda 'lib/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet">
+
+    <!-- Amanda CSS -->
+    <link rel="stylesheet" href="{% statics_tag_amanda 'css/amanda.css' %}">
+</head>
+
+<body>
+    <div class="am-signin-wrapper">
+        <div class="am-signin-box">
+            <div class="row no-gutters">
+                <div class="col-lg-5">
+                    <div>
+                        <h1>Imagen</h1>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <h5 class="tx-gray-800 mg-b-25">Inicia sesión para acceder a tu cuenta</h5>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="form-control-label">Email:</label>
+                            {{ form.username}}
+                        </div><!-- form-group -->
+
+                        <div class="form-group">
+                            <label class="form-control-label">Password:</label>
+                            {{ form.password}}
+                        </div><!-- form-group -->
+
+                        <div class="form-group mg-b-20"><a href="">Recuperar contraseña</a></div>
+
+                        <button type="submit" class="btn btn-block">Ingresar</button>
+                    </form>
+                </div><!-- col-7 -->
+            </div><!-- row -->
+            <p class="tx-center tx-white-5 tx-12 mg-t-15">LokiLabs 2023. Derechos Reservados</p>
+        </div><!-- signin-box -->
+    </div><!-- am-signin-wrapper -->
+
+    <script src="{% statics_tag_amanda 'lib/jquery/jquery.js' %}"></script>
+    <script src="{% statics_tag_amanda 'lib/popper.js/popper.js' %}"></script>
+    <script src="{% statics_tag_amanda 'lib/bootstrap/bootstrap.js' %}"></script>
+    <script src="{% statics_tag_amanda 'lib/perfect-scrollbar/js/perfect-scrollbar.jquery.js' %}"></script>
+
+    <script src="{% statics_tag_amanda 'js/amanda.js' %}"></script>
+</body>
+
+</html>

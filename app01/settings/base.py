@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'applications.account_base',
     'applications.empresa',
     'applications.usuario',
+    'applications.remuneracion',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -68,19 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    #'app.middleware.middleware_drf_yasg.AddAuthorizationHeaderMiddleware',
-    
+    'app01.middleware.middleware_menu.menu_middleware_items',
 ]
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-}
 
 ROOT_URLCONF = 'app01.urls'
 
@@ -141,31 +131,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:8080',
-]
-
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=360000),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': True,
-    'BLACKLIST_AFTER_ROTATION': True,
-    'AUTH_HEADER_TYPES': ('Bearer',)
-}
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# HOST_BD = 'localhost'
-# PASSWORD_BD = config('DB_PASSWORD')
-# USER_BD = config('DB_USER')
-
-CORS_ORIGIN_ALLOW_ALL = True
-
-
-
-
-

@@ -1,5 +1,5 @@
 from .threadlocal import get_thread_local
-from app01.settings.desa import DATABASES
+from app01.settings.local import DATABASES
 
 
 class Cableado:
