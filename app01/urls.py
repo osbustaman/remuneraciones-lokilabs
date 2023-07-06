@@ -26,6 +26,8 @@ urlpatterns = [
     path('', include('applications.account_base.urls')),
     path('', include('applications.base.urls')),
     path('', include('applications.remuneracion.urls')),
+    path('', include('applications.empresa.urls')),
+    path('', include('applications.configurations.urls')),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

@@ -1,0 +1,148 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Sucursal {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %} {{ action }} Grupo Centro Costo {% endblock %}
+{% block buttons %}
+{% if gcencost_id %}
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:add_cc' emp_id gcencost_id %}')">Agregar Centro Costo <i
+        class="icon ion-plus-circled"></i></button>
+{% endif %}
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:edit_company' emp_id %}')">Volver <i
+    class="icon ion-arrow-left-a"></i></button>
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+
+
+        <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                    aria-selected="true" onclick="onOrOffButtons(this)">Grupo CC</a>
+            </li>
+            {% if gcencost_id %}
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Centros de Costos</a>
+            </li>
+            {% endif %}
+        </ul>
+        <div class="tab-content pt-4" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                {% include "client/includes/company/form_gcc.html" %}
+            </div>
+            {% if gcencost_id %}
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                {% include "client/includes/company/table_cc.html" %}
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+
+    const deleteObject = (url) => {
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
+            buttons: {
+                confirmar: function () {
+                    location.href = url;
+                },
+                cancelar: function () {
+                    $.alert('Operación cancelada');
+                },
+            }
+        });
+    }
+
+    const crear_gcc = () => {
+
+        {% for id_input in form %}
+        const {{ id_input.html_name }} = $('#{{ id_input.id_for_label }}').val();
+        {% endfor %}
+
+        const camposRequeridos = [
+            {% for id_input in form %}
+                {% if id_input.field.required %}
+                    { campo: {{ id_input.html_name }}, mensaje: "- Debe ingresar {{ id_input.label }}" },
+                {% endif %}
+            {% endfor %}
+        ];
+
+        const errores = camposRequeridos.filter(function(campo) {
+        let dic = campo
+            if(dic.campo.length === 0){
+                return campo
+            }
+        });
+
+        if (errores.length > 0) {
+            const mensaje_error = errores.map(error => error.mensaje).join("<br/>");
+            $.alert({
+                title: 'Error!',
+                content: mensaje_error,
+            });
+            return;
+        } else {
+            $("#form").submit()
+        }
+    }
+
+    $('.select2-show-search').select2({
+        minimumResultsForSearch: ''
+    });
+
+    $(function () {
+        'use strict';
+
+        $('#datatable-cc').DataTable({
+            responsive: true,
+            language: {
+                searchPlaceholder: 'Buscar...',
+                sSearch: '',
+                lengthMenu: '_MENU_ cantidad items',
+                paginate: {
+                    previous: 'Anterior',
+                    next: 'Siguiente'
+                },
+                info: 'Mostrando _START_ a _END_ de _TOTAL_ registros'
+            },
+        });
+
+        // Select2
+        $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+    });
+</script>
+{% endblock %}

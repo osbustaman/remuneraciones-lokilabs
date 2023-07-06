@@ -1,0 +1,64 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Comunas {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %} {{ action }} Comunas {% endblock %}
+{% block buttons %}
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+        <table id="datatable-communes" class="table display responsive nowrap" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="wd-15p">ID</th>
+                    <th class="wd-15p">Nombre</th>
+                    <th class="wd-20p">País</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objects %}
+                <tr>
+                    <td>{{ obj.com_id }}</td>
+                    <td>{{ obj.com_nombre }}</td>
+                    <td>{{ obj.region.re_nombre }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    {% include "client/includes/redirect_to_js.html"%}
+
+    {% include "client/includes/table_js.html" with id="datatable-communes" %}
+</script>
+{% endblock %}

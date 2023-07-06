@@ -1,0 +1,32 @@
+const save_data = () => {
+
+    {% for id_input in form %}
+    const {{ id_input.html_name }} = $('#{{ id_input.id_for_label }}').val();
+    {% endfor %}
+
+    const camposRequeridos = [
+        {% for id_input in form %}
+            {% if id_input.field.required %}
+                { campo: {{ id_input.html_name }}, mensaje: "- Debe ingresar {{ id_input.label }}" },
+            {% endif %}
+        {% endfor %}
+    ];
+
+    const errores = camposRequeridos.filter(function(campo) {
+    let dic = campo
+        if(dic.campo.length === 0){
+            return campo
+        }
+    });
+
+    if (errores.length > 0) {
+        const mensaje_error = errores.map(error => error.mensaje).join("<br/>");
+        $.alert({
+            title: 'Error!',
+            content: mensaje_error,
+        });
+        return;
+    } else {
+        $("#form").submit()
+    }
+}

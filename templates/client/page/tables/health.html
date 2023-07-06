@@ -1,0 +1,72 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Entidad de Salud {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %} {{ action }} Entidad Salud {% endblock %}
+{% block buttons %}
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'conf_app:health_add' %}')">Agregar Entidad de Salud <i
+    class="icon ion-plus-circled"></i></button>
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+        <table id="datatable-compensation-box" class="table display responsive nowrap" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="wd-15p">ID</th>
+                    <th class="wd-15p">Código</th>
+                    <th class="wd-20p">Nombre</th>
+                    <th class="wd-15p">Tipo Entidad</th>
+                    <th class="wd-25p">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objects %}
+                <tr>
+                    <td>{{ obj.sa_id }}</td>
+                    <td>{{ obj.sa_codigo }}</td>
+                    <td>{{ obj.sa_nombre }}</td>
+                    <td>{% if obj.sa_tipo == "F" %}FONASA{% else %}ISAPRE{% endif %}</td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'conf_app:health_edit' obj.sa_id %}')">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'conf_app:health_delete' obj.sa_id %}')">Eliminar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    {% include "client/includes/redirect_to_js.html"%}
+    {% include "client/includes/table_js.html" with id="datatable-compensation-box" %}
+</script>
+{% endblock %}

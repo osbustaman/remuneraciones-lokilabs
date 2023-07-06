@@ -1,0 +1,64 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Paises {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %} {{ action }} Paises {% endblock %}
+{% block buttons %}
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+        <table id="datatable-countries" class="table display responsive nowrap" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="wd-15p">ID</th>
+                    <th class="wd-15p">Nombre</th>
+                    <th class="wd-20p">Código</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objects %}
+                <tr>
+                    <td>{{ obj.pa_id }}</td>
+                    <td>{{ obj.pa_nombre }}</td>
+                    <td>{{ obj.pa_codigo }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    {% include "client/includes/redirect_to_js.html"%}
+
+    {% include "client/includes/table_js.html" with id="datatable-countries" %}
+</script>
+{% endblock %}

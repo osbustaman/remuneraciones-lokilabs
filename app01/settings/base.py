@@ -56,6 +56,7 @@ LOCAL_APPS = [
     'applications.empresa',
     'applications.usuario',
     'applications.remuneracion',
+    'applications.configurations',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -70,6 +71,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app01.middleware.middleware_menu.menu_middleware_items',
+    'app01.middleware.middleware_sessions.middleware_sessions',
 ]
 
 ROOT_URLCONF = 'app01.urls'

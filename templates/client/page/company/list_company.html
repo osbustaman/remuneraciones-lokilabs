@@ -1,0 +1,89 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} Empresas {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title_page %}Listado de empresas{% endblock %}
+{% block buttons %}
+    {% if not request.session.is_company %}
+    <button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:add_company' %}')">Crear Empresa <i
+        class="icon ion-plus-circled"></i></button>
+    {% endif %}    
+{% endblock %}
+
+{% block content_page %}
+
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+        <table id="datatable1" class="table display responsive nowrap">
+            <thead>
+                <tr>
+                    <th class="wd-15p">ID</th>
+                    <th class="wd-15p">Rut Empresa</th>
+                    <th class="wd-20p">Razon Social</th>
+                    <th class="wd-15p">Teléfono</th>
+                    <th class="wd-10p">Correo</th>
+                    <th class="wd-25p">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for company in list_companys %}
+                <tr>
+                    <td>{{ company.emp_id }}</td>
+                    <td>{{ company.emp_rut }}</td>
+                    <td>{{ company.emp_razonsocial }}</td>
+                    <td>{{ company.emp_fonouno }}</td>
+                    <td>{{ company.emp_mailuno }}</td>
+                    <td><button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'emp_app:edit_company' company.emp_id %}')">Editar</button></td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+            </thead>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+    $(function () {
+        'use strict';
+
+        $('#datatable1').DataTable({
+            responsive: true,
+            language: {
+                searchPlaceholder: 'Buscar...',
+                sSearch: '',
+                lengthMenu: '_MENU_ cantidad items',
+                paginate: {
+                    previous: 'Anterior',
+                    next: 'Siguiente'
+                },
+                info: 'Mostrando _START_ a _END_ de _TOTAL_ registros'
+            },
+        });
+
+        // Select2
+        $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Apvs {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %} {{ action }} Apvs {% endblock %}
+{% block buttons %}
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'conf_app:apv_add' %}')">Agregar Apv <i
+    class="icon ion-plus-circled"></i></button>
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+        <table id="datatable-apv" class="table display responsive nowrap" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="wd-15p">ID</th>
+                    <th class="wd-15p">Código</th>
+                    <th class="wd-20p">Nombre</th>
+                    <th class="wd-15p">Razón Social</th>
+                    <th class="wd-25p">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objects %}
+                <tr>
+                    <td>{{ obj.apv_id }}</td>
+                    <td>{{ obj.apv_codigoprevired }}</td>
+                    <td>{{ obj.apv_nombre }}</td>
+                    <td>{{ obj.apv_nombrerazonsocial }}</td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'conf_app:apv_edit' obj.apv_id %}')">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'conf_app:apv_delete' obj.apv_id %}')">Eliminar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    {% include "client/includes/redirect_to_js.html"%}
+
+    {% include "client/includes/table_js.html" with id="datatable-apv" %}
+</script>
+{% endblock %}

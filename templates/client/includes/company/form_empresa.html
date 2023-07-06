@@ -1,0 +1,164 @@
+<form method="post" id="form" name="form" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-layout">
+        <div class="row mg-b-25">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_rut.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_rut }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_nombrerepresentante.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_nombrerepresentante }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_rutrepresentante.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_rutrepresentante }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-8">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">{{ form.emp_razonsocial.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_razonsocial }}
+                </div>
+            </div><!-- col-8 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_isestatal.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_isestatal }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_giro.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_giro }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.pais.label }} <span class="tx-danger">*</span></label>
+                    {{ form.pais }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.region.label }} <span class="tx-danger">*</span></label>
+                    {{ form.region }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.comuna.label }} <span class="tx-danger">*</span></label>
+                    {{ form.comuna }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-8">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_direccion.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_direccion }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_numero.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_numero }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_piso.label }} <span class="tx-danger"></span></label>
+                    {{ form.emp_piso }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_dptooficina.label }} <span class="tx-danger"></span></label>
+                    {{ form.emp_dptooficina }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_cospostal.label }} <span class="tx-danger"></span></label>
+                    {{ form.emp_cospostal }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_fonouno.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_fonouno }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_fonodos.label }}</label>
+                    {{ form.emp_fonodos }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_mailuno.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_mailuno }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_maildos.label }}</label>
+                    {{ form.emp_maildos }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_fechaingreso.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_fechaingreso }}
+                </div>
+            </div><!-- col-4 -->
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_isholding.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_isholding }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_activa.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_activa }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_rutcontador.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_rutcontador }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_nombrecontador.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_nombrecontador }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ form.emp_imagenempresa.label }} <span class="tx-danger"></span></label>
+                    <div class="input-group">
+                        <div class="custom-file">
+                            {{ form.emp_imagenempresa }}
+                            <span class="custom-file-control"></span>
+                        </div>
+                        <span class="input-group-btn">
+                            <button type="button" onclick="redirectToUrlLink('../../media/{{image}}')" class="btn btn-primary btn-primary-color tx-gray-600">Ver Imagen</button>
+                        </span>
+                    </div>
+                </div>
+            </div><!-- col-4 -->
+        </div><!-- row -->
+        <div class="form-layout-footer mg-t-30">
+            <button type="button" class="btn btn-info mg-r-5" onclick="crear_empresa()">{{ action }}</button>
+          </div><!-- form-layout-footer -->
+    </div>
+</form>

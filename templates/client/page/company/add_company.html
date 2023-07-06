@@ -1,0 +1,336 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Empresa {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %}{{ action }} Empresa {% endblock %}
+{% block buttons %}
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    <div class="btn-group" role="group">
+        <button id="btn-branch-office" type="button" class="btn btn-orange btn-off dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Sucursal
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btn-branch-office">
+            <a class="dropdown-item" href="javascript:redirectToUrl('{% url 'emp_app:add_branch_office' emp_id %}')">Agregar Sucursal <i
+                class="icon ion-plus-circled"></i></a>
+            <a class="dropdown-item" href="#">Carga Masiva</a>
+        </div>
+    </div>
+</div>
+
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    <div class="btn-group" role="group">
+        <button id="btn-position" type="button" class="btn btn-orange btn-off dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Cargo
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btn-position">
+            <a class="dropdown-item" href="javascript:redirectToUrl('{% url 'emp_app:add_position' emp_id %}')">Agregar Cargo <i
+                class="icon ion-plus-circled"></i></a>
+            <a class="dropdown-item" href="#">Carga Masiva</a>
+        </div>
+    </div>
+</div>
+
+<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+    <div class="btn-group" role="group">
+        <button id="btn-gcc" type="button" class="btn btn-orange btn-off dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Grupo CC
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btn-gcc">
+            <a class="dropdown-item" href="javascript:redirectToUrl('{% url 'emp_app:add_gcc' emp_id %}')">Agregar Grupo CC <i
+                class="icon ion-plus-circled"></i></a>
+            <a class="dropdown-item" href="#">Carga Masiva</a>
+        </div>
+    </div>
+</div>
+
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:list_company' %}')">Volver <i
+        class="icon ion-arrow-left-a"></i></button>
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+
+        <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                    aria-selected="true" onclick="onOrOffButtons(this)">Empresa</a>
+            </li>
+
+            {% if action|lower == 'editar' %}
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Sucursales</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" id="cargos-tab" data-toggle="tab" href="#cargos" role="tab" aria-controls="cargos"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Cargos</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" id="centro-costos-tab" data-toggle="tab" href="#centro-costos" role="tab" aria-controls="centro-costos"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Grupo Centro de Costos</a>
+            </li>
+            {% endif %}
+        </ul>
+
+        <div class="tab-content pt-4" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                {% include "client/includes/company/form_empresa.html" %}
+            </div>
+            {% if action|lower == 'editar' %}
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                {% include "client/includes/company/table_branchs.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="cargos" role="tabpanel" aria-labelledby="cargos-tab">
+                {% include "client/includes/company/table_position.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="centro-costos" role="tabpanel" aria-labelledby="centro-costos-tab">
+                {% include "client/includes/company/table_gcc.html" %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    const deleteObject = (url) => {
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
+            buttons: {
+                confirmar: function () {
+                    location.href = url;
+                },
+                cancelar: function () {
+                    $.alert('Operación cancelada');
+                },
+            }
+        });
+    }
+
+    const onOrOffButtons = (self) => {
+        const camposRequeridos = [
+            { tab: "home-tab", buton: "btn-empresa" },
+            { tab: "profile-tab", buton: "btn-branch-office" },
+            { tab: "cargos-tab", buton: "btn-position" },
+            { tab: "centro-costos-tab", buton: "btn-gcc" },
+        ];
+
+        const existeElemento = camposRequeridos.find(elemento => elemento.tab === self.id);
+        if (existeElemento) {
+            const elementos = camposRequeridos.filter(function(campo) {
+                return campo.buton !== existeElemento.buton;
+            });
+            elementos.forEach(function(campo) {
+                $("#" + campo.buton).addClass("btn-off");
+            });
+            $("#" + existeElemento.buton).removeClass("btn-off");
+        } else {
+            console.log("El elemento " + self.id + " no existe en el array.");
+        }
+    }
+
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+
+    const redirectToUrlLink = (url) => {
+        window.open(url, '_blank');
+    };
+
+    const validarCorreo = (correo) => {
+        // Expresión regular para validar el formato del correo electrónico
+        const regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        // Validar el correo con la expresión regular
+        return regexCorreo.test(correo);
+    }
+
+    const crear_empresa = () => {
+
+        {% for id_input in form %}
+         const {{ id_input.html_name }} = $('#{{ id_input.id_for_label }}').val();
+        {% endfor %}
+
+        const camposRequeridos = [
+            {% for id_input in form %}
+                {% if id_input.field.required %}
+                    { campo: {{ id_input.html_name }}, mensaje: "- Debe ingresar {{ id_input.label }}" },
+                {% endif %}
+            {% endfor %}
+        ];
+
+        const errores = camposRequeridos.filter(function(campo) {
+            let dic = campo
+            if(dic.campo.length === 0){
+                return campo
+            }
+        });
+
+        const _emp_rut = validarRut(emp_rut);
+        const _emp_rutrepresentante = validarRut(emp_rutrepresentante);
+        const _emp_rutcontador = validarRut(emp_rutcontador);
+        const _emp_mailuno = validarCorreo(emp_mailuno);
+
+        let _emp_maildos = true;
+        if(emp_maildos.length != 0){
+            _emp_maildos = validarCorreo(emp_maildos);
+        }
+
+        if (errores.length > 0) {
+            const mensaje_error = errores.map(error => error.mensaje).join("<br/>");
+            $.alert({
+                title: 'Error!',
+                content: mensaje_error,
+            });
+            return;
+        } else if (!_emp_rut) {
+            $.alert({
+                title: 'Error!',
+                content: 'El RUT de la empresa no es valido.',
+            });
+            return;
+        } else if (!_emp_rutrepresentante) {
+            $.alert({
+                title: 'Error!',
+                content: 'El RUT del representante no es valido.',
+            });
+            return;
+        } else if (!_emp_rutcontador) {
+            $.alert({
+                title: 'Error!',
+                content: 'El RUT del contador no es valido.',
+            });
+            return;
+        } else if (!_emp_mailuno) {
+            $.alert({
+                title: 'Error!',
+                content: 'El mail principal no es valido.',
+            });
+            return;
+        } else if (!_emp_maildos) {
+            $.alert({
+                title: 'Error!',
+                content: 'El mail secundario no es valido.',
+            });
+            return;
+        } else {
+            $("#form").submit()
+        }
+    }
+
+    function validarRut(rut) {
+        rut = rut.replace(/[.-]/g, '');
+
+        // Dividir el RUT en cuerpo y dígito verificador
+        let rutNumber = rut.slice(0, -1);
+        rutNumber = rutNumber.replace(/[.-]/g, '');
+        let verifierDigit = rut.slice(-1).toUpperCase();
+        let rutDigits = rutNumber.split(".").join("").split("").reverse();
+        let verifier = verifierDigit.toUpperCase();
+
+        let sum = 0;
+        let multiplier = 2;
+
+        for (let i = 0; i < rutDigits.length; i++) {
+            sum += parseInt(rutDigits[i]) * multiplier;
+            multiplier = multiplier === 7 ? 2 : multiplier + 1;
+        }
+
+        const remainder = sum % 11;
+        const calculatedVerifier = remainder === 0 ? "0" : 11 - remainder === 10 ? "K" : (11 - remainder).toString();
+
+        return verifier === calculatedVerifier;
+    }
+
+
+    $('.fc-datepicker').datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        dateFormat: 'dd-mm-yy',
+    });
+
+    $('.select2-show-search').select2({
+        minimumResultsForSearch: ''
+    });
+
+    $('#id_comuna').select2();
+
+    const validarRut__ = (rut) => {
+        // Eliminar puntos y guión del RUT
+        rut = rut.replace(/[.-]/g, '');
+
+        // Dividir el RUT en cuerpo y dígito verificador
+        const cuerpo = rut.slice(0, -1);
+        const digitoVerificador = rut.slice(-1).toUpperCase();
+
+        // Calcular el dígito verificador esperado
+        let suma = 0;
+        let multiplicador = 1;
+
+        for (let i = cuerpo.length - 1; i >= 0; i--) {
+            suma += parseInt(cuerpo.charAt(i)) * multiplicador;
+            multiplicador = multiplicador < 7 ? multiplicador + 1 : 1;
+        }
+
+        const digitoVerificadorEsperado = 11 - (suma % 11);
+        const digitoVerificadorCalculado = digitoVerificadorEsperado === 10 ? 'K' : String(digitoVerificadorEsperado);
+
+        // Comparar el dígito verificador calculado con el ingresado
+        return digitoVerificador === digitoVerificadorCalculado;
+    }
+
+    $(function () {
+        'use strict';
+
+        $('#datatable-sucursal, #datatable-positions, #datatable-gcc').DataTable({
+            responsive: true,
+            language: {
+                searchPlaceholder: 'Buscar...',
+                sSearch: '',
+                lengthMenu: '_MENU_ cantidad items',
+                paginate: {
+                    previous: 'Anterior',
+                    next: 'Siguiente'
+                },
+                info: 'Mostrando _START_ a _END_ de _TOTAL_ registros'
+            },
+        });
+
+        // Select2
+        $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+    });
+
+
+</script>
+{% endblock %}

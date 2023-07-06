@@ -1,0 +1,20 @@
+$(function () {
+    'use strict';
+
+    $('#{{ id }}').DataTable({
+        responsive: true,
+        language: {
+            searchPlaceholder: 'Buscar...',
+            sSearch: '',
+            lengthMenu: '_MENU_ cantidad items',
+            paginate: {
+                previous: 'Anterior',
+                next: 'Siguiente'
+            },
+            info: 'Mostrando _START_ a _END_ de _TOTAL_ registros'
+        },
+    });
+
+    // Select2
+    $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+});

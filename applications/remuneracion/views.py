@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
 from applications.account_base.forms import LoginForm
+from applications.empresa.forms import EmpresaForm
+from applications.empresa.models import Empresa
 
 # Create your views here.
 
@@ -16,13 +18,4 @@ def control_panel(request):
     data = {
 
     }
-    return render(request, 'client/page/dashboard.html', data)
-
-
-@login_required
-def list_company(request):
-
-    data = {
-
-    }
-    return render(request, 'client/page/list_company.html', data)
+    return render(request, 'client/page/company/dashboard.html', data)

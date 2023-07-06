@@ -1,3 +1,339 @@
+from django.contrib import messages
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, get_object_or_404
+from applications.empresa.forms import CargoForm, CentroCostoForm, EmpresaForm, GrupoCentroCostoForm, SucursalForm
+from applications.empresa.models import Cargo, CentroCosto, Empresa, GrupoCentroCosto, Sucursal
 
 # Create your views here.
+
+
+@login_required
+def list_company(request):
+
+    list_companys = Empresa.objects.filter(emp_activa='S')
+
+    data = {
+        'list_companys': list_companys
+    }
+    return render(request, 'client/page/company/list_company.html', data)
+
+
+@login_required
+def add_company(request):
+
+    if request.method == 'POST':
+        form = EmpresaForm(request.POST, request.FILES)
+        if form.is_valid():
+            company = form.save()
+            return redirect('remun_app:edit_company', emp_id=company.emp_id)
+
+        lista_err = []
+        for field in form:
+            for error in field.errors:
+                lista_err.append(field.label + ': ' + error)
+    else:
+        form = EmpresaForm()
+
+    data = {
+        'action': 'Crear',
+        'form': form,
+    }
+    return render(request, 'client/page/company/add_company.html', data)
+
+
+@login_required
+def edit_company(request, emp_id):
+    company = get_object_or_404(Empresa, emp_id=emp_id)
+    if request.method == 'POST':
+        form = EmpresaForm(request.POST, request.FILES, instance=company)
+        if form.is_valid():
+            form.save()
+    else:
+        form = EmpresaForm(instance=company)
+
+    list_branch_offices = Sucursal.objects.filter(suc_estado='S')
+    list_positions = Cargo.objects.filter(
+        car_activa='S', empresa__emp_id=emp_id)
+    list_gcc = GrupoCentroCosto.objects.filter(
+        gcencost_activo='S', empresa__emp_id=emp_id)
+
+    data = {
+        'form': form,
+        'form_position': CargoForm(),
+        'form_gcc': GrupoCentroCostoForm(),
+        'action': 'Editar',
+        'emp_id': emp_id,
+        'image': company.emp_imagenempresa,
+        'list_branch_offices': list_branch_offices,
+        'list_positions': list_positions,
+        'list_gcc': list_gcc
+    }
+    return render(request, 'client/page/company/add_company.html', data)
+
+
+@login_required
+def add_branch_office(request, emp_id):
+    if request.method == 'POST':
+        form = SucursalForm(request.POST)
+        if form.is_valid():
+            branch_office = form.save(commit=False)
+            branch_office.empresa = Empresa.objects.get(emp_id=emp_id)
+            branch_office.save()
+
+            # Agregar mensaje de éxito
+            messages.success(request, 'Sucursal creada exitosamente.')
+            return redirect('emp_app:edit_branch_office', emp_id=emp_id, suc_id=branch_office.suc_id)
+        else:
+            lista_err = []
+            for field in form:
+                for error in field.errors:
+                    lista_err.append(field.label + ': ' + error)
+            # Aquí puedes agregar un mensaje de error si es necesario
+    else:
+        form = SucursalForm()
+
+    data = {
+        'action': 'Crear',
+        'form_branch': form,
+        'emp_id': emp_id
+    }
+    return render(request, 'client/page/company/branchs_office.html', data)
+
+
+@login_required
+def edit_branch_office(request, emp_id, suc_id):
+    branch = get_object_or_404(Sucursal, suc_id=suc_id)
+
+    if request.method == 'POST':
+        form = SucursalForm(request.POST, instance=branch)
+        if form.is_valid():
+            form.save()
+            # Agregar mensaje de éxito
+            messages.success(request, 'Sucursal editada exitosamente.')
+        else:
+            # Aquí puedes agregar un mensaje de error si es necesario
+            pass
+    else:
+        form = SucursalForm(instance=branch)
+
+    data = {
+        'form_branch': form,
+        'action': 'Editar',
+        'emp_id': emp_id,
+    }
+    return render(request, 'client/page/company/branchs_office.html', data)
+
+
+@login_required
+def delete_branch_office(request, emp_id, suc_id):
+    branch_office = Sucursal.objects.get(suc_id=suc_id)
+    branch_office.suc_estado = 'N'
+    branch_office.save()
+    return redirect('emp_app:edit_company', emp_id)
+
+
+@login_required
+def add_position(request, emp_id):
+    if request.method == 'POST':
+        form = CargoForm(request.POST)
+        if form.is_valid():
+            position = form.save(commit=False)
+            empresa = Empresa.objects.get(emp_id=emp_id)
+
+            position.save()
+            # Utilizar el método set() para establecer la relación
+            position.empresa.set([empresa])
+
+            form.save_m2m()
+            # Agregar mensaje de éxito
+            messages.success(request, 'Cargo creado exitosamente.')
+            return redirect('emp_app:edit_position', emp_id=emp_id, car_id=position.car_id)
+        else:
+            lista_err = []
+            for field in form:
+                for error in field.errors:
+                    lista_err.append(field.label + ': ' + error)
+            # Aquí puedes agregar un mensaje de error si es necesario
+    else:
+        form = CargoForm()
+
+    data = {
+        'action': 'Crear',
+        'form': form,
+        'emp_id': emp_id
+    }
+    return render(request, 'client/page/company/position.html', data)
+
+
+@login_required
+def edit_position(request, emp_id, car_id):
+    position = get_object_or_404(Cargo, car_id=car_id)
+
+    if request.method == 'POST':
+        form = CargoForm(request.POST, instance=position)
+        if form.is_valid():
+            form.save()
+            # Agregar mensaje de éxito
+            messages.success(request, 'Cargo editado exitosamente.')
+        else:
+            # Aquí puedes agregar un mensaje de error si es necesario
+            pass
+    else:
+        form = CargoForm(instance=position)
+
+    data = {
+        'form': form,
+        'action': 'Editar',
+        'emp_id': emp_id,
+    }
+    return render(request, 'client/page/company/position.html', data)
+
+
+@login_required
+def delete_position(request, emp_id, car_id):
+    position = Cargo.objects.get(car_id=car_id)
+    position.car_activa = 'N'
+    position.save()
+    return redirect('emp_app:edit_company', emp_id)
+
+
+@login_required
+def add_gcc(request, emp_id):
+    lista_err = []
+    if request.method == 'POST':
+        form = GrupoCentroCostoForm(request.POST)
+        if form.is_valid():
+            position = form.save(commit=False)
+            position.empresa = Empresa.objects.get(emp_id=emp_id)
+
+            position.save()
+
+            # Agregar mensaje de éxito
+            messages.success(
+                request, 'Grupo Centro Costo creado exitosamente.')
+            return redirect('emp_app:edit_gcc', emp_id=emp_id, gcencost_id=position.gcencost_id)
+        else:
+            for field in form:
+                for error in field.errors:
+                    lista_err.append(field.label + ': ' + error)
+            # Aquí puedes agregar un mensaje de error si es necesario
+    else:
+        form = GrupoCentroCostoForm()
+
+    data = {
+        'action': 'Crear',
+        'form': form,
+        'emp_id': emp_id,
+        'lista_err': lista_err
+    }
+    return render(request, 'client/page/company/gcc.html', data)
+
+
+@login_required
+def edit_gcc(request, emp_id, gcencost_id):
+    position = get_object_or_404(GrupoCentroCosto, gcencost_id=gcencost_id)
+
+    if request.method == 'POST':
+        form = GrupoCentroCostoForm(request.POST, instance=position)
+        if form.is_valid():
+            form.save()
+            # Agregar mensaje de éxito
+            messages.success(
+                request, 'Grupo Centro Costo editado exitosamente.')
+        else:
+            # Aquí puedes agregar un mensaje de error si es necesario
+            pass
+    else:
+        form = GrupoCentroCostoForm(instance=position)
+
+    list_cc = CentroCosto.objects.filter(
+        grupocentrocosto__gcencost_id=gcencost_id, cencost_activo="S")
+
+    data = {
+        'form': form,
+        'action': 'Editar',
+        'emp_id': emp_id,
+        'gcencost_id': gcencost_id,
+        'list_cc': list_cc
+    }
+    return render(request, 'client/page/company/gcc.html', data)
+
+
+@login_required
+def delete_gcc(request, emp_id, gcencost_id):
+    position = GrupoCentroCosto.objects.get(gcencost_id=gcencost_id)
+    position.gcencost_activo = 'N'
+    position.save()
+    return redirect('emp_app:edit_company', emp_id)
+
+
+@login_required
+def add_cc(request, emp_id, gcencost_id):
+    lista_err = []
+    objects_GCC = GrupoCentroCosto.objects.get(gcencost_id=gcencost_id)
+    if request.method == 'POST':
+        form = CentroCostoForm(request.POST)
+        if form.is_valid():
+            position = form.save(commit=False)
+            position.grupocentrocosto = objects_GCC
+
+            position.save()
+
+            # Agregar mensaje de éxito
+            messages.success(
+                request, 'Grupo Centro Costo creado exitosamente.')
+            return redirect('emp_app:edit_cc', emp_id=emp_id, gcencost_id=gcencost_id, cencost_id=position.cencost_id)
+        else:
+            for field in form:
+                for error in field.errors:
+                    lista_err.append(field.label + ': ' + error)
+            # Aquí puedes agregar un mensaje de error si es necesario
+    else:
+        form = CentroCostoForm()
+
+    data = {
+        'action': 'Crear',
+        'form': form,
+        'gcencost_id': gcencost_id,
+        'emp_id': emp_id,
+        'lista_err': lista_err,
+        'name_gcc': objects_GCC.gcencost_nombre.upper()
+    }
+    return render(request, 'client/page/company/cc.html', data)
+
+
+@login_required
+def edit_cc(request, emp_id, gcencost_id, cencost_id):
+    position = get_object_or_404(CentroCosto, cencost_id=cencost_id)
+
+    if request.method == 'POST':
+        form = CentroCostoForm(request.POST, instance=position)
+        if form.is_valid():
+            form.save()
+            # Agregar mensaje de éxito
+            messages.success(
+                request, 'Grupo Centro Costo editado exitosamente.')
+        else:
+            # Aquí puedes agregar un mensaje de error si es necesario
+            pass
+    else:
+        form = CentroCostoForm(instance=position)
+
+    data = {
+        'form': form,
+        'action': 'Editar',
+        'gcencost_id': gcencost_id,
+        'cencost_id': cencost_id,
+        'emp_id': emp_id,
+        'name_gcc': position.grupocentrocosto.gcencost_nombre.upper()
+    }
+    return render(request, 'client/page/company/cc.html', data)
+
+
+@login_required
+def delete_cc(request, emp_id, gcencost_id, cencost_id):
+    position = CentroCosto.objects.get(cencost_id=cencost_id)
+    position.cencost_activo = 'N'
+    position.save()
+    return redirect('emp_app:edit_gcc', emp_id, gcencost_id)

@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 
 import os
 from django.core.wsgi import get_wsgi_application
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app01.settings.desa')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app01.settings.local')
 application = get_wsgi_application()
 
 from app01.functions import load_data_base

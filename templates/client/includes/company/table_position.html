@@ -1,0 +1,23 @@
+<table id="datatable-positions" class="table display responsive nowrap" style="width: 100%;">
+    <thead>
+        <tr>
+            <th class="wd-15p">ID</th>
+            <th class="wd-15p">Nombre</th>
+            <th class="wd-15p">Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for position in list_positions %}
+        <tr>
+            <td>{{ position.car_id }}</td>
+            <td>{{ position.car_nombre }}</td>
+            <td>
+                <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'emp_app:edit_position' emp_id position.car_id %}')">Editar</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'emp_app:delete_position' emp_id position.car_id %}')">Eliminar</button>
+            </td>
+        </tr>
+        {% endfor %}
+        
+    </tbody>
+    </thead>
+</table>
