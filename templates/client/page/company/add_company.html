@@ -59,6 +59,11 @@
     </div>
 </div>
 
+{% if not length_list_associated_entities >= 2 %}
+<button type="button" id="btn-ea" class="btn btn-orange btn-off" onclick="redirectToUrl('{% url 'emp_app:add_associated_entities' emp_id %}')">Agregar Entidad Asociada <i
+    class="icon ion-plus-circled"></i></button>
+{% endif %}
+
 <button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:list_company' %}')">Volver <i
         class="icon ion-arrow-left-a"></i></button>
 {% endblock %}
@@ -88,6 +93,10 @@
                 <a class="nav-link" id="centro-costos-tab" data-toggle="tab" href="#centro-costos" role="tab" aria-controls="centro-costos"
                     aria-selected="false" onclick="onOrOffButtons(this)">Grupo Centro de Costos</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="entidades-tab" data-toggle="tab" href="#entidades" role="tab" aria-controls="entidades"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Entidades Asociadas</a>
+            </li>
             {% endif %}
         </ul>
 
@@ -106,6 +115,10 @@
 
             <div class="tab-pane fade" id="centro-costos" role="tabpanel" aria-labelledby="centro-costos-tab">
                 {% include "client/includes/company/table_gcc.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="entidades" role="tabpanel" aria-labelledby="entidades-tab">
+                {% include "client/includes/company/table_associated_entities.html" %}
             </div>
             {% endif %}
         </div>
@@ -144,6 +157,7 @@
             { tab: "profile-tab", buton: "btn-branch-office" },
             { tab: "cargos-tab", buton: "btn-position" },
             { tab: "centro-costos-tab", buton: "btn-gcc" },
+            { tab: "entidades-tab", buton: "btn-ea" },
         ];
 
         const existeElemento = camposRequeridos.find(elemento => elemento.tab === self.id);
@@ -313,7 +327,7 @@
     $(function () {
         'use strict';
 
-        $('#datatable-sucursal, #datatable-positions, #datatable-gcc').DataTable({
+        $('#datatable-sucursal, #datatable-positions, #datatable-gcc, #datatable-ae').DataTable({
             responsive: true,
             language: {
                 searchPlaceholder: 'Buscar...',

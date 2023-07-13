@@ -18,6 +18,7 @@ from applications.empresa.views import (
     , add_cc
     , edit_cc
     , delete_cc
+    , add_associated_entities
 )
 app_name = 'emp_app'
 
@@ -42,5 +43,7 @@ urlpatterns = [
     path('company/add/cc/<int:emp_id>/<int:gcencost_id>', add_cc, name='add_cc'),
     path('company/edit/cc/<int:emp_id>/<int:gcencost_id>/<int:cencost_id>', edit_cc, name='edit_cc'),
     path('company/delete/cc/<int:emp_id>/<int:gcencost_id>/<int:cencost_id>', delete_cc, name='delete_cc'),
+
+    path('company/add/associated/entities/<int:emp_id>', add_associated_entities, name='add_associated_entities'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,0 +1,163 @@
+
+<form method="post" id="form" name="form" action="">
+    {% csrf_token %}
+
+    <div class="form-layout">
+        <div class="row mg-b-25">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_rut.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_rut }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formUserForm.last_name.label }} <span class="tx-danger">*</span></label>
+                    {{ formUserForm.last_name }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formUserForm.first_name.label }} <span class="tx-danger">*</span></label>
+                    {{ formUserForm.first_name }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formUserForm.email.label }} <span class="tx-danger">*</span></label>
+                    {{ formUserForm.email }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_direccion.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_direccion }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.pais.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.pais }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.region.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.region }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.comuna.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.comuna }}
+                </div>
+            </div><!-- col-4 -->
+
+
+
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_sexo.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_sexo }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_estadocivil.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_estadocivil }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_extranjero.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_extranjero }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_nacionalidad.label }} <span class="tx-danger"></span></label>
+                    {{ formColaboradorForm.col_nacionalidad }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_fechanacimiento.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_fechanacimiento }}
+                </div>
+            </div><!-- col-4 -->
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_estudios.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_estudios }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_estadoestudios.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_estadoestudios }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-3">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_titulo.label }} <span class="tx-danger"></span></label>
+                    {{ formColaboradorForm.col_titulo }}
+                </div>
+            </div><!-- col-4 -->
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_licenciaconducir.label }} <span class="tx-danger">*</span></label>
+                    {{ formColaboradorForm.col_licenciaconducir }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formColaboradorForm.col_tipolicencia.label }} <span class="tx-danger"></span></label>
+                    {{ formColaboradorForm.col_tipolicencia }}
+                </div>
+            </div><!-- col-4 -->
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formUserForm.username.label }} <span class="tx-danger">*</span></label>
+                    {{ formUserForm.username }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formUserForm.password.label }} <span class="tx-danger"></span></label>
+                    {{ formUserForm.password }}
+                </div>
+            </div><!-- col-4 -->
+            
+            
+            
+        </div><!-- col-4 -->
+        
+
+        <div class="form-layout-footer mg-t-30">
+            <button type="submit" class="btn btn-info mg-r-5" onclick="save_data()">{{ action }}</button>
+        </div><!-- form-layout-footer -->
+    </div>
+</form>
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert alert-danger mt-4" role="alert">
+{% else %}
+<div class="alert alert-success mt-4" role="alert">
+{% endif %}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <div class="d-flex align-items-center justify-content-start">
+        <i class="icon ion-ios-{% if message.tags == 'error' %}close{% else %}checkmark{% endif %} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
+        <span><strong>{% if message.tags == 'error' %}Error{% else %}Éxito{% endif %}: </strong> {{ message }}</span>
+    </div><!-- d-flex -->
+</div><!-- alert -->
+{% endfor %}
+{% endif %}
+    

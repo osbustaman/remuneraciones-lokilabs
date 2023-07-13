@@ -20,3 +20,18 @@ const redirectToUrl = (url) => {
 const redirectToUrlLink = (url) => {
     window.open(url, '_blank');
 };
+
+const deleteObject = (url) => {
+    $.confirm({
+        title: 'Confirmación',
+        content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
+        buttons: {
+            confirmar: function () {
+                location.href = url;
+            },
+            cancelar: function () {
+                $.alert('Operación cancelada');
+            },
+        }
+    });
+}

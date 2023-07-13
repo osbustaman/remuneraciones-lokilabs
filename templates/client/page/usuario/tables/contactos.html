@@ -1,0 +1,35 @@
+<table id="datatable-contact" class="table display responsive nowrap" style="width: 100%;">
+    <thead>
+        <tr>
+            <th class="wd-10p">ID</th>
+            <th class="wd-10p">Tipo de Contacto</th>
+            <th class="wd-30p">Nombre</th>
+            <th class="wd-15p">Contacto</th>
+            <th class="wd-25p">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for obj in list_contact %}
+        <tr>
+            <td>{{ obj.con_id }}</td>
+            <td>{{ obj.get_con_contact_type_display }}</td>
+            <td>{{ obj.cont_name_contact|title }}</td>
+            <td>
+                {% if obj.con_contact_type == 1 or  obj.con_contact_type == 2 %}
+                    {{ obj.con_mail_contact }}
+                {% else %}
+                    {{ obj.con_phone_contact }}
+                {% endif %}
+            </td>
+            <td>
+                <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'usuario_app:contact_delete' obj.con_id id col_id %}')">Eliminar</button>
+            </td>
+        </tr>
+        {% endfor %}
+        
+    </tbody>
+</table>
+
+<script>
+    {% include "client/includes/table_js.html" with id="datatable-contact" %}
+</script>

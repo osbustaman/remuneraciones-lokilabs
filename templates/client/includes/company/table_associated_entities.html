@@ -1,0 +1,23 @@
+<table id="datatable-ae" class="table display responsive nowrap" style="width: 100%;">
+    <thead>
+        <tr>
+            <th class="wd-15p">ID</th>
+            <th class="wd-15p">Nombre</th>
+            <th class="wd-20p">Código</th>
+            <th class="wd-25p">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ae in list_associated_entities %}
+        <tr>
+            <td>{{ ae.id }}</td>
+            <td>{{ ae.rut }}</td>
+            <td>{{ ae.name }}</td>
+            <td>
+                <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'emp_app:add_associated_entities' emp_id %}')">Editar</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+    </thead>
+</table>

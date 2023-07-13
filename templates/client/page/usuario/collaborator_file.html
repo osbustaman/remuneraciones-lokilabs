@@ -1,0 +1,92 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Empresa {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %}{{ action }} Empresa {% endblock %}
+{% block buttons %}
+
+
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'usuario_app:add_collaborator_file' %}')">Agregar Colaborador <i
+        class="icon ion-plus-circled"></i></button>
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+        <table id="table-user" class="table display responsive nowrap">
+            <thead>
+                <tr>
+                    <th class="wd-15p">Rut</th>
+                    <th class="wd-20p">Nombre</th>
+                    <th class="wd-20p">Cargo</th>
+                    <th class="wd-20p">Centro Costo</th>
+                    <th class="wd-25p">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in list_objects %} 
+                <tr>
+                    <td>{{ obj.col_rut }}</td>
+                    <td>{{ obj.user.first_name|title }} {{ obj.user.last_name|title }}</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'usuario_app:edit_collaborator_file' obj.user.id obj.col_id %}')">Editar</button>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+
+{% endblock %}
+
+{% block script_tag %}
+<script>
+const redirectToUrl = (url) => {
+    location.href = url;
+}
+
+const deleteObject = (url) => {
+    $.confirm({
+        title: 'Confirmación',
+        content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
+        buttons: {
+            confirmar: function () {
+                location.href = url;
+            },
+            cancelar: function () {
+                $.alert('Operación cancelada');
+            },
+        }
+    });
+}
+{% include "client/includes/table_js.html" with id="table-user" %}
+</script>
+{% endblock %}

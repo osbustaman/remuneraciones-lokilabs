@@ -1,5 +1,5 @@
 from django.db import models
-#from model_utils.models import TimeStampedModel
+from model_utils.models import TimeStampedModel
 from django.contrib.auth.models import User
 from applications.base.models import Comuna, Pais, Region, TablaGeneral
 
@@ -16,7 +16,7 @@ from applications.empresa.models import (
 
 # Create your models here.
 
-class UsuarioTipoContrato(models.Model):
+class UsuarioTipoContrato(TimeStampedModel):
     OPCIONES = (
         (1, 'SI'),
         (0, 'NO'),
@@ -37,7 +37,7 @@ class UsuarioTipoContrato(models.Model):
         db_table = "usu_tipo_contrato"
         ordering = ['utc_id']
 
-class Colaborador(models.Model):
+class Colaborador(TimeStampedModel):
 
     OPCIONES = (
         (1, 'SI'),
@@ -50,10 +50,10 @@ class Colaborador(models.Model):
     )
 
     ESTADO_CIVIL = (
-        (1, 'Soltero(a)'),
-        (2, 'Casado(a)'),
-        (3, 'Divorsiado(a)'),
-        (4, 'Viudo(a)'),
+        (1, 'Solter@'),
+        (2, 'Casad@'),
+        (3, 'Divorsiad@'),
+        (4, 'Viud@'),
     )
 
     TIPO_USUARIO = (
@@ -79,9 +79,21 @@ class Colaborador(models.Model):
         (6, 'CUENTA BANCARIA PARA EXTRANJEROS')
     )
 
+    TIPO_ESTUDIOS = (
+        (1, 'ENSEÑANZA MEDIA'),
+        (2, 'ESTUDIOS SUPERIORES (CFT)'),
+        (3, 'ESTUDIOS UNIVERSITARIOS'),
+    )
+
+    ESTADO_ESTUDIOS = (
+        (1, 'COMPLETO'),
+        (2, 'INCOMPLETO'),
+    )
+
     col_id = models.AutoField("Key", primary_key=True)
     user = models.ForeignKey(User, verbose_name="Colaborador", db_column="ue_usuario", null=True, blank=True, on_delete=models.PROTECT)
     col_extranjero = models.IntegerField("Extranjero", choices=OPCIONES, default=0)
+    col_nacionalidad = models.CharField("Nacionalidad", max_length=100, blank=True, null=True, default='chilen@')
     col_rut = models.CharField("Rut", max_length=100)
     col_sexo = models.CharField("Sexo", max_length=1, choices=SEXO)
     col_fechanacimiento = models.DateField("Fecha de nacimiento")
@@ -90,8 +102,9 @@ class Colaborador(models.Model):
     pais = models.ForeignKey(Pais, verbose_name="País", db_column="usu_pais", on_delete=models.PROTECT)
     region = models.ForeignKey(Region, verbose_name="Región", db_column="usu_region", on_delete=models.PROTECT)
     comuna = models.ForeignKey(Comuna, verbose_name="Comuna", db_column="usu_comuna", on_delete=models.PROTECT)
-    col_tipousuario = models.IntegerField("Tipo usuario", choices=TIPO_USUARIO)
-    col_profesion = models.CharField("Profesión", max_length=255, null=True, blank=True)
+    col_tipousuario = models.IntegerField("Tipo usuario", choices=TIPO_USUARIO, null=True, blank=True)
+    col_estudios = models.IntegerField("Tipo estudios", choices=TIPO_ESTUDIOS, default=1)
+    col_estadoestudios = models.IntegerField("Estado estudios", choices=ESTADO_ESTUDIOS, default=1)
     col_titulo = models.CharField("Titulo", max_length=100, null=True, blank=True)
     col_formapago = models.IntegerField("Forma de pago", choices=FORMA_PAGO, null=True, blank=True)
     banco = models.ForeignKey(Banco, verbose_name="Banco", db_column="ue_banco", null=True, blank=True, on_delete=models.PROTECT)
@@ -101,6 +114,7 @@ class Colaborador(models.Model):
     col_licenciaconducir = models.IntegerField("Licencia de conducir", choices=OPCIONES, null=True, blank=True)
     col_tipolicencia = models.CharField("Tipo de licencia", max_length=2, null=True, blank=True)
     col_fotousuario = models.TextField("Foto usuario", null=True, blank=True)
+    col_activo = models.IntegerField("Colaborador Activo", choices=OPCIONES, default=1)
 
     def __int__(self):
         return self.col_id
@@ -112,7 +126,7 @@ class Colaborador(models.Model):
         db_table = "usu_colaborador"
         ordering = ['col_id']
 
-class UsuarioEmpresa(models.Model):
+class UsuarioEmpresa(TimeStampedModel):
     TIPO_TRABAJADOR = (
         (1, 'Activo (no pensionado)'),
         (2, 'Pensionado y cotiza AFP'),
@@ -158,7 +172,7 @@ class UsuarioEmpresa(models.Model):
     ue_tipotrabajdor = models.IntegerField("Tipo de trabajador", choices=TIPO_TRABAJADOR, null=True, blank=True)
     ue_tipocontrato = models.CharField("Tipo de contrato", choices=TIPO_CONTRATO, max_length=5, null=True, blank=True, default=None)
     ue_fechacontratacion = models.DateField("Fecha de contratacion del usuario", null=True, blank=True)
-    ue_fecharenovacioncontrato = models.DateField("Fecha termino de contrato", null=True, blank=True)
+    ue_fecharenovacioncontrato = models.DateField("Fecha primer contrato", null=True, blank=True)
     ue_horassemanales = models.IntegerField("Horas trabajadas", null=True, blank=True, default=45)
     ue_asignacionfamiliar = models.CharField("Asignación familiar", choices=OPCIONES, max_length=1, null=True, blank=True, default="N")
     ue_cargasfamiliares = models.IntegerField("Cargas familiares", null=True, blank=True, default=0)
@@ -218,7 +232,40 @@ class UsuarioEmpresa(models.Model):
         ordering = ['ue_id']
 
 
-class Haberes(models.Model):
+class Contact(TimeStampedModel):
+    TYPE = (
+        (1, 'Email Personal'),
+        (2, 'Email Corporativo'),
+        (3, 'Teléfono Movil'),
+        (4, 'Teléfono Fijo'),
+    )
+
+    OPCIONES = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+
+    con_id = models.AutoField("Key", primary_key=True)
+    con_contact_type = models.IntegerField("Tipo de contacto", choices=TYPE, default=2)
+    con_mail_contact = models.CharField("Correo de contacto", max_length=120, null=True, blank=True)
+    con_phone_contact = models.CharField("Teléfono de contacto", max_length=120, null=True, blank=True)
+    cont_name_contact = models.CharField("Nombre del contacto", max_length=15)
+    user = models.ForeignKey(User, verbose_name="Usuario", db_column="con_user", on_delete=models.PROTECT)
+    con_actiove = models.CharField("Contacto activo", choices=OPCIONES, max_length=1, default="S")
+
+    def __int__(self):
+        return self.con_id
+
+    def save(self, *args, **kwargs):
+        super(Contact, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'usu_contact'
+        ordering = ['con_id']
+
+
+
+class Haberes(TimeStampedModel):
     TIPO = (
         ('', '--- Seleccione ---'),
         ('HI', 'Haberes imponible'),

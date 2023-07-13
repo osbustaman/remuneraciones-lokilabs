@@ -2,7 +2,7 @@ from django import forms
 
 from applications.base.models import Comuna, Pais, Region
 from applications.base.utils import validarRut
-from applications.empresa.models import Cargo, CentroCosto, Empresa, GrupoCentroCosto, Sucursal
+from applications.empresa.models import CajasCompensacion, Cargo, CentroCosto, Empresa, GrupoCentroCosto, MutualSecurity, Sucursal
 
 class CentroCostoForm(forms.ModelForm):
     tags_input_general = {
@@ -225,4 +225,22 @@ class EmpresaForm(forms.ModelForm):
             , "emp_rutcontador"
             , "emp_nombrecontador"
             , "emp_imagenempresa"
+        )
+
+class AssociatedEntitiesForm(forms.ModelForm):
+
+    tags_input_general = {
+        'class': 'form-control',
+    }
+
+    mutualSecurity = forms.ModelChoiceField(label="Mutual", required=True,
+                                  queryset=MutualSecurity.objects.filter(ms_active="S"), widget=forms.Select(attrs=tags_input_general))
+    cajasCompensacion = forms.ModelChoiceField(label="Caja Compensación", required=True,
+                                    queryset=CajasCompensacion.objects.filter(cc_activo="S"), widget=forms.Select(attrs=tags_input_general))
+
+    class Meta:
+        model = Empresa
+        fields = (
+            "mutualSecurity"
+            , "cajasCompensacion"
         )

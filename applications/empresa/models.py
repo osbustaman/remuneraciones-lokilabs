@@ -5,6 +5,61 @@ from applications.base.models import Comuna, Pais, Region
 
 # Create your models here.
 
+class CajasCompensacion(models.Model):
+
+    OPCIONES = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+    
+    cc_id = models.AutoField("Key", primary_key=True)
+    cc_nombre = models.CharField("Nombre", max_length=100)
+    cc_codigo = models.CharField("Código", max_length=100)
+    cc_rut = models.CharField("Rut", max_length=10)
+    cc_activo = models.CharField(
+        "Activo", max_length=1, choices=OPCIONES, default="S")
+
+
+
+    def __int__(self):
+        return self.cc_id
+
+    def __str__(self):
+        return "{n}".format(n=self.cc_nombre)
+
+    def save(self, *args, **kwargs):
+        super(CajasCompensacion, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = "emp_cajas_compensacion"
+        ordering = ['cc_id']
+
+class MutualSecurity(models.Model):
+
+    OPTIONS = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+
+    ms_id = models.AutoField("Key", primary_key=True)
+    ms_name = models.CharField("Nombre", max_length=150)
+    ms_rut = models.CharField("Rut", max_length=150)
+    ms_codeprevired = models.CharField("Código Previred", max_length=3)
+    ms_active = models.CharField(
+        "Activo", max_length=1, choices=OPTIONS, default="S")
+
+    def __int__(self):
+        return self.ms_id
+
+    def __str__(self):
+        return f"{self.ms_id} - {self.ms_name}"
+
+    def save(self, *args, **kwargs):
+        super(MutualSecurity, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = "emp_mutual_security"
+        ordering = ['ms_id']
 
 class Banco(models.Model):
     OPCIONES = (
@@ -84,7 +139,11 @@ class Empresa(models.Model):
         "Logo Empresa", help_text=" Formatos .jpg|.png|.gif|.jpeg", upload_to='imagen/logos/', null=True, blank=True)
     emp_colorlogo = models.CharField(
         "Color logo", max_length=10, null=True, blank=True, default='')
-
+    mutualSecurity = models.ForeignKey(MutualSecurity, verbose_name="MutualSecurity",
+                             db_column="emp_mutualsecurity", on_delete=models.PROTECT, null=True, blank=True)
+    cajasCompensacion = models.ForeignKey(CajasCompensacion, verbose_name="CajasCompensacion",
+                             db_column="emp_cajas_compensacion", on_delete=models.PROTECT, null=True, blank=True)
+    
     def __int__(self):
         return self.emp_id
 
@@ -245,36 +304,6 @@ class CentroCosto(models.Model):
         ordering = ['cencost_id']
 
 
-class CajasCompensacion(models.Model):
-
-    OPCIONES = (
-        ('S', 'SI'),
-        ('N', 'NO'),
-    )
-    
-    cc_id = models.AutoField("Key", primary_key=True)
-    cc_nombre = models.CharField("Nombre", max_length=100)
-    cc_codigo = models.CharField("Código", max_length=100)
-    cc_rut = models.CharField("Rut", max_length=10)
-    cc_activo = models.CharField(
-        "Activo", max_length=1, choices=OPCIONES, default="S")
-
-
-
-    def __int__(self):
-        return self.cc_id
-
-    def __str__(self):
-        return "{n}".format(n=self.cc_nombre)
-
-    def save(self, *args, **kwargs):
-        super(CajasCompensacion, self).save(*args, **kwargs)
-
-    class Meta:
-        db_table = "emp_cajas_compensacion"
-        ordering = ['cc_id']
-
-
 class Salud(models.Model):
     TIPO = (
         ('F', 'FONASA'),
@@ -397,30 +426,5 @@ class TipoContrato(models.Model):
         ordering = ['tc_id']
 
 
-class MutualSecurity(models.Model):
 
-    OPTIONS = (
-        ('S', 'SI'),
-        ('N', 'NO'),
-    )
-
-    ms_id = models.AutoField("Key", primary_key=True)
-    ms_name = models.CharField("Nombre", max_length=150)
-    ms_rut = models.CharField("Rut", max_length=150)
-    ms_codeprevired = models.CharField("Código Previred", max_length=3)
-    ms_active = models.CharField(
-        "Activo", max_length=1, choices=OPTIONS, default="S")
-
-    def __int__(self):
-        return self.ms_id
-
-    def __str__(self):
-        return f"{self.ms_id} - {self.ms_name}"
-
-    def save(self, *args, **kwargs):
-        super(MutualSecurity, self).save(*args, **kwargs)
-
-    class Meta:
-        db_table = "emp_mutual_security"
-        ordering = ['ms_id']
 

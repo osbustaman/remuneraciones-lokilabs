@@ -2,8 +2,8 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
-from applications.empresa.forms import CargoForm, CentroCostoForm, EmpresaForm, GrupoCentroCostoForm, SucursalForm
-from applications.empresa.models import Cargo, CentroCosto, Empresa, GrupoCentroCosto, Sucursal
+from applications.empresa.forms import AssociatedEntitiesForm, CargoForm, CentroCostoForm, EmpresaForm, GrupoCentroCostoForm, SucursalForm
+from applications.empresa.models import CajasCompensacion, Cargo, CentroCosto, Empresa, GrupoCentroCosto, MutualSecurity, Sucursal
 
 # Create your views here.
 
@@ -57,6 +57,22 @@ def edit_company(request, emp_id):
         car_activa='S', empresa__emp_id=emp_id)
     list_gcc = GrupoCentroCosto.objects.filter(
         gcencost_activo='S', empresa__emp_id=emp_id)
+    
+    list_associated_entities = []
+    if company.mutualSecurity:
+        list_associated_entities.append({
+            "id": 1 ,
+            "name": company.mutualSecurity.ms_name,
+            "rut": company.mutualSecurity.ms_rut
+        })
+
+    if company.cajasCompensacion:
+        list_associated_entities.append({
+            "id": 2,
+            "name": company.cajasCompensacion.cc_nombre,
+            "rut": company.cajasCompensacion.cc_rut 
+        })
+    
 
     data = {
         'form': form,
@@ -67,7 +83,9 @@ def edit_company(request, emp_id):
         'image': company.emp_imagenempresa,
         'list_branch_offices': list_branch_offices,
         'list_positions': list_positions,
-        'list_gcc': list_gcc
+        'list_gcc': list_gcc,
+        'list_associated_entities': list_associated_entities,
+        'length_list_associated_entities': len(list_associated_entities)
     }
     return render(request, 'client/page/company/add_company.html', data)
 
@@ -337,3 +355,33 @@ def delete_cc(request, emp_id, gcencost_id, cencost_id):
     position.cencost_activo = 'N'
     position.save()
     return redirect('emp_app:edit_gcc', emp_id, gcencost_id)
+
+
+@login_required
+def add_associated_entities(request, emp_id):
+    position = get_object_or_404(Empresa, emp_id=emp_id)
+
+    if request.method == 'POST':
+        
+        form = AssociatedEntitiesForm(request.POST, instance=position)
+        if form.is_valid():
+            company = form.save(commit=False)
+            company.mutualSecurity = MutualSecurity.objects.get(ms_id=request.POST['mutualSecurity'])
+            company.cajasCompensacion = CajasCompensacion.objects.get(cc_id=request.POST['cajasCompensacion'])
+            company.save()
+
+            # Agregar mensaje de éxito
+            messages.success(request, 'Creación exitosa.')
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+    else:
+        form = AssociatedEntitiesForm(instance=position)
+
+    data = {
+        'action': 'Crear',
+        'form': form,
+        'emp_id': emp_id
+    }
+    return render(request, 'client/includes/company/form_associated_entities.html', data)

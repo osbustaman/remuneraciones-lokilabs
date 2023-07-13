@@ -82,6 +82,11 @@ class menu_middleware_items(object):
                 request.session['item'] = 'configuracion'
                 request.session['sub_item'] = 'tablas' 
                 request.session['sub_sub_item'] = 'mutual' 
+
+            if '/collaborator/file/' in request.path:
+                request.session['item'] = 'configuracion'
+                request.session['sub_item'] = 'colaboradores' 
+                request.session['sub_sub_item'] = 'search-user'
             
         except:
             pass
