@@ -81,7 +81,12 @@ class menu_middleware_items(object):
             if '/company/mutual/security/' in request.path:
                 request.session['item'] = 'configuracion'
                 request.session['sub_item'] = 'tablas' 
-                request.session['sub_sub_item'] = 'mutual' 
+                request.session['sub_sub_item'] = 'mutual'
+
+            if '/company/concepts/' in request.path:
+                request.session['item'] = 'configuracion'
+                request.session['sub_item'] = 'tablas' 
+                request.session['sub_sub_item'] = 'concepts' 
 
             if '/collaborator/file/' in request.path:
                 request.session['item'] = 'configuracion'

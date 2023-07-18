@@ -1,0 +1,189 @@
+<form method="post" id="form-forescat-data" name="form-forescat-data"
+    action="{% url 'usuario_app:add_forecast_data' id col_id %}">
+    {% csrf_token %}
+
+    <div class="form-layout">
+        <div class="row mg-b-25">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.afp.label }} <span
+                            class="tx-danger">*</span></label>
+                    {{ formFormsForecastData.afp }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-10">
+                <br>
+                <div class="alert alert-info" role="alert">
+                    <small><strong class="d-block d-sm-inline-block-force">CÓDIGO PREVIRED: </strong> <span id="alert-afp">-</span>, </small>
+                    <small><strong class="d-block d-sm-inline-block-force">PORCENTAJE: </strong> <span id="alert-afp-porcentaje">-</span>%</small>
+                </div><!-- alert -->
+            </div>
+        </div>
+
+        <div class="row mg-b-25">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.salud.label }} <span
+                            class="tx-danger">*</span></label>
+                    {{ formFormsForecastData.salud }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_ufisapre.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_ufisapre }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_funisapre.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_funisapre }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_cotizacion.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_cotizacion }}
+                </div>
+            </div><!-- col-4 -->
+        </div>
+
+        <div class="row mg-b-25">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_tieneapv.label }} <span
+                            class="tx-danger">*</span></label>
+                    {{ formFormsForecastData.ue_tieneapv }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.apv.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.apv }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_contributiontype.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_contributiontype }}
+                </div>
+            </div><!-- col-4 -->
+
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_taxregime.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_taxregime }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_shape.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_shape }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-1">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_apvamount.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_apvamount }}
+                </div>
+            </div><!-- col-4 -->
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.ue_paymentperioddate.label }} <span
+                            class="tx-danger"></span></label>
+                    {{ formFormsForecastData.ue_paymentperioddate }}
+                </div>
+            </div><!-- col-4 -->
+        </div>
+
+        <div class="row mg-b-25">
+            <div class="col-lg-2">
+                <div class="form-group">
+                    <label class="form-control-label">{{ formFormsForecastData.caja_compensacion.label }} <span
+                            class="tx-danger">*</span></label>
+                    {{ formFormsForecastData.caja_compensacion }}
+                </div>
+            </div><!-- col-4 -->
+        </div><!-- col-4 -->
+
+
+        <div class="form-layout-footer mg-t-30">
+            <button type="submit" class="btn btn-info mg-r-5">Guardar</button>
+        </div><!-- form-layout-footer -->
+    </div>
+</form>
+
+{% if messages %}
+{% for message in messages %}
+{% if message.tags == 'error' %}
+<div class="alert alert-danger mt-4" role="alert">
+    {% else %}
+    <div class="alert alert-success mt-4" role="alert">
+        {% endif %}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <div class="d-flex align-items-center justify-content-start">
+            <i
+                class="icon ion-ios-{% if message.tags == 'error' %}close{% else %}checkmark{% endif %} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
+            <span><strong>{% if message.tags == 'error' %}Error{% else %}Éxito{% endif %}: </strong> {{ message
+                }}</span>
+        </div><!-- d-flex -->
+    </div><!-- alert -->
+    {% endfor %}
+    {% endif %}
+
+    <script>
+        $("#id_ue_cotizacion").prop("readonly", true);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const selectElement = document.querySelector('#id_afp');
+            const id_salud = document.querySelector('#id_salud');
+
+            id_salud.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+
+                if(selectedValue === '1'){
+                    $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", true);
+                    $("#id_ue_cotizacion").val(7.0);
+                }else{
+                    $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", false);
+                    $("#id_ue_cotizacion").val(0.0);
+                }
+            });
+
+            selectElement.addEventListener('change', (event) => {
+                const selectedValue = event.target.value;
+                console.log(selectedValue);
+
+                // Endpoint al que se realizará la solicitud POST
+                const endpoint = "{% url 'usuario_app:AfpDetailApiView' '__id__' %}".replace('__id__', selectedValue);
+                console.log(endpoint);
+
+                // Realizar la solicitud POST utilizando Axios
+                axios.get(endpoint)
+                    .then(response => {
+                        console.log(response.data)
+                        const spanElement = document.getElementById('alert-afp');
+                        const spanElementPorcentaje = document.getElementById('alert-afp-porcentaje');
+                        spanElement.textContent = response.data[0]['afp_codigoprevired'];
+                        spanElementPorcentaje.textContent = response.data[0]['afp_tasatrabajadorindependiente'];
+                    })
+                    .catch(error => {
+                        // Ocurrió un error durante la solicitud
+                        console.error('Error en la solicitud:', error.message);
+                    });
+            });
+        });
+
+
+
+    </script>

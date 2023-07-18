@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from applications.base.models import Comuna, Pais, Region, TablaGeneral
 
 from applications.empresa.models import (
-    Afp
-    , Banco
+    Afp,
+    Apv
+    , Banco,
+    CajasCompensacion
     , Cargo
     , CentroCosto
     , Empresa
@@ -13,6 +15,7 @@ from applications.empresa.models import (
     , Sucursal
     , TipoContrato
 )
+from applications.remuneracion.models import Concept
 
 # Create your models here.
 
@@ -65,18 +68,22 @@ class Colaborador(TimeStampedModel):
     )
 
     FORMA_PAGO = (
+        ('', '---------'),
         (1, 'Efectivo'),
         (2, 'Cheque'),
-        (3, 'Depósito directo'),
+        (3, 'Vale vista'),
+        (4, 'Depósito directo'),
     )
 
     TIPO_CUENTA_BANCARIA = (
+        (0, '---------'),
         (1, 'CUENTA VISTA'),
         (2, 'CUENTA DE AHORRO'),
         (3, 'CUENTA BANCARIA PARA ESTUDIANTE'),
         (4, 'CUENTA CHEQUERA ELECTRÓNICA'),
         (5, 'CUENTA RUT'),
-        (6, 'CUENTA BANCARIA PARA EXTRANJEROS')
+        (6, 'CUENTA BANCARIA PARA EXTRANJEROS'),
+        (7, 'CUENTA CORRIENTE')
     )
 
     TIPO_ESTUDIOS = (
@@ -161,6 +168,31 @@ class UsuarioEmpresa(TimeStampedModel):
         ('TCP', 'Trabajador de Casa Particular'),
     )
 
+    ESTATE_JOB = (
+        (1, 'Vigente'),
+        (2, 'Desvinculado')
+    )
+
+    CONTRIBUTION_TYPE = (
+        (0, '---------'),
+        (1, 'PESOS ($)'),
+        (2, 'PORCENTAJE (%)'),
+        (3, 'UNIDAD DE FOMENTO (UF)'),
+    )
+
+    TAX_REGIME = (
+        (0, '---------'),
+        (1, 'APV Regimen A'),
+        (2, 'APV Regimen B'),
+        (3, 'Depósitos Convenidos(**)'),
+    )
+
+    SHAPE = (
+        (0, '---------'),
+        (1, 'DIRECTA'),
+        (2, 'INDIRECTA'),
+    )
+
     ue_id = models.AutoField("Key", primary_key=True)
     user = models.ForeignKey(User, verbose_name="Usuario", db_column="ue_usuario", on_delete=models.PROTECT)
     empresa = models.ForeignKey(Empresa, verbose_name="Empresa", db_column="ue_empresa", on_delete=models.PROTECT)
@@ -169,6 +201,7 @@ class UsuarioEmpresa(TimeStampedModel):
     sucursal = models.ForeignKey(Sucursal, verbose_name="Sucursal", db_column="ue_sucursal", on_delete=models.PROTECT)
     
     # DATOS LABORALES
+    ue_estate = models.IntegerField("Estado de trabajador", choices=ESTATE_JOB, null=True, blank=True)
     ue_tipotrabajdor = models.IntegerField("Tipo de trabajador", choices=TIPO_TRABAJADOR, null=True, blank=True)
     ue_tipocontrato = models.CharField("Tipo de contrato", choices=TIPO_CONTRATO, max_length=5, null=True, blank=True, default=None)
     ue_fechacontratacion = models.DateField("Fecha de contratacion del usuario", null=True, blank=True)
@@ -186,13 +219,24 @@ class UsuarioEmpresa(TimeStampedModel):
     
     # AFP
     afp = models.ForeignKey(Afp, verbose_name="AFP", db_column="ue_afp", on_delete=models.PROTECT, null=True, blank=True)
+
+    # Caja Compensacion
+    caja_compensacion = models.ForeignKey(CajasCompensacion, verbose_name="CajasCompensacion", db_column="ue_caja_compensacion", on_delete=models.PROTECT, null=True, blank=True)
+
+    # APV
     ue_tieneapv = models.CharField("Tiene APV", choices=OPCIONES, max_length=1, default="N", null=True, blank=True)
-    ue_tipomontoapv = models.CharField("Tipo de monto", choices=TIPO_MONTO, null=True, blank=True, max_length=1, default="M")
-    afp_apv = models.ForeignKey(Afp, verbose_name='AFP APV', db_column='ue_afp_apv', related_name="afp_apv", null=True, blank=True, on_delete=models.PROTECT)
-    ue_entidad_apv = models.CharField("Entidad APV", max_length=150, default="", null=True, blank=True)
-    ue_cotizacionvoluntaria = models.DecimalField("Cotización voluntaria", max_digits=15, decimal_places=2, null=True, blank=True)
+    apv = models.ForeignKey(Apv, verbose_name="APV", db_column="us_apv", on_delete=models.PROTECT, null=True, blank=True)
+    ue_contributiontype = models.IntegerField("Tipo de contribución", choices=CONTRIBUTION_TYPE, null=True, blank=True)
+    ue_taxregime = models.IntegerField("Régimen tributario", choices=TAX_REGIME, null=True, blank=True)
+    ue_shape = models.IntegerField("Forma del aporte", choices=SHAPE, null=True, blank=True)
+    ue_apvamount = models.DecimalField("Monto", max_digits=15, decimal_places=2, null=True, blank=True)
+    ue_paymentperioddate = models.DateField("Fecha periodo de pago", null=True, blank=True)
+
+    # COTIZACIONES VOLUNTARIAS
     ue_tieneahorrovoluntario = models.CharField("Tiene ahorro voluntario", choices=OPCIONES, max_length=1, default="N", null=True, blank=True)
+    ue_cotizacionvoluntaria = models.DecimalField("Cotización voluntaria", max_digits=15, decimal_places=2, null=True, blank=True)
     ue_ahorrovoluntario = models.DecimalField("Ahorro Voluntario", max_digits=15, decimal_places=2, null=True, blank=True)
+
     
     # SALUD
     salud = models.ForeignKey(Salud, verbose_name="Salud", db_column="ue_salud", on_delete=models.PROTECT, null=True, blank=True)
@@ -221,7 +265,7 @@ class UsuarioEmpresa(TimeStampedModel):
         return self.ue_id
 
     def __str__(self):
-        return "{n}".format(n=self.ue_id)
+        return f"{self.ue_id} - {self.user.first_name} {self.user.last_name}"
 
     def save(self, *args, **kwargs):
         # print "save cto"
@@ -264,34 +308,24 @@ class Contact(TimeStampedModel):
         ordering = ['con_id']
 
 
-
-class Haberes(TimeStampedModel):
-    TIPO = (
-        ('', '--- Seleccione ---'),
-        ('HI', 'Haberes imponible'),
-        ('HNI', 'Haberes no imponibles'),
-        ('F', 'Finiquito'),
-        ('D', 'Descuento'),
-    )
-
-    OPCIONES = (
-        ('S', 'SI'),
-        ('N', 'NO'),
-    )
-
-    hab_id = models.AutoField("Key", primary_key=True)
-    hab_nombre = models.CharField("Nombre", max_length=70)
-    hab_monto = models.DecimalField("Monto", max_digits=15, decimal_places=6)
-    hab_tipo = models.CharField("Tipo haber", choices=TIPO, max_length=3, null=True, blank=True, default=None)
-    user = models.ForeignKey(User, verbose_name="Usuario", db_column="hab_usuario", on_delete=models.PROTECT)
-    hab_activo = models.CharField("Haber activo", choices=OPCIONES, max_length=1, default="S")
+class ConceptUser(TimeStampedModel):
+    
+    cu_id = models.AutoField("Key", primary_key=True)
+    user = models.ForeignKey(User, verbose_name="Usuario", db_column="cu_usuario_id", on_delete=models.PROTECT)
+    concept = models.ForeignKey(Concept, verbose_name="Concept", db_column="cu_concept_id", on_delete=models.PROTECT)
+    cu_formula = models.FloatField("Fórmula", null=True, blank=True)
+    cu_value = models.FloatField("Valor", null=True, blank=True, default=0)
+    cu_description = models.CharField("Descripción", max_length=150, null=True, blank=True)
 
     def __int__(self):
-        return self.hab_id
+        return self.cu_id
+    
+    def __str__(self):
+        return f"{self.cu_id} - {self.user.username} - {self.concept.conc_id}"
 
     def save(self, *args, **kwargs):
-        super(Haberes, self).save(*args, **kwargs)
+        super(ConceptUser, self).save(*args, **kwargs)
 
     class Meta:
-        db_table = 'usu_haberessa'
-        ordering = ['hab_id']
+        db_table = 'usu_concept_user'
+        ordering = ['cu_id']

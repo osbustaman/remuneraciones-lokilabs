@@ -3,6 +3,7 @@ from django import forms
 from applications.base.models import Comuna, Pais, Region
 from applications.base.utils import validarRut
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, MutualSecurity, Salud
+from applications.remuneracion.models import Concept
 
 
 class BanksForm(forms.ModelForm):
@@ -237,4 +238,31 @@ class MutualSecurityForm(forms.ModelForm):
         model = MutualSecurity
         fields = (
             "ms_name", "ms_rut", "ms_codeprevired", "ms_active"
+        )
+
+
+class ConceptsForm(forms.ModelForm):
+
+    tags_input_general = {
+        'class': 'form-control',
+    }
+
+    conc_name = forms.CharField(label="Nombre Concepto", widget=forms.TextInput(
+        attrs=tags_input_general), required=True)
+    conc_typeconcept = forms.ChoiceField(label='Tipo Concepto', choices=Concept.TYPE,
+                                  widget=forms.Select(attrs=tags_input_general), required=True)
+    conc_description = forms.CharField(label="Descripción", help_text="150 caracteres máximos", widget=forms.TextInput(
+        attrs=tags_input_general), required=False)
+    
+    def clean_conc_description(self):
+        data = self.cleaned_data["conc_description"]
+
+        if len(data) > 150:
+            self.add_error('conc_description', "No puede ecribir mas de 150 caracteres")
+        return data
+
+    class Meta:
+        model = Concept
+        fields = (
+            "conc_name", "conc_typeconcept", "conc_description"
         )

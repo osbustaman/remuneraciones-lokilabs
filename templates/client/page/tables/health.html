@@ -58,6 +58,9 @@
 {% endblock %}
 
 {% block static_down %}
+<script>
+    {% include "client/includes/redirect_to_js.html"%}
+</script>
 <script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
 <script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
 <script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
@@ -66,7 +69,6 @@
 
 {% block script_tag %}
 <script>
-    {% include "client/includes/redirect_to_js.html"%}
     {% include "client/includes/table_js.html" with id="datatable-compensation-box" %}
 </script>
 {% endblock %}

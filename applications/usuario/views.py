@@ -3,10 +3,11 @@ from django.shortcuts import render
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
-from applications.usuario.forms import ColaboradorForm, ContactForm, UserForm
+from applications.empresa.models import Afp, Apv, Banco, Cargo, CentroCosto, Empresa, Salud, Sucursal
+from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FormsForecastData, FormsPayments, UserForm
 from django.contrib.auth.models import User
 
-from applications.usuario.models import Colaborador, Contact
+from applications.usuario.models import Colaborador, Contact, UsuarioEmpresa
 
 # Create your views here.
 
@@ -67,6 +68,11 @@ def edit_collaborator_file(request, id, col_id):
     user = get_object_or_404(User, id=id)
     colaborador = get_object_or_404(Colaborador, user=user)
 
+    try:
+        usuario_empresa = get_object_or_404(UsuarioEmpresa, user=user)
+    except:
+        usuario_empresa = False
+
     if request.method == 'POST':
         formUserForm = UserForm(request.POST, instance=user)
         formColaboradorForm = ColaboradorForm(request.POST, instance=colaborador)
@@ -89,6 +95,14 @@ def edit_collaborator_file(request, id, col_id):
     else:
         formUserForm = UserForm(instance=user)
         formColaboradorForm = ColaboradorForm(instance=colaborador)
+        try:
+            formDatosLaboralesForm = DatosLaboralesForm(instance=usuario_empresa)
+            formFormsPayments = FormsPayments(instance=colaborador)
+            formFormsForecastData = FormsForecastData(instance=usuario_empresa)
+        except AttributeError:
+            formDatosLaboralesForm = DatosLaboralesForm()
+            formFormsPayments = FormsPayments()
+            formFormsForecastData = FormsForecastData()
 
     list_contact = Contact.objects.filter(con_actiove="S")
 
@@ -96,6 +110,9 @@ def edit_collaborator_file(request, id, col_id):
         'action': 'Editar',
         'formUserForm': formUserForm,
         'formColaboradorForm': formColaboradorForm,
+        'formDatosLaboralesForm': formDatosLaboralesForm,
+        'formFormsPayments': formFormsPayments,
+        'formFormsForecastData': formFormsForecastData,
         'id': id,
         'col_id': col_id,
         'list_contact': list_contact,
@@ -152,3 +169,110 @@ def contact_delete(request, con_id, user_id, col_id):
     object.con_actiove = 'N'
     object.save()
     return redirect('usuario_app:edit_collaborator_file', user_id, col_id)
+
+
+@login_required
+def add_personal_information(request, user_id, col_id):
+
+    object_user = User.objects.get(id=user_id)
+    try:
+        usuario_empresa = get_object_or_404(UsuarioEmpresa, user=object_user)
+    except:
+        usuario_empresa = False
+    
+    if request.method == 'POST':
+
+        if usuario_empresa:
+            form = DatosLaboralesForm(request.POST, instance=usuario_empresa)
+        else:
+            form = DatosLaboralesForm(request.POST)
+
+        if form.is_valid():
+            dp = form.save(commit=False)
+            dp.user = User.objects.get(id=user_id)
+            dp.empresa = Empresa.objects.all().first()
+            dp.cargo = Cargo.objects.get(car_id=request.POST['cargo'])
+            dp.centrocosto = CentroCosto.objects.get(cencost_id=request.POST['centrocosto'])
+            dp.sucursal = Sucursal.objects.get(suc_id=request.POST['sucursal'])
+            dp.save()
+
+            # Agregar mensaje de éxito personal_information
+            messages.success(request, 'Datos personales creados exitosamente.')
+            
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+            # Aquí puedes agregar un mensaje de error si es necesario
+
+    return redirect('usuario_app:edit_collaborator_file', id=user_id, col_id=col_id)
+
+
+
+@login_required
+def add_form_payment(request, user_id, col_id):
+    try:
+        collaborator = get_object_or_404(Colaborador, col_id=col_id)
+    except:
+        collaborator = False
+    
+    if request.method == 'POST':
+
+        if collaborator:
+            form = FormsPayments(request.POST, instance=collaborator)
+        else:
+            form = FormsPayments(request.POST)
+
+        if form.is_valid():
+            dp = form.save(commit=False)
+            if request.POST.get("banco", None):
+                dp.banco = Banco.objects.get(ban_id=request.POST['banco'])
+            dp.save()
+
+            # Agregar mensaje de éxito personal_information
+            messages.success(request, 'La forma de pago fue creada exitosamente.')
+            
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+            # Aquí puedes agregar un mensaje de error si es necesario
+
+    return redirect('usuario_app:edit_collaborator_file', id=user_id, col_id=col_id)
+
+
+@login_required
+def add_forecast_data(request, user_id, col_id):
+
+    object_user = User.objects.get(id=user_id)
+    try:
+        usuario_empresa = get_object_or_404(UsuarioEmpresa, user=object_user)
+    except:
+        usuario_empresa = False
+    
+    if request.method == 'POST':
+
+        if usuario_empresa:
+            form = FormsForecastData(request.POST, instance=usuario_empresa)
+        else:
+            form = FormsForecastData(request.POST)
+
+        if form.is_valid():
+            dp = form.save(commit=False)
+
+            dp.afp = Afp.objects.get(afp_id=request.POST['afp'])
+            dp.salud = Salud.objects.filter(sa_id=request.POST['salud'])
+            dp.apv = Apv.objects.get(apv_id=request.POST['apv'])
+            dp.save()
+
+            # Agregar mensaje de éxito personal_information
+            messages.success(request, 'Datos personales creados exitosamente.')
+            
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+            # Aquí puedes agregar un mensaje de error si es necesario
+
+
+    return redirect('usuario_app:add_forecast_data', id=user_id, col_id=col_id)

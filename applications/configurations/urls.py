@@ -3,6 +3,10 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from applications.configurations.views import (
+    concepts,
+    concepts_add,
+    concepts_edit,
+    concepts_delete,
     countries,
     health_edit
     , regions
@@ -72,5 +76,10 @@ urlpatterns = [
     path('company/mutual/security/add/', mutual_security_add, name='mutual_security_add'),
     path('company/mutual/security/edit/<int:ms_id>/', mutual_security_edit, name='mutual_security_edit'),
     path('company/mutual/security/delete/<int:ms_id>/', mutual_security_delete, name='mutual_security_delete'),
+
+    path('company/concepts/', concepts, name='concepts_app'),
+    path('company/concepts/add/', concepts_add, name='concepts_add'),
+    path('company/concepts/edit/<int:conc_id>/', concepts_edit, name='concepts_edit'),
+    path('company/concepts/delete/<int:conc_id>/', concepts_delete, name='concepts_delete'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

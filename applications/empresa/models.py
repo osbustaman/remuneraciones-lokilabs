@@ -5,21 +5,20 @@ from applications.base.models import Comuna, Pais, Region
 
 # Create your models here.
 
+
 class CajasCompensacion(models.Model):
 
     OPCIONES = (
         ('S', 'SI'),
         ('N', 'NO'),
     )
-    
+
     cc_id = models.AutoField("Key", primary_key=True)
     cc_nombre = models.CharField("Nombre", max_length=100)
     cc_codigo = models.CharField("Código", max_length=100)
     cc_rut = models.CharField("Rut", max_length=10)
     cc_activo = models.CharField(
         "Activo", max_length=1, choices=OPCIONES, default="S")
-
-
 
     def __int__(self):
         return self.cc_id
@@ -33,6 +32,7 @@ class CajasCompensacion(models.Model):
     class Meta:
         db_table = "emp_cajas_compensacion"
         ordering = ['cc_id']
+
 
 class MutualSecurity(models.Model):
 
@@ -61,6 +61,7 @@ class MutualSecurity(models.Model):
         db_table = "emp_mutual_security"
         ordering = ['ms_id']
 
+
 class Banco(models.Model):
     OPCIONES = (
         ('S', 'SI'),
@@ -70,7 +71,8 @@ class Banco(models.Model):
     ban_id = models.AutoField("Key", primary_key=True)
     ban_nombre = models.CharField("Nombre del banco", max_length=150)
     ban_codigo = models.CharField("Código", max_length=10)
-    ban_bankbranch = models.CharField("Nombre Sucursal", max_length=120, null=True, blank=True)
+    ban_bankbranch = models.CharField(
+        "Nombre Sucursal", max_length=120, null=True, blank=True)
     ban_activo = models.CharField(
         "Activo", max_length=1, choices=OPCIONES, default="S")
 
@@ -78,7 +80,7 @@ class Banco(models.Model):
         return self.ban_id
 
     def __str__(self):
-        return "{n}-{cc}".format(n=self.ban_nombre, cc=self.ban_codigo)
+        return f"{self.ban_id} - {self.ban_nombre}"
 
     def save(self, *args, **kwargs):
         super(Banco, self).save(*args, **kwargs)
@@ -140,10 +142,10 @@ class Empresa(models.Model):
     emp_colorlogo = models.CharField(
         "Color logo", max_length=10, null=True, blank=True, default='')
     mutualSecurity = models.ForeignKey(MutualSecurity, verbose_name="MutualSecurity",
-                             db_column="emp_mutualsecurity", on_delete=models.PROTECT, null=True, blank=True)
+                                       db_column="emp_mutualsecurity", on_delete=models.PROTECT, null=True, blank=True)
     cajasCompensacion = models.ForeignKey(CajasCompensacion, verbose_name="CajasCompensacion",
-                             db_column="emp_cajas_compensacion", on_delete=models.PROTECT, null=True, blank=True)
-    
+                                          db_column="emp_cajas_compensacion", on_delete=models.PROTECT, null=True, blank=True)
+
     def __int__(self):
         return self.emp_id
 
@@ -194,7 +196,7 @@ class Sucursal(models.Model):
         return self.suc_id
 
     def __str__(self):
-        return self.suc_codigo
+        return f"{self.suc_id} - {self.suc_descripcion}"
 
     def __code_generator(self):
         return f"SUC-{self.suc_id}"
@@ -225,7 +227,7 @@ class Cargo(models.Model):
         return self.car_id
 
     def __str__(self):
-        return "{n}".format(n=self.car_nombre.title())
+        return f"{self.car_id} - {self.car_nombre}"
 
     def save(self, *args, **kwargs):
         # print "save cto"
@@ -289,7 +291,7 @@ class CentroCosto(models.Model):
         return self.cencost_id
 
     def __str__(self):
-        return "{n}".format(n=self.cencost_nombre)
+        return f"{self.cencost_id} - {self.cencost_nombre}"
 
     def __code_generator(self):
         return f"CC-{self.cencost_id}"
@@ -326,7 +328,7 @@ class Salud(models.Model):
         return self.sa_id
 
     def __str__(self):
-        return "{n}".format(n=self.sa_nombre)
+        return f"{self.sa_id} - {self.sa_nombre}"
 
     def __porcentaje_fonasa(self):
         if self.sa_tipo == 'F':
@@ -350,7 +352,7 @@ class Afp(models.Model):
         ('S', 'SI'),
         ('N', 'NO'),
     )
-    
+
     afp_id = models.AutoField("Key", primary_key=True)
     afp_codigoprevired = models.CharField("Código previred", max_length=100)
     afp_nombre = models.CharField("Nombre", max_length=100)
@@ -367,7 +369,7 @@ class Afp(models.Model):
         return self.afp_id
 
     def __str__(self):
-        return "{n}".format(n=self.afp_nombre)
+        return f"{self.afp_codigoprevired} - {self.afp_nombre}"
 
     def save(self, *args, **kwargs):
         super(Afp, self).save(*args, **kwargs)
@@ -387,10 +389,10 @@ class Apv(models.Model):
     apv_id = models.AutoField("Key", primary_key=True)
     apv_codigoprevired = models.CharField("Código previred", max_length=100)
     apv_nombre = models.CharField("Nombre", max_length=100)
-    apv_nombrerazonsocial = models.CharField("Nombre razón social", max_length=150)
+    apv_nombrerazonsocial = models.CharField(
+        "Nombre razón social", max_length=150)
     apv_activo = models.CharField(
         "Activo", max_length=1, choices=OPCIONES, default="S")
-    
 
     def __int__(self):
         return self.apv_id
@@ -424,7 +426,3 @@ class TipoContrato(models.Model):
     class Meta:
         db_table = "emp_tipo_contrato"
         ordering = ['tc_id']
-
-
-
-

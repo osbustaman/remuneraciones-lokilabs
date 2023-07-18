@@ -62,12 +62,24 @@
                     aria-selected="false" onclick="onOrOffButtons(this)">Cargas Familiares</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" id="cr-tab" data-toggle="tab" href="#cr" role="tab" aria-controls="cr"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Concepto Remuneraciones</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" id="doc-tab" data-toggle="tab" href="#doc" role="tab" aria-controls="doc"
                     aria-selected="false" onclick="onOrOffButtons(this)">Documentos</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="horario-tab" data-toggle="tab" href="#horario" role="tab" aria-controls="horario"
                     aria-selected="false" onclick="onOrOffButtons(this)">Horario</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="vacation-tab" data-toggle="tab" href="#vacation" role="tab" aria-controls="vacation"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Vacaciones y Ausencias</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="settlement-tab" data-toggle="tab" href="#settlement" role="tab" aria-controls="settlement"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Finiquito</a>
             </li>
             {% endif %}
         </ul>
@@ -82,27 +94,39 @@
             </div>
 
             <div class="tab-pane fade" id="dl" role="tabpanel" aria-labelledby="dl-tab">
-                2
+                {% include "client/page/usuario/forms/forms_add_personal_information.html" %}
             </div>
 
             <div class="tab-pane fade" id="dpa" role="tabpanel" aria-labelledby="dpa-tab">
-                3
+                {% include "client/page/usuario/forms/forms_payments.html" %}
             </div>
 
             <div class="tab-pane fade" id="d-prev" role="tabpanel" aria-labelledby="d-prev-tab">
-                4
+                {% include "client/page/usuario/forms/forms_forecast_data.html" %}
             </div>
 
             <div class="tab-pane fade" id="cf" role="tabpanel" aria-labelledby="cf-tab">
                 5
             </div>
 
-            <div class="tab-pane fade" id="doc" role="tabpanel" aria-labelledby="doc-tab">
+            <div class="tab-pane fade" id="cr" role="tabpanel" aria-labelledby="cr-tab">
                 6
             </div>
 
-            <div class="tab-pane fade" id="horario" role="tabpanel" aria-labelledby="horario-tab">
+            <div class="tab-pane fade" id="doc" role="tabpanel" aria-labelledby="doc-tab">
                 7
+            </div>
+
+            <div class="tab-pane fade" id="horario" role="tabpanel" aria-labelledby="horario-tab">
+                8
+            </div>
+
+            <div class="tab-pane fade" id="vacation" role="tabpanel" aria-labelledby="vacation-tab">
+                9
+            </div>
+
+            <div class="tab-pane fade" id="settlement" role="tabpanel" aria-labelledby="settlement-tab">
+                10
             </div>
             {% endif %}
         </div>
@@ -156,19 +180,19 @@
     };
 
     const deleteObject = (url) => {
-    $.confirm({
-        title: 'Confirmación',
-        content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
-        buttons: {
-            confirmar: function () {
-                location.href = url;
-            },
-            cancelar: function () {
-                $.alert('Operación cancelada');
-            },
-        }
-    });
-}
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
+            buttons: {
+                confirmar: function () {
+                    location.href = url;
+                },
+                cancelar: function () {
+                    $.alert('Operación cancelada');
+                },
+            }
+        });
+    }
 
    
     $('.fc-datepicker').datepicker({

@@ -3,7 +3,7 @@
 {% load static_tags %}
 {% load static %}
 
-{% block title %} {{ action }} Regiones {% endblock %}
+{% block title %} {{ action }} Empresa {% endblock %}
 
 {% block static_up %}
 <link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
@@ -18,32 +18,39 @@
 </style>
 {% endblock %}
 
-{% block title_page %} {{ action }} Regiones {% endblock %}
+{% block title_page %}{% endblock %}
 {% block buttons %}
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'conf_app:concepts_add' %}')">Agregar Concepto <i
+    class="icon ion-plus-circled"></i></button>
 {% endblock %}
 
 {% block content_page %}
 <div class="card pd-20 pd-sm-40">
     <div class="table-wrapper">
-        <table id="datatable-region" class="table display responsive nowrap" style="width: 100%;">
+        <table id="datatable-concept" class="table display responsive nowrap" style="width: 100%;">
             <thead>
                 <tr>
                     <th class="wd-15p">ID</th>
                     <th class="wd-15p">Nombre</th>
-                    <th class="wd-20p">País</th>
-                    <th class="wd-20p">Número</th>
+                    <th class="wd-20p">Tipo Concepto</th>
+                    <th class="wd-25p">Acción</th>
                 </tr>
             </thead>
             <tbody>
                 {% for obj in objects %}
                 <tr>
-                    <td>{{ obj.re_id }}</td>
-                    <td>{{ obj.re_nombre }}</td>
-                    <td>{{ obj.pais.pa_nombre }}</td>
-                    <td>{{ obj.re_numero }}</td>
+                    <td>{{ obj.conc_id }}</td>
+                    <td>{{ obj.conc_name }}</td>
+                    <td>{{ obj.get_conc_typeconcept_display }}</td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'conf_app:concepts_edit' obj.conc_id %}')">Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'conf_app:concepts_delete' obj.conc_id %}')">Eliminar</button>
+                    </td>
                 </tr>
                 {% endfor %}
+                
             </tbody>
+            </thead>
         </table>
     </div>
 </div>
@@ -52,7 +59,7 @@
 
 {% block static_down %}
 <script>
-{% include "client/includes/redirect_to_js.html"%}
+    {% include "client/includes/redirect_to_js.html"%}
 </script>
 <script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
 <script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
@@ -62,6 +69,6 @@
 
 {% block script_tag %}
 <script>
-    {% include "client/includes/table_js.html" with id="datatable-region" %}
+    {% include "client/includes/table_js.html" with id="datatable-concept" %}
 </script>
 {% endblock %}

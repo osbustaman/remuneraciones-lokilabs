@@ -1,10 +1,183 @@
 from django import forms
 from django.contrib.auth.forms import User
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from applications.base.models import Comuna, Pais, Region
 from applications.base.utils import validarRut
+from applications.empresa.models import (
+    Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Salud, Sucursal
+)
 
-from applications.usuario.models import Colaborador, Contact
+from applications.usuario.models import Colaborador, Contact, UsuarioEmpresa
+
+
+class FormsForecastData(forms.ModelForm):
+    tags_input_general = {
+        'class': 'form-control',
+        'autocomplete': 'off'
+    }
+
+    tags_input_select = {
+        'class': 'form-control',
+    }
+
+    tags_input_select2 = {
+        'class': 'form-control select2-show-search',
+    }
+
+    afp = forms.ModelChoiceField(label="AFPs", required=True,
+                                 queryset=Afp.objects.filter(afp_activo="S"), widget=forms.Select(attrs=tags_input_select))
+    salud = forms.ModelChoiceField(label="Salud", required=True,
+                                   queryset=Salud.objects.filter(sa_activo="S"), widget=forms.Select(attrs=tags_input_select))
+    ue_ufisapre = forms.FloatField(label="Monto UF",
+                                   widget=forms.TextInput(attrs=tags_input_general), required=False)
+    ue_funisapre = forms.CharField(label="FUN Isapre",
+                                   widget=forms.TextInput(attrs=tags_input_general), required=False)
+    ue_cotizacion = forms.FloatField(label="Cotización",
+                                     widget=forms.TextInput(attrs=tags_input_general), required=False)
+    ue_tieneapv = forms.ChoiceField(initial=0, label='Tiene APVI', choices=UsuarioEmpresa.OPCIONES,
+                                    widget=forms.Select(attrs=tags_input_select), required=False)
+    apv = forms.ModelChoiceField(label="APV", required=False,
+                                 queryset=Apv.objects.filter(apv_activo="S"), widget=forms.Select(attrs=tags_input_select))
+    ue_contributiontype = forms.ChoiceField(initial=0, label='Tipo de contribución', choices=UsuarioEmpresa.CONTRIBUTION_TYPE,
+                                            widget=forms.Select(attrs=tags_input_select), required=False)
+    ue_taxregime = forms.ChoiceField(initial=0, label='Régimen tributario', choices=UsuarioEmpresa.TAX_REGIME,
+                                     widget=forms.Select(attrs=tags_input_select), required=False)
+    ue_shape = forms.ChoiceField(initial=0, label='Forma del aporte', choices=UsuarioEmpresa.SHAPE,
+                                 widget=forms.Select(attrs=tags_input_select), required=False)
+    ue_apvamount = forms.FloatField(label="Monto",
+                                    widget=forms.TextInput(attrs=tags_input_general), required=False)
+    ue_paymentperioddate = forms.FloatField(label="Fecha periodo de pago",
+                                            widget=forms.TextInput(attrs=tags_input_general), required=False)
+    caja_compensacion = forms.ModelChoiceField(label="Caja de compensacion", required=False,
+                                               queryset=CajasCompensacion.objects.filter(cc_activo="S"), widget=forms.Select(attrs=tags_input_select))
+
+    class Meta:
+        model = UsuarioEmpresa
+        fields = [
+            'afp',
+            'salud',
+            'ue_ufisapre',
+            'ue_funisapre',
+            'ue_cotizacion',
+            'ue_tieneapv',
+            'apv',
+            'ue_contributiontype',
+            'ue_taxregime',
+            'caja_compensacion',
+            'ue_shape',
+            'ue_apvamount',
+            'ue_paymentperioddate'
+        ]
+
+
+class FormsPayments(forms.ModelForm):
+
+    tags_input_general = {
+        'class': 'form-control',
+        'autocomplete': 'off'
+    }
+
+    tags_input_select = {
+        'class': 'form-control',
+    }
+
+    tags_input_select2 = {
+        'class': 'form-control select2-show-search',
+    }
+
+    col_formapago = forms.ChoiceField(initial='', label='Forma de pago', choices=Colaborador.FORMA_PAGO,
+                                      widget=forms.Select(attrs=tags_input_select), required=True)
+    banco = forms.ModelChoiceField(label="Bancos", required=False,
+                                   queryset=Banco.objects.filter(ban_activo="S"), widget=forms.Select(attrs=tags_input_select))
+    col_tipocuenta = forms.ChoiceField(initial='', label='Tipo Cuenta', choices=Colaborador.TIPO_CUENTA_BANCARIA,
+                                       widget=forms.Select(attrs=tags_input_select), required=False)
+    col_cuentabancaria = forms.CharField(label="Cuenta bancaria",
+                                         widget=forms.TextInput(attrs=tags_input_general), required=False)
+
+    def clean_col_tipocuenta(self):
+        data = len(self.cleaned_data.get("col_tipocuenta", None))
+        data_col_formapago = int(self.cleaned_data.get("col_formapago", None))
+        data_banco = self.cleaned_data.get("banco", None)
+
+        if data_col_formapago == 4:
+            if data == 0:
+                self.add_error('col_tipocuenta',
+                               "Debe escojer el tipo de cuenta")
+
+            if not data_banco:
+                self.add_error('banco', "Debe escojer el banco")
+
+        return data
+
+    class Meta:
+        model = Colaborador
+        fields = [
+            'col_formapago',
+            'banco',
+            'col_tipocuenta',
+            'col_cuentabancaria'
+        ]
+
+
+class DatosLaboralesForm(forms.ModelForm):
+    tags_input_general = {
+        'class': 'form-control',
+        'autocomplete': 'off'
+    }
+
+    tags_input_readonly = {
+        'class': 'form-control',
+        'autocomplete': 'off',
+        'readonly': 'readonly'
+    }
+
+    tags_input_select = {
+        'class': 'form-control',
+    }
+
+    tags_input_select2 = {
+        'class': 'form-control select2-show-search',
+    }
+
+    tags_input_date = {
+        "class": "form-control fc-datepicker",
+        "placeholder": "DD-MM-YYYY",
+    }
+
+    cargo = forms.ModelChoiceField(label="Cargo", required=True,
+                                   queryset=Cargo.objects.filter(car_activa="S"), widget=forms.Select(attrs=tags_input_select))
+    centrocosto = forms.ModelChoiceField(label="Centro de Costo", required=True,
+                                         queryset=CentroCosto.objects.filter(cencost_activo="S"), widget=forms.Select(attrs=tags_input_select))
+    sucursal = forms.ModelChoiceField(label="Sucursal", required=True,
+                                      queryset=Sucursal.objects.filter(suc_estado="S"), widget=forms.Select(attrs=tags_input_select))
+    ue_fechacontratacion = forms.DateField(input_formats=["%d-%m-%Y"], label="Fecha Contratación",
+                                           widget=forms.DateInput(format="%d-%m-%Y",
+                                                                  attrs=tags_input_date), required=True)
+    ue_fecharenovacioncontrato = forms.DateField(input_formats=["%d-%m-%Y"], label="Fecha Primer Contrato",
+                                                 widget=forms.DateInput(format="%d-%m-%Y",
+                                                                        attrs=tags_input_date), required=True)
+    ue_fechatermino = forms.DateField(input_formats=["%d-%m-%Y"], label="Fecha Término Contrato",
+                                      widget=forms.DateInput(format="%d-%m-%Y",
+                                                             attrs=tags_input_date), required=False)
+    ue_tipocontrato = forms.ChoiceField(initial=0, label='Tipo Contrato', choices=UsuarioEmpresa.TIPO_CONTRATO,
+                                        widget=forms.Select(attrs=tags_input_select), required=True)
+    ue_tipotrabajdor = forms.ChoiceField(initial=0, label='Tipo Trabajador', choices=UsuarioEmpresa.TIPO_TRABAJADOR,
+                                         widget=forms.Select(attrs=tags_input_select), required=True)
+    ue_estate = forms.ChoiceField(initial=0, label='Estado', choices=UsuarioEmpresa.ESTATE_JOB,
+                                  widget=forms.Select(attrs=tags_input_select), required=True)
+
+    class Meta:
+        model = UsuarioEmpresa
+        fields = [
+            'cargo',
+            'centrocosto',
+            'sucursal',
+            'ue_fechacontratacion',
+            'ue_fecharenovacioncontrato',
+            'ue_fechatermino',
+            'ue_tipocontrato',
+            'ue_tipotrabajdor',
+            'ue_estate'
+        ]
 
 
 class UserForm(forms.ModelForm):
@@ -13,7 +186,7 @@ class UserForm(forms.ModelForm):
         'class': 'form-control',
         'autocomplete': 'off'
     }
-    
+
     tags_input_readonly = {
         'class': 'form-control',
         'autocomplete': 'off',
@@ -41,7 +214,7 @@ class UserForm(forms.ModelForm):
         if not validarRut(data):
             self.add_error('username', "El rut no es valido")
         return data
-        
+
     class Meta:
         model = User
         fields = [
@@ -77,7 +250,6 @@ class ColaboradorForm(forms.ModelForm):
         'class': 'form-control select2-show-search',
     }
 
-
     col_rut = forms.CharField(label="Rut", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
     col_extranjero = forms.ChoiceField(initial=0, label='Extranjero?', choices=Colaborador.OPCIONES,
@@ -110,7 +282,9 @@ class ColaboradorForm(forms.ModelForm):
                                              widget=forms.Select(attrs=tags_input_select), required=True)
     col_tipolicencia = forms.CharField(label="Clase", widget=forms.TextInput(
         attrs=tags_input_general), required=False)
-    
+    col_tipousuario = forms.ChoiceField(
+        label="Tipo de usuario", choices=Colaborador.TIPO_USUARIO, widget=forms.Select(attrs=tags_input_select), required=True)
+
     def clean_col_rut(self):
         data = self.cleaned_data["col_rut"]
 
@@ -135,7 +309,8 @@ class ColaboradorForm(forms.ModelForm):
             'col_estadoestudios',
             'col_titulo',
             'col_licenciaconducir',
-            'col_tipolicencia'
+            'col_tipolicencia',
+            "col_tipousuario"
         ]
 
 
@@ -151,14 +326,14 @@ class ContactForm(forms.ModelForm):
     }
 
     con_contact_type = forms.ChoiceField(initial=0, label='Tipo de Contacto', choices=Contact.TYPE,
-                                             widget=forms.Select(attrs=tags_input_select), required=True)
+                                         widget=forms.Select(attrs=tags_input_select), required=True)
     con_mail_contact = forms.EmailField(label="Correo",
-                                widget=forms.TextInput(attrs=tags_input_general), required=False)
+                                        widget=forms.TextInput(attrs=tags_input_general), required=False)
     con_phone_contact = forms.CharField(label="Teléfono",
-                                widget=forms.TextInput(attrs=tags_input_general), required=False)
+                                        widget=forms.TextInput(attrs=tags_input_general), required=False)
     cont_name_contact = forms.CharField(label="Nombre Contacto",
-                                widget=forms.TextInput(attrs=tags_input_general), required=True)
-        
+                                        widget=forms.TextInput(attrs=tags_input_general), required=True)
+
     class Meta:
         model = Contact
         fields = [
@@ -167,4 +342,3 @@ class ContactForm(forms.ModelForm):
             'con_phone_contact',
             'cont_name_contact',
         ]
-

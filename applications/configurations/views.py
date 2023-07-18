@@ -3,9 +3,10 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from applications.base.models import Comuna, Pais, Region
-from applications.configurations.forms import AfpForm, ApvForm, BanksForm, CajasCompensacionForm, MutualSecurityForm, SaludForm
+from applications.configurations.forms import AfpForm, ApvForm, BanksForm, CajasCompensacionForm, ConceptsForm, MutualSecurityForm, SaludForm
 
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, MutualSecurity, Salud
+from applications.remuneracion.models import Concept
 
 # Create your views here.
 
@@ -439,3 +440,72 @@ def mutual_security_delete(request, ms_id):
     object.ms_active = 'N'
     object.save()
     return redirect('conf_app:mutual_security_app')
+
+
+
+@login_required
+def concepts(request):
+
+    objects = Concept.objects.filter(conc_active="S")
+    data = {
+        'objects': objects,
+        'action': 'Listar'
+    }
+
+    return render(request, 'client/page/tables/concepts.html', data)
+
+
+@login_required
+def concepts_add(request):
+
+    if request.method == 'POST':
+        form = ConceptsForm(request.POST)
+        if form.is_valid():
+            object = form.save()
+            # Agregar mensaje de éxito
+            messages.success(request, 'Concepto creado exitosamente.')
+            return redirect('conf_app:concepts_edit', conc_id=object.conc_id)
+
+        for field in form:
+            for error in field.errors:
+                messages.error(request, f"{field.label}: {error}")
+    else:
+        form = ConceptsForm()
+    data = {
+        'form': form,
+        'action': 'Guardar'
+    }
+    return render(request, 'client/page/tables/forms/form_concepts.html', data)
+
+
+@login_required
+def concepts_edit(request, conc_id):
+
+    object = get_object_or_404(Concept, conc_id=conc_id)
+    if request.method == 'POST':
+        form = ConceptsForm(request.POST, instance=object)
+        if form.is_valid():
+            form.save()
+            # Agregar mensaje de éxito
+            messages.success(request, 'Concepto editado exitosamente.')
+        else:
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+    else:
+        form = ConceptsForm(instance=object)
+
+    data = {
+        'form': form,
+        'action': 'Editar',
+        'conc_id': conc_id,
+    }
+    return render(request, 'client/page/tables/forms/form_concepts.html', data)
+
+
+@login_required
+def concepts_delete(request, conc_id):
+    object = Concept.objects.get(conc_id=conc_id)
+    object.conc_active = 'N'
+    object.save()
+    return redirect('conf_app:concepts_app')
