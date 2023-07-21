@@ -5,7 +5,8 @@ env
 *.pyc
 *.jpg
 *.png
-
+static/amanda
+static/gentella
 migrations
 
 
