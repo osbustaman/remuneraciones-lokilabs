@@ -13,3 +13,5 @@ migrations
 **/amanda/*.html
 **/gentella/*.html
 **/migrations/!(__init__.py)
+
+.env
