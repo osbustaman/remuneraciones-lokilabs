@@ -11,8 +11,13 @@
 
 {% block title_page %} {{ action }} Sucursal {% endblock %}
 {% block buttons %}
+{% if emp_id %}
 <button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:edit_company' emp_id %}')">Volver <i
         class="icon ion-arrow-left-a"></i></button>
+{% else %}
+<button type="button" class="btn btn-orange" onclick="">Volver <i
+    class="icon ion-arrow-left-a"></i></button>
+{% endif %}
 {% endblock %}
 
 {% block content_page %}

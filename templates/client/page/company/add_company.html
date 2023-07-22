@@ -20,6 +20,7 @@
 
 {% block title_page %}{{ action }} Empresa {% endblock %}
 {% block buttons %}
+{% if action|lower == 'editar' %}
 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
     <div class="btn-group" role="group">
         <button id="btn-branch-office" type="button" class="btn btn-orange btn-off dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -66,6 +67,7 @@
 
 <button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:list_company' %}')">Volver <i
         class="icon ion-arrow-left-a"></i></button>
+{% endif %}
 {% endblock %}
 
 {% block content_page %}
