@@ -190,6 +190,9 @@ class TablaGeneral(TimeStampedModel):
     def __int__(self):
         return self.tg_id
 
+    def __str__(self):
+        return f"{self.tg_id} - {self.tg_nombretabla}"
+
     def save(self, *args, **kwargs):
         super(TablaGeneral, self).save(*args, **kwargs)
 

@@ -352,7 +352,7 @@ class Afp(models.Model):
         ('S', 'SI'),
         ('N', 'NO'),
     )
-
+    
     afp_id = models.AutoField("Key", primary_key=True)
     afp_codigoprevired = models.CharField("Código previred", max_length=100)
     afp_nombre = models.CharField("Nombre", max_length=100)

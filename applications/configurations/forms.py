@@ -141,13 +141,11 @@ class ApvForm(forms.ModelForm):
         attrs=tags_input_general), required=True)
     apv_nombrerazonsocial = forms.CharField(label="Razón Social", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
-    apv_activo = forms.ChoiceField(initial='S', label='Entidad de Salud Activa?', choices=Salud.OPCIONES,
-                                   widget=forms.Select(attrs=tags_input_general), required=False)
 
     class Meta:
         model = Apv
         fields = (
-            "apv_codigoprevired", "apv_nombre", "apv_nombrerazonsocial", "apv_activo"
+            "apv_codigoprevired", "apv_nombre", "apv_nombrerazonsocial"
         )
 
 

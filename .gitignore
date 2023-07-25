@@ -15,3 +15,4 @@ migrations
 **/migrations/!(__init__.py)
 
 .env
+app01/.env

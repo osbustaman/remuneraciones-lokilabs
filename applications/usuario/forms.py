@@ -6,7 +6,7 @@ from applications.empresa.models import (
     Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Salud, Sucursal
 )
 
-from applications.usuario.models import Colaborador, Contact, UsuarioEmpresa
+from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
 
 
 class FormsForecastData(forms.ModelForm):
@@ -21,6 +21,11 @@ class FormsForecastData(forms.ModelForm):
 
     tags_input_select2 = {
         'class': 'form-control select2-show-search',
+    }
+
+    tags_input_date = {
+        "class": "form-control fc-datepicker",
+        "placeholder": "DD-MM-YYYY",
     }
 
     afp = forms.ModelChoiceField(label="AFPs", required=True,
@@ -45,11 +50,50 @@ class FormsForecastData(forms.ModelForm):
                                  widget=forms.Select(attrs=tags_input_select), required=False)
     ue_apvamount = forms.FloatField(label="Monto",
                                     widget=forms.TextInput(attrs=tags_input_general), required=False)
-    ue_paymentperioddate = forms.FloatField(label="Fecha periodo de pago",
-                                            widget=forms.TextInput(attrs=tags_input_general), required=False)
+    ue_paymentperioddate = forms.DateField(input_formats=["%d-%m-%Y"], label="Fecha Periodo pago",
+                                                 widget=forms.DateInput(format="%d-%m-%Y",
+                                                                        attrs=tags_input_date), required=False)
     caja_compensacion = forms.ModelChoiceField(label="Caja de compensacion", required=False,
                                                queryset=CajasCompensacion.objects.filter(cc_activo="S"), widget=forms.Select(attrs=tags_input_select))
 
+    def clean_caja_compensacion(self):
+        data = self.data["caja_compensacion"]
+        if not data:
+            self.add_error('caja_compensacion', "Debe escojer una caja de compensación")
+
+    
+    def clean_ue_tieneapv(self):
+        data = self.data["ue_tieneapv"]
+
+        if data == 'S':
+            data_apv = self.data["apv"]
+            data_ue_contributiontype = self.data["ue_contributiontype"]
+            data_ue_taxregime = self.data["ue_taxregime"]
+            data_ue_shape = self.data["ue_shape"]
+            data_ue_apvamount = self.data["ue_apvamount"]
+            data_ue_paymentperioddate = self.data["ue_paymentperioddate"]
+
+            if len(data_apv) == 0:
+                self.add_error('apv', "Debe escojer una APV")
+
+            if int(data_ue_contributiontype) == 0:
+                self.add_error('ue_contributiontype', "Debe escojer un tipo de contibución")
+
+            if int(data_ue_taxregime) == 0:
+                self.add_error('ue_taxregime', "Debe escojer un regimen tributario")
+
+            if int(data_ue_shape) == 0:
+                self.add_error('ue_shape', "Debe escojer una forma de aporte")
+
+            if len(data_ue_apvamount) == 0 or float(data_ue_apvamount) == 0:
+                self.add_error('ue_apvamount', "Debe escojer un monto")
+
+            if len(data_ue_paymentperioddate) == 0:
+                self.add_error('ue_paymentperioddate', "Debe escojer una fecha de periodo de pago")
+
+        return data
+    
+    
     class Meta:
         model = UsuarioEmpresa
         fields = [
@@ -341,4 +385,48 @@ class ContactForm(forms.ModelForm):
             'con_mail_contact',
             'con_phone_contact',
             'cont_name_contact',
+        ]
+
+
+class FamilyResponsibilitiesForm(forms.ModelForm):
+
+    tags_input_general = {
+        'class': 'form-control',
+        'autocomplete': 'off'
+    }
+
+    tags_input_select = {
+        'class': 'form-control',
+    }
+
+    tags_input_date = {
+        "class": "form-control fc-datepicker",
+        "placeholder": "DD-MM-YYYY",
+    }
+
+
+    fr_rut = forms.CharField(label="Rut", widget=forms.TextInput(
+        attrs=tags_input_general), required=True)
+    fr_sexo = forms.ChoiceField(label="Sexo", choices=FamilyResponsibilities.SEXO,
+                                             widget=forms.Select(attrs=tags_input_select), required=True)
+    fr_relationship = forms.ChoiceField(label="Parentezco", choices=FamilyResponsibilities.RELATIONSSHIP,
+                                             widget=forms.Select(attrs=tags_input_select), required=True)
+    fr_firstname = forms.CharField(label="Nombres", widget=forms.TextInput(
+        attrs=tags_input_general), required=True)
+    fr_lastname = forms.CharField(label="Apellidos", widget=forms.TextInput(
+        attrs=tags_input_general), required=True)
+    fr_fechanacimiento = forms.DateField(input_formats=["%d-%m-%Y"], label="Fecha nacimiento",
+                                          widget=forms.DateInput(format="%d-%m-%Y",
+                                                                 attrs=tags_input_date), required=True)
+
+
+    class Meta:
+        model = FamilyResponsibilities
+        fields = [
+            'fr_rut',
+            'fr_sexo',
+            'fr_relationship',
+            'fr_firstname',
+            'fr_lastname',
+            'fr_fechanacimiento',
         ]

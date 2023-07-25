@@ -20,12 +20,14 @@ class Concept(TimeStampedModel):
     conc_id = models.AutoField("Key", primary_key=True)
     conc_name = models.CharField("Nombre", max_length=70)
     conc_typeconcept = models.IntegerField("Tipo concepto", choices=TYPE)
-    conc_description = models.CharField("Descripción", max_length=150, null=True, blank=True)
-    conc_active = models.CharField("Concepto activo", choices=OPTIONS, max_length=1, default="S")
+    conc_description = models.CharField(
+        "Descripción", max_length=150, null=True, blank=True)
+    conc_active = models.CharField(
+        "Concepto activo", choices=OPTIONS, max_length=1, default="S")
 
     def __int__(self):
         return self.conc_id
-    
+
     def __str__(self):
         return f"{self.conc_id} - {self.conc_name}"
 

@@ -3,11 +3,11 @@ from django.shortcuts import render
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
-from applications.empresa.models import Afp, Apv, Banco, Cargo, CentroCosto, Empresa, Salud, Sucursal
+from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Empresa, Salud, Sucursal
 from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FormsForecastData, FormsPayments, UserForm
 from django.contrib.auth.models import User
 
-from applications.usuario.models import Colaborador, Contact, UsuarioEmpresa
+from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
 
 # Create your views here.
 
@@ -105,6 +105,7 @@ def edit_collaborator_file(request, id, col_id):
             formFormsForecastData = FormsForecastData()
 
     list_contact = Contact.objects.filter(con_actiove="S")
+    list_familyResponsibilities = FamilyResponsibilities.objects.filter(fr_activo=1)
 
     data = {
         'action': 'Editar',
@@ -116,7 +117,9 @@ def edit_collaborator_file(request, id, col_id):
         'id': id,
         'col_id': col_id,
         'list_contact': list_contact,
-        'colaborador': colaborador
+        'list_familyResponsibilities': list_familyResponsibilities,
+        'colaborador': colaborador,
+        'usuario_empresa': usuario_empresa,
     }
     return render(request, 'client/page/usuario/add_collaborator_file.html', data)
 
@@ -261,12 +264,14 @@ def add_forecast_data(request, user_id, col_id):
             dp = form.save(commit=False)
 
             dp.afp = Afp.objects.get(afp_id=request.POST['afp'])
-            dp.salud = Salud.objects.filter(sa_id=request.POST['salud'])
-            dp.apv = Apv.objects.get(apv_id=request.POST['apv'])
+            dp.salud = Salud.objects.get(sa_id=request.POST['salud'])
+            if request.POST['apv']:
+                dp.apv = Apv.objects.get(apv_id=request.POST['apv'])
+            dp.caja_compensacion = CajasCompensacion.objects.get(cc_id=request.POST['caja_compensacion'])
             dp.save()
 
             # Agregar mensaje de éxito personal_information
-            messages.success(request, 'Datos personales creados exitosamente.')
+            messages.success(request, 'Datos previsionales creados exitosamente.')
             
         else:
             for field in form:
@@ -275,4 +280,4 @@ def add_forecast_data(request, user_id, col_id):
             # Aquí puedes agregar un mensaje de error si es necesario
 
 
-    return redirect('usuario_app:add_forecast_data', id=user_id, col_id=col_id)
+    return redirect('usuario_app:edit_collaborator_file', id=user_id, col_id=col_id)
