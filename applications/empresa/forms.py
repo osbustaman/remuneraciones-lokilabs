@@ -61,14 +61,11 @@ class CargoForm(forms.ModelForm):
 
     car_nombre = forms.CharField(label="Nombre", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
-    car_activa= forms.ChoiceField(initial='S', label='Sucursal Activa?', choices=Cargo.OPCIONES,
-                                      widget=forms.Select(attrs=tags_input_general), required=False)
 
     class Meta:
         model = Cargo
         fields = (
-            "car_nombre"
-            , "car_activa"
+            "car_nombre",
         )
 
 class SucursalForm(forms.ModelForm):

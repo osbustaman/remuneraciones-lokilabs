@@ -26,7 +26,7 @@ def add_company(request):
         form = EmpresaForm(request.POST, request.FILES)
         if form.is_valid():
             company = form.save()
-            return redirect('remun_app:edit_company', emp_id=company.emp_id)
+            return redirect('emp_app:edit_company', emp_id=company.emp_id)
 
         lista_err = []
         for field in form:
