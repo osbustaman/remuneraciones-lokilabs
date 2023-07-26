@@ -101,8 +101,10 @@
                     {% include "client/includes/items_rrhh.html" %}
 
                     {% elif request.session.user_nivel == 2 %}
+                    {% include "client/includes/items_lider.html" %}
 
                     {% elif request.session.user_nivel == 1 %}
+                    {% include "client/includes/items_colaborador.html" %}
 
                     {% endif %}
 
