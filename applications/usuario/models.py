@@ -1,4 +1,5 @@
 from django.db import models
+from applications.security.models import Rol
 from model_utils.models import TimeStampedModel
 from django.contrib.auth.models import User
 from applications.base.models import Comuna, Pais, Region, TablaGeneral
@@ -138,6 +139,8 @@ class Colaborador(TimeStampedModel):
     col_fotousuario = models.TextField("Foto usuario", null=True, blank=True)
     col_activo = models.IntegerField(
         "Colaborador Activo", choices=OPCIONES, default=1)
+    rol = models.ForeignKey(Rol, verbose_name="Rol",
+                             db_column="rr_rol", on_delete=models.PROTECT)
 
     def __int__(self):
         return self.col_id

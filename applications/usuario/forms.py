@@ -5,6 +5,7 @@ from applications.base.utils import validarRut
 from applications.empresa.models import (
     Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Salud, Sucursal
 )
+from applications.security.models import Rol
 
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
 
@@ -329,6 +330,9 @@ class ColaboradorForm(forms.ModelForm):
     col_tipousuario = forms.ChoiceField(
         label="Tipo de usuario", choices=Colaborador.TIPO_USUARIO, widget=forms.Select(attrs=tags_input_select), required=True)
 
+    rol = forms.ModelChoiceField(label="Rol colaborador", required=True,
+                                  queryset=Rol.objects.filter(rol_active='S'), widget=forms.Select(attrs=tags_input_select))
+    
     def clean_col_rut(self):
         data = self.cleaned_data["col_rut"]
 
@@ -354,7 +358,8 @@ class ColaboradorForm(forms.ModelForm):
             'col_titulo',
             'col_licenciaconducir',
             'col_tipolicencia',
-            "col_tipousuario"
+            "col_tipousuario",
+            "rol"
         ]
 
 
