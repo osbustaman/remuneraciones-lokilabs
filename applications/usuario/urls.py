@@ -10,6 +10,9 @@ from applications.usuario.views import (
     , contact_delete
     , add_personal_information
     , add_form_payment
+    , add_family_responsibilities
+    , edit_family_responsibilities
+    , family_responsibilities_delete
 )
 
 
@@ -27,6 +30,10 @@ urlpatterns = [
     path('collaborator/add/personal/information/<int:user_id>/<int:col_id>/', add_personal_information, name='add_personal_information'),
     path('collaborator/add/form/payment/<int:user_id>/<int:col_id>/', add_form_payment, name='add_form_payment'),
     path('collaborator/add/forecast/data/<int:user_id>/<int:col_id>/', add_forecast_data, name='add_forecast_data'),
+
+    path('collaborator/add/family/responsibilities/<int:user_id>/<int:col_id>/', add_family_responsibilities, name='add_family_responsibilities'),
+    path('collaborator/edit/family/responsibilities/<int:fr_id>/<int:user_id>/<int:col_id>/', edit_family_responsibilities, name='edit_family_responsibilities'),
+    path('collaborator/delete/family/responsibilities/<int:fr_id>/<int:user_id>/<int:col_id>/', family_responsibilities_delete, name='family_responsibilities_delete'),
 
     #API
     path('collaborator/api/search/data/afp/<pk>/', AfpDetailApiView.as_view(), name='AfpDetailApiView'),

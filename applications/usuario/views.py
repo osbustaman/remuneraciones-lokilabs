@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Empresa, Salud, Sucursal
-from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FormsForecastData, FormsPayments, UserForm
+from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FamilyResponsibilitiesForm, FormsForecastData, FormsPayments, UserForm
 from django.contrib.auth.models import User
 
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
@@ -281,3 +281,70 @@ def add_forecast_data(request, user_id, col_id):
 
 
     return redirect('usuario_app:edit_collaborator_file', id=user_id, col_id=col_id)
+
+
+@login_required
+def add_family_responsibilities(request, user_id, col_id):
+
+    if request.method == 'POST':
+        formFamilyResponsibilitiesForm = FamilyResponsibilitiesForm(request.POST)
+        
+        if formFamilyResponsibilitiesForm.is_valid():
+            # Guardar los datos del formulario UserForm
+            object = formFamilyResponsibilitiesForm.save(commit=False)
+            object.user = User.objects.get(id=user_id)
+            object.save()
+
+            messages.success(request, 'Datos creados exitosamente!.')
+
+            return redirect('usuario_app:edit_family_responsibilities', fr_id=object.fr_id, user_id=user_id, col_id=col_id)
+        
+        else:
+            for field in formFamilyResponsibilitiesForm:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+    else:
+        formFamilyResponsibilitiesForm = FamilyResponsibilitiesForm()
+
+    data = {
+        'action': 'Crear',
+        'form': formFamilyResponsibilitiesForm,
+        'user_id': user_id,
+        'col_id': col_id,
+    }
+    return render(request, 'client/page/usuario/forms/forms_family_responsibilities.html', data)
+
+
+@login_required
+def edit_family_responsibilities(request, fr_id, user_id, col_id):
+    FamilyResponsibilitiesObject = get_object_or_404(FamilyResponsibilities, fr_id=fr_id)
+
+    if request.method == 'POST':
+        formFamilyResponsibilitiesForm = FamilyResponsibilitiesForm(request.POST, instance=FamilyResponsibilitiesObject)
+        if formFamilyResponsibilitiesForm.is_valid():
+            formFamilyResponsibilitiesForm.save()
+            # Agregar mensaje de éxito
+            messages.success(request, 'Datos editados exitosamente!.')
+        else:
+            for field in formFamilyResponsibilitiesForm:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
+    else:
+        formFamilyResponsibilitiesForm = FamilyResponsibilitiesForm(instance=FamilyResponsibilitiesObject)
+
+    data = {
+        'form': formFamilyResponsibilitiesForm,
+        'action': 'Editar',
+        'user_id': user_id,
+        'fr_id': fr_id,
+        'col_id': col_id
+    }
+    return render(request, 'client/page/usuario/forms/forms_family_responsibilities.html', data)
+
+
+@login_required
+def family_responsibilities_delete(request, fr_id, user_id, col_id):
+    object = FamilyResponsibilities.objects.get(fr_id=fr_id)
+    object.fr_activo = 0
+    object.save()
+    return redirect('usuario_app:edit_collaborator_file', user_id, col_id)

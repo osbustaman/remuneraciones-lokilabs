@@ -1,0 +1,36 @@
+<table id="datatable-family-r" class="table display responsive nowrap" style="width: 100%;">
+    <thead>
+        <tr>
+            <th class="wd-10p">ID</th>
+            <th class="wd-15p">Nombres</th>
+            <th class="wd-15p">Apellidos</th>
+            <th class="wd-10p">Rut</th>
+            <th class="wd-10p">Fecha Nacimiento</th>
+            <th class="wd-10p">Sexo</th>
+            <th class="wd-10p">Tipo de Contacto</th>
+            <th class="wd-25p">Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for obj in list_familyResponsibilities %}
+        <tr>
+            <td>{{ obj.fr_id }}</td>
+            <td>{{ obj.fr_firstname }}</td>
+            <td>{{ obj.fr_lastname }}</td>
+            <td>{{ obj.fr_rut }}</td>
+            <td>{{ obj.fr_fechanacimiento|date:"d/m/Y" }}</td>
+            <td>{{ obj.get_fr_sexo_display }}</td>
+            <td>{{ obj.get_fr_relationship_display }}</td>
+            <td>
+                <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'usuario_app:edit_family_responsibilities' obj.fr_id obj.user.id col_id %}')">Editar</button>
+                <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'usuario_app:family_responsibilities_delete' obj.fr_id obj.user.id col_id %}')">Eliminar</button>
+            </td>
+        </tr>
+        {% endfor %}
+        
+    </tbody>
+</table>
+
+<script>
+    {% include "client/includes/table_js.html" with id="datatable-family-r" %}
+</script>

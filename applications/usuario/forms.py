@@ -419,6 +419,12 @@ class FamilyResponsibilitiesForm(forms.ModelForm):
                                           widget=forms.DateInput(format="%d-%m-%Y",
                                                                  attrs=tags_input_date), required=True)
 
+    def clean_fr_rut(self):
+        data = self.cleaned_data["fr_rut"]
+
+        if not validarRut(data):
+            self.add_error('fr_rut', "El rut no es valido")
+        return data
 
     class Meta:
         model = FamilyResponsibilities
