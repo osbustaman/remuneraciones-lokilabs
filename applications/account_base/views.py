@@ -6,6 +6,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from applications.account_base.forms import LoginForm
+from applications.usuario.models import Colaborador
 
 # Create your views here.
 
@@ -25,6 +26,13 @@ def login_client(request):
             request.session['first_name'] = user.first_name
             request.session['last_name'] = user.last_name
             request.session['id'] = user.id
+
+            try:
+                objectColaborator = Colaborador.objects.get(user=user)
+                request.session['user_nivel'] = objectColaborator.rol.rol_nivel
+            except:
+                request.session['user_nivel'] = 3
+
             #return HttpResponseRedirect(reverse('remun_app:panel'))
             return redirect('remun_app:control_panel')
         else:

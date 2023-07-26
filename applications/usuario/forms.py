@@ -331,7 +331,7 @@ class ColaboradorForm(forms.ModelForm):
         label="Tipo de usuario", choices=Colaborador.TIPO_USUARIO, widget=forms.Select(attrs=tags_input_select), required=True)
 
     rol = forms.ModelChoiceField(label="Rol colaborador", required=True,
-                                  queryset=Rol.objects.filter(rol_active='S'), widget=forms.Select(attrs=tags_input_select))
+                                  queryset=Rol.objects.filter(rol_active = 'S', rol_client = 'S'), widget=forms.Select(attrs=tags_input_select))
     
     def clean_col_rut(self):
         data = self.cleaned_data["col_rut"]

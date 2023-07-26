@@ -9,8 +9,23 @@ class Rol(TimeStampedModel):
         ('N', 'NO'),
     )
 
+    NIVEL = (
+        (0, 0),
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+        (6, 6),
+        (7, 7),
+        (8, 8),
+    )
+
     rol_id = models.AutoField("Key", primary_key=True)
     rol_name = models.CharField("Nombre", max_length=70)
+    rol_nivel = models.IntegerField("Nivel", choices=NIVEL)
+    rol_client = models.CharField(
+        "Vista para cliente", choices=OPTIONS, max_length=1, default="S")
     rol_active = models.CharField(
         "Rol activo", choices=OPTIONS, max_length=1, default="S")
 

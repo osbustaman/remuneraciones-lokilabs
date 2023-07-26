@@ -97,40 +97,16 @@
                             <span>Dashboard</span>
                         </a>
                     </li><!-- nav-item -->
-                    <li class="nav-item">
-                        <a href="" class="nav-link with-sub {% if request.session.item == 'configuracion' %}active show-sub{% else %}{% endif %}">
-                            <i class="icon ion-ios-gear-outline"></i>
-                            <span>Configuración</span>
-                        </a>
-                        <ul class="nav-sub">
-                            <li class="nav-item"><a href="{% url 'emp_app:list_company' %}" class="nav-link {% if request.session.sub_item == 'empresa' %}active{% endif %}">Empresa</a></li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link with-sub {% if request.session.sub_item == 'colaboradores' %}active{% endif %}">Colaboradores</a>
-                                <ul class="nav-sub" {% if request.session.sub_sub_item in 'search-user|regions' %}style="display: block;"{% endif %}>
-                                    <li class="nav-item"><a href="{% url 'usuario_app:collaborator_file' %}" class="nav-link {% if request.session.sub_sub_item == 'search-user' %}active{% endif %}">Buscar Colaboradores</a></li>
-                                    <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_sub_item == '' %}active{% endif %}">Carga MAsiva</a></li>
-                                </ul>
-                            
-                            </li>
-                            <li class="nav-item">
-                                <a href="#" class="nav-link with-sub {% if request.session.sub_item == 'tablas' %}active{% endif %}">Tablas</a>
-                                <ul class="nav-sub" {% if request.session.sub_sub_item in 'countries|regions|communes|afp|salud|compensation_box|banks|apv|mutual|concepts' %}style="display: block;"{% endif %}>
-                                    <li class="nav-item"><a href="{% url 'conf_app:countries_app' %}" class="nav-link {% if request.session.sub_sub_item == 'countries' %}active{% endif %}">Pais</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:regions_app' %}" class="nav-link {% if request.session.sub_sub_item == 'regions' %}active{% endif %}">Región</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:communes_app' %}" class="nav-link {% if request.session.sub_sub_item == 'communes' %}active{% endif %}">Comuna</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:afp_app' %}" class="nav-link {% if request.session.sub_sub_item == 'afp' %}active{% endif %}">AFP</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:apv_app' %}" class="nav-link {% if request.session.sub_sub_item == 'apv' %}active{% endif %}">APV</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:health_app' %}" class="nav-link {% if request.session.sub_sub_item == 'salud' %}active{% endif %}">Salud</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:compensation_box_app' %}" class="nav-link {% if request.session.sub_sub_item == 'compensation_box' %}active{% endif %}">Caja Compensación</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:banks_app' %}" class="nav-link {% if request.session.sub_sub_item == 'banks' %}active{% endif %}">Bancos</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:mutual_security_app' %}" class="nav-link {% if request.session.sub_sub_item == 'mutual' %}active{% endif %}">Mutual de Seguridad</a></li>
-                                    <li class="nav-item"><a href="{% url 'conf_app:concepts_app' %}" class="nav-link {% if request.session.sub_sub_item == 'concepts' %}active{% endif %}">Conceptos</a></li>
-                                </ul>
-                            </li>
-                            <li class="nav-item"><a href="form-wizards.html" class="nav-link">Form Wizards</a></li>
-                            <li class="nav-item"><a href="form-editor-text.html" class="nav-link">Text Editor</a></li>
-                        </ul>
-                    </li><!-- nav-item -->
+                    {% if request.session.user_nivel == 3 %}
+                    {% include "client/includes/items_rrhh.html" %}
+
+                    {% elif request.session.user_nivel == 2 %}
+
+                    {% elif request.session.user_nivel == 1 %}
+
+                    {% endif %}
+
+
                 </ul>
             </div><!-- #mainMenu -->
             
