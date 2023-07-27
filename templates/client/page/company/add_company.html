@@ -29,7 +29,7 @@
         <div class="dropdown-menu" aria-labelledby="btn-branch-office">
             <a class="dropdown-item" href="javascript:redirectToUrl('{% url 'emp_app:add_branch_office' emp_id %}')">Agregar Sucursal <i
                 class="icon ion-plus-circled"></i></a>
-            <a class="dropdown-item" href="#">Carga Masiva</a>
+            <a class="dropdown-item" href="#" data-toggle="modal" data-target="#add_branch">Carga Masiva</a>
         </div>
     </div>
 </div>
@@ -127,6 +127,12 @@
         </div>
     </div>
 </div>
+
+
+
+
+{% include "client/includes/modal_form_html.html" with id_modal='add_branch' title='Carga masiva de sucursales' %}
+
 
 {% endblock %}
 
