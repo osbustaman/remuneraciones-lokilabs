@@ -125,11 +125,21 @@ class BulkLoadExcelPositionCreateAPIView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
 
         # Obtener el ID de la empresa
-        archivo_base64 = request.data.get('archivo_base64')
-        emp_id= request.data.get('emp_id')
+        try:
+            pk = int(kwargs['pk'])
+        except ValueError:
+            transaction.set_rollback(True)
+            return Response({'error': 'El ID de la empresa debe ser un número válido.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        bytes_excel = base64.b64decode(archivo_base64)
-        
+        # Obtener el archivo Excel
+        try:
+            bytes_excel = base64.b64decode(request.data['excel_carga_masiva'])
+        except KeyError:
+            transaction.set_rollback(True)
+            return Response({'error': 'No se encontró el archivo Excel en la solicitud.'}, status=status.HTTP_400_BAD_REQUEST)
+        except ValueError:
+            transaction.set_rollback(True)
+            return Response({'error': 'El archivo Excel no se pudo decodificar correctamente.'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Leer el archivo Excel
         excel_file = io.BytesIO(bytes_excel)
@@ -152,10 +162,57 @@ class BulkLoadExcelPositionCreateAPIView(generics.CreateAPIView):
 
         # Recorre el diccionario nuevo para poder agregar elementos a los modelos correspondientes
         for key, value in datos_por_hoja.items():
+            if key == "cargos":
+                for _val in value:
+                    for k, v in _val.items():
+                        # Crear el objeto Cargo y guardar en la base de datos
+                        cargo = Cargo()
+                        cargo.car_nombre = v
+                        try:
+                            cargo.save()
+                            cargo.empresa.set(Empresa.objects.filter(emp_id=pk))
+                        except IntegrityError:
+                            transaction.set_rollback(True)
+                            return Response({'error': 'Error al guardar el objeto Cargo.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
-            if value:
-                for v in value:
-                    print(v['cargo'])
+            if key == "sucursales":
+                for _val in value:
+                    try:
+                        sucursal = Sucursal()
+                        sucursal.suc_codigo = _val['codigo']
+                        sucursal.suc_descripcion = _val['nombre']
+                        sucursal.empresa = Empresa.objects.get(emp_id=pk)
+                        sucursal.suc_direccion = _val['direccion']
+                        sucursal.pais = Pais.objects.get(pa_nombre = _val['pais'])
+                        sucursal.region = Region.objects.get(re_nombre = _val['region'])
+                        sucursal.comuna = Comuna.objects.get(com_nombre = _val['comuna'])
+                        sucursal.save()
+                    except (IntegrityError, KeyError) as e:
+                        transaction.set_rollback(True)
+                        return Response({'error': 'Error al guardar el objeto Sucursal.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+            if key == "grupo centros costos":
+                for _val in value:
+                    try:
+                        gccosto = GrupoCentroCosto()
+                        gccosto.gcencost_nombre = _val['nombre gcc']
+                        gccosto.gcencost_codigo = _val['codigo gcc']
+                        gccosto.empresa = Empresa.objects.get(emp_id=pk)
+                        gccosto.save()
+                    except (IntegrityError, KeyError) as e:
+                        transaction.set_rollback(True)
+                        return Response({'error': 'Error al guardar el objeto Grupo Centro Costo.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        print(00)
+            if key == "centros costos":
+                for _val in value:
+                    try:
+                        ccosto = CentroCosto()
+                        ccosto.grupocentrocosto = GrupoCentroCosto.objects.get(gcencost_codigo=_val['codigo gcc'])
+                        ccosto.cencost_nombre = _val['nombre cc']
+                        ccosto.cencost_codigo = _val['codigo cc']
+                        ccosto.save()
+                    except (IntegrityError, KeyError) as e:
+                        transaction.set_rollback(True)
+                        return Response({'error': 'Error al guardar el objeto Centro Costo.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        return Response(datos_por_hoja, status=status.HTTP_201_CREATED)
