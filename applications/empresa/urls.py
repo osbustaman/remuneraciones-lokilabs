@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
+from applications.empresa.api.api import BulkLoadExcelPositionCreateAPIView, DownloadBranchUploadTemplateCreateAPIView
 
 from applications.empresa.views import (
     list_company
@@ -45,5 +46,9 @@ urlpatterns = [
     path('company/delete/cc/<int:emp_id>/<int:gcencost_id>/<int:cencost_id>', delete_cc, name='delete_cc'),
 
     path('company/add/associated/entities/<int:emp_id>', add_associated_entities, name='add_associated_entities'),
+
+
+    path('company/api/load/excel/', BulkLoadExcelPositionCreateAPIView.as_view(), name='BulkLoadExcelPositionCreateAPIView'),
+    path('company/api/template/excel/company/', DownloadBranchUploadTemplateCreateAPIView.as_view(), name='DownloadBranchUploadTemplateCreateAPIView'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

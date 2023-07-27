@@ -31,7 +31,7 @@
                     </div><!-- col-4 -->
                 </div><!-- row -->
                 <div class="form-layout-footer mg-t-30">
-                    <button type="button" class="btn btn-info mg-r-5" onclick="add_data()">{{ action }}</button>
+                    <button type="submit" class="btn btn-info mg-r-5">{{ action }}</button>
                     {% if car_id %}
                     <button type="button" class="btn btn-info mg-r-5" onclick="redirectToUrl('{% url 'emp_app:add_position' emp_id %}')">Agregar Otro Cargo</button>
                     {% endif %}
@@ -71,39 +71,6 @@
 <script>
     const redirectToUrl = (url) => {
         location.href = url;
-    }
-
-    const add_data = () => {
-
-        {% for id_input in form %}
-        const {{ id_input.html_name }} = $('#{{ id_input.id_for_label }}').val();
-        {% endfor %}
-
-        const camposRequeridos = [
-            {% for id_input in form %}
-                {% if id_input.field.required %}
-                    { campo: {{ id_input.html_name }}, mensaje: "- Debe ingresar {{ id_input.label }}" },
-                {% endif %}
-            {% endfor %}
-        ];
-
-        const errores = camposRequeridos.filter(function(campo) {
-        let dic = campo
-            if(dic.campo.length === 0){
-                return campo
-            }
-        });
-
-        if (errores.length > 0) {
-            const mensaje_error = errores.map(error => error.mensaje).join("<br/>");
-            $.alert({
-                title: 'Error!',
-                content: mensaje_error,
-            });
-            return;
-        } else {
-            $("#form").submit()
-        }
     }
 
     $('.select2-show-search').select2({
