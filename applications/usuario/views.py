@@ -76,6 +76,9 @@ def edit_collaborator_file(request, id, col_id):
     if request.method == 'POST':
         formUserForm = UserForm(request.POST, instance=user)
         formColaboradorForm = ColaboradorForm(request.POST, instance=colaborador)
+        formDatosLaboralesForm = DatosLaboralesForm(instance=usuario_empresa)
+        formFormsPayments = FormsPayments(instance=colaborador)
+        formFormsForecastData = FormsForecastData(instance=usuario_empresa)
 
         if formUserForm.is_valid() and formColaboradorForm.is_valid():
             user = formUserForm.save(commit=False)
@@ -91,6 +94,11 @@ def edit_collaborator_file(request, id, col_id):
             colaborador.save()
 
             messages.success(request, 'Datos personales editados exitosamente!.')
+
+        else:
+            for field in formUserForm:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
 
     else:
         formUserForm = UserForm(instance=user)
