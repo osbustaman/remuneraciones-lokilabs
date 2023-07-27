@@ -23,28 +23,21 @@
 
             <div class="form-layout">
                 <div class="row mg-b-25">
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <label class="form-control-label">{{ form.cencost_codigo.label }} <span class="tx-danger">*</span></label>
-                            {{ form.cencost_codigo }}
-                        </div>
-                    </div><!-- col-4 -->
+
                     <div class="col-lg-8">
                         <div class="form-group">
                             <label class="form-control-label">{{ form.cencost_nombre.label }} <span class="tx-danger">*</span></label>
                             {{ form.cencost_nombre }}
                         </div>
                     </div><!-- col-4 -->
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <label class="form-control-label">{{ form.cencost_activo.label }} <span class="tx-danger">*</span></label>
-                            {{ form.cencost_activo }}
-                        </div>
-                    </div><!-- col-4 -->
+
 
                 </div><!-- row -->
                 <div class="form-layout-footer mg-t-30">
-                    <button type="button" class="btn btn-info mg-r-5" onclick="add_data()">{{ action }}</button>
+                    <button type="submit" class="btn btn-info mg-r-5">{{ action }}</button>
+                    {% if cencost_id %}
+                    <button type="button" class="btn btn-info mg-r-5" onclick="redirectToUrl('{% url 'emp_app:add_cc' emp_id gcencost_id %}')">Agregar Otra Centro Costo</button>
+                    {% endif %}
                 </div><!-- form-layout-footer -->
             </div>
         </form>

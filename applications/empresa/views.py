@@ -103,11 +103,9 @@ def add_branch_office(request, emp_id):
             messages.success(request, 'Sucursal creada exitosamente.')
             return redirect('emp_app:edit_branch_office', emp_id=emp_id, suc_id=branch_office.suc_id)
         else:
-            lista_err = []
             for field in form:
                 for error in field.errors:
-                    lista_err.append(field.label + ': ' + error)
-            # Aquí puedes agregar un mensaje de error si es necesario
+                    messages.error(request, f"{field.label}: {error}")
     else:
         form = SucursalForm()
 
@@ -130,8 +128,9 @@ def edit_branch_office(request, emp_id, suc_id):
             # Agregar mensaje de éxito
             messages.success(request, 'Sucursal editada exitosamente.')
         else:
-            # Aquí puedes agregar un mensaje de error si es necesario
-            pass
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
     else:
         form = SucursalForm(instance=branch)
 
@@ -139,6 +138,7 @@ def edit_branch_office(request, emp_id, suc_id):
         'form_branch': form,
         'action': 'Editar',
         'emp_id': emp_id,
+        'suc_id': suc_id,
     }
     return render(request, 'client/page/company/branchs_office.html', data)
 
@@ -168,10 +168,9 @@ def add_position(request, emp_id):
             messages.success(request, 'Cargo creado exitosamente.')
             return redirect('emp_app:edit_position', emp_id=emp_id, car_id=position.car_id)
         else:
-            lista_err = []
             for field in form:
                 for error in field.errors:
-                    lista_err.append(field.label + ': ' + error)
+                    messages.error(request, f"{field.label}: {error}")
             # Aquí puedes agregar un mensaje de error si es necesario
     else:
         form = CargoForm()
@@ -195,8 +194,9 @@ def edit_position(request, emp_id, car_id):
             # Agregar mensaje de éxito
             messages.success(request, 'Cargo editado exitosamente.')
         else:
-            # Aquí puedes agregar un mensaje de error si es necesario
-            pass
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
     else:
         form = CargoForm(instance=position)
 
@@ -204,6 +204,7 @@ def edit_position(request, emp_id, car_id):
         'form': form,
         'action': 'Editar',
         'emp_id': emp_id,
+        'car_id': car_id
     }
     return render(request, 'client/page/company/position.html', data)
 
@@ -218,7 +219,6 @@ def delete_position(request, emp_id, car_id):
 
 @login_required
 def add_gcc(request, emp_id):
-    lista_err = []
     if request.method == 'POST':
         form = GrupoCentroCostoForm(request.POST)
         if form.is_valid():
@@ -234,8 +234,7 @@ def add_gcc(request, emp_id):
         else:
             for field in form:
                 for error in field.errors:
-                    lista_err.append(field.label + ': ' + error)
-            # Aquí puedes agregar un mensaje de error si es necesario
+                    messages.error(request, f"{field.label}: {error}")
     else:
         form = GrupoCentroCostoForm()
 
@@ -243,7 +242,6 @@ def add_gcc(request, emp_id):
         'action': 'Crear',
         'form': form,
         'emp_id': emp_id,
-        'lista_err': lista_err
     }
     return render(request, 'client/page/company/gcc.html', data)
 
@@ -260,8 +258,9 @@ def edit_gcc(request, emp_id, gcencost_id):
             messages.success(
                 request, 'Grupo Centro Costo editado exitosamente.')
         else:
-            # Aquí puedes agregar un mensaje de error si es necesario
-            pass
+            for field in form:
+                for error in field.errors:
+                    messages.error(request, f"{field.label}: {error}")
     else:
         form = GrupoCentroCostoForm(instance=position)
 

@@ -144,6 +144,9 @@ class Colaborador(TimeStampedModel):
 
     def __int__(self):
         return self.col_id
+    
+    def __str__(self):
+        return f"{self.col_id} - {self.col_rut}"
 
     def save(self, *args, **kwargs):
         super(Colaborador, self).save(*args, **kwargs)

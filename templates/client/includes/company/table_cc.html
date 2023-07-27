@@ -3,7 +3,6 @@
         <tr>
             <th class="wd-15p">ID</th>
             <th class="wd-15p">Nombre</th>
-            <th class="wd-20p">Código</th>
             <th class="wd-25p">Acción</th>
         </tr>
     </thead>
@@ -11,7 +10,6 @@
         {% for cc in list_cc %}
         <tr>
             <td>{{ cc.cencost_id }}</td>
-            <td>{{ cc.cencost_codigo }}</td>
             <td>{{ cc.cencost_nombre }}</td>
             <td>
                 <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'emp_app:edit_cc' emp_id gcencost_id cc.cencost_id %}')">Editar</button>

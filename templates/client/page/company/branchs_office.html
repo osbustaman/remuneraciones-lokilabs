@@ -28,25 +28,13 @@
 
             <div class="form-layout">
                 <div class="row mg-b-25">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label class="form-control-label">{{ form_branch.suc_codigo.label }} <span class="tx-danger"></span></label>
-                            {{ form_branch.suc_codigo }}
-                        </div>
-                    </div><!-- col-4 -->
-                    <div class="col-lg-8">
+                    <div class="col-lg-6">
                         <div class="form-group">
                             <label class="form-control-label">{{ form_branch.suc_descripcion.label }} <span class="tx-danger">*</span></label>
                             {{ form_branch.suc_descripcion }}
                         </div>
                     </div><!-- col-4 -->
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <label class="form-control-label">{{ form_branch.suc_estado.label }} <span class="tx-danger">*</span></label>
-                            {{ form_branch.suc_estado }}
-                        </div>
-                    </div><!-- col-4 -->
-                    <div class="col-lg-8">
+                    <div class="col-lg-6">
                         <div class="form-group">
                             <label class="form-control-label">{{ form_branch.suc_direccion.label }} <span class="tx-danger">*</span></label>
                             {{ form_branch.suc_direccion }}
@@ -75,24 +63,32 @@
                     
                 </div><!-- row -->
                 <div class="form-layout-footer mg-t-30">
-                    <button type="button" class="btn btn-info mg-r-5" onclick="crear_empresa()">{{ action }}</button>
+                    <button type="submit" class="btn btn-info mg-r-5">{{ action }}</button>
+                    {% if suc_id %}
+                    <button type="button" class="btn btn-info mg-r-5" onclick="redirectToUrl('{% url 'emp_app:add_branch_office' emp_id %}')">Agregar Otra Sucursal</button>
+                    {% endif %}
                 </div><!-- form-layout-footer -->
             </div>
         </form>
 
         {% if messages %}
-        <div class="alert alert-success mt-4" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <div class="d-flex align-items-center justify-content-start">
-                {% for message in messages %}
-                <i class="icon ion-ios-checkmark alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
-                <span><strong>Éxito!</strong> {{ message }}</span>
-                {% endfor %}
-            </div><!-- d-flex -->
-        </div><!-- alert -->
-        {% endif %}
+        {% for message in messages %}
+        {% if message.tags == 'error' %}
+        <div class="alert alert-danger mt-4" role="alert">
+            {% else %}
+            <div class="alert alert-success mt-4" role="alert">
+                {% endif %}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div class="d-flex align-items-center justify-content-start">
+                    <i
+                        class="icon ion-ios-{% if message.tags == 'error' %}close{% else %}checkmark{% endif %} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
+                    <span><strong>{% if message.tags == 'error' %}Error{% else %}Éxito{% endif %}: </strong> {{ message }}</span>
+                </div><!-- d-flex -->
+            </div><!-- alert -->
+            {% endfor %}
+            {% endif %}
 
 
     </div>

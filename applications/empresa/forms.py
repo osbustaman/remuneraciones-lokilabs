@@ -16,17 +16,11 @@ class CentroCostoForm(forms.ModelForm):
 
     cencost_nombre= forms.CharField(label="Nombre CC", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
-    cencost_codigo = forms.CharField(label="Código CC", widget=forms.TextInput(
-        attrs=tags_input_readonly), required=False)
-    cencost_activo = forms.ChoiceField(initial='S', label='CC Activo?', choices=GrupoCentroCosto.OPCIONES,
-                                      widget=forms.Select(attrs=tags_input_general), required=False)
 
     class Meta:
         model = CentroCosto
         fields = (
-            "cencost_nombre"
-            , "cencost_codigo"
-            , "cencost_activo"
+            "cencost_nombre",
         )
 
 class GrupoCentroCostoForm(forms.ModelForm):
@@ -41,17 +35,11 @@ class GrupoCentroCostoForm(forms.ModelForm):
 
     gcencost_nombre = forms.CharField(label="Nombre Grupo CC", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
-    gcencost_codigo = forms.CharField(label="Código Grupo CC", widget=forms.TextInput(
-        attrs=tags_input_readonly), required=False)
-    gcencost_activo = forms.ChoiceField(initial='S', label='Grupo CC Activo?', choices=GrupoCentroCosto.OPCIONES,
-                                      widget=forms.Select(attrs=tags_input_general), required=False)
 
     class Meta:
         model = GrupoCentroCosto
         fields = (
-            "gcencost_nombre"
-            , "gcencost_codigo"
-            , "gcencost_activo"
+            "gcencost_nombre",
         )
 
 class CargoForm(forms.ModelForm):
@@ -82,11 +70,7 @@ class SucursalForm(forms.ModelForm):
         'class': 'form-control select2-show-search',
     }
 
-    
-
-    suc_codigo = forms.CharField(label="Código", widget=forms.TextInput(
-        attrs=tags_input_readonly), required=False)
-    suc_descripcion = forms.CharField(label="Descripción", widget=forms.TextInput(
+    suc_descripcion = forms.CharField(label="Nombre Sucursal", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
     suc_direccion = forms.CharField(label="Dirección", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
@@ -96,19 +80,15 @@ class SucursalForm(forms.ModelForm):
                                     queryset=Region.objects.all(), widget=forms.Select(attrs=tags_input_select2 ))
     comuna = forms.ModelChoiceField(label="Comuna", required=True,
                                     queryset=Comuna.objects.all(), widget=forms.Select(attrs=tags_input_select2 ))
-    suc_estado = forms.ChoiceField(initial='S', label='Sucursal Activa?', choices=Sucursal.OPCIONES,
-                                      widget=forms.Select(attrs=tags_input_general), required=False)
     
     class Meta:
         model = Sucursal
         fields = (
-            "suc_codigo"
-            , "suc_descripcion"
+            "suc_descripcion"
             , "suc_direccion"
             , "pais"
             , "region"
             , "comuna"
-            , "suc_estado"
         )
 
 class EmpresaForm(forms.ModelForm):

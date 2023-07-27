@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th class="wd-15p">ID</th>
-            <th class="wd-15p">Código</th>
+            <th class="wd-15p">Nombre</th>
             <th class="wd-20p">Dirección</th>
             <th class="wd-15p">Región</th>
             <th class="wd-10p">Comuna</th>
@@ -13,7 +13,7 @@
         {% for branch_offices in list_branch_offices %}
         <tr>
             <td>{{ branch_offices.suc_id }}</td>
-            <td>{{ branch_offices.suc_codigo }}</td>
+            <td>{{ branch_offices.suc_descripcion }}</td>
             <td>{{ branch_offices.suc_direccion }}</td>
             <td>{{ branch_offices.region }}</td>
             <td>{{ branch_offices.comuna }}</td>

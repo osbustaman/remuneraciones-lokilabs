@@ -3,7 +3,6 @@
         <tr>
             <th class="wd-15p">ID</th>
             <th class="wd-15p">Nombre</th>
-            <th class="wd-20p">Código</th>
             <th class="wd-25p">Acción</th>
         </tr>
     </thead>
@@ -12,7 +11,6 @@
         <tr>
             <td>{{ gcc.gcencost_id }}</td>
             <td>{{ gcc.gcencost_nombre }}</td>
-            <td>{{ gcc.gcencost_codigo }}</td>
             <td>
                 <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'emp_app:edit_gcc' emp_id gcc.gcencost_id %}')">Editar</button>
                 <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'emp_app:delete_gcc' emp_id gcc.gcencost_id %}')">Eliminar</button>
