@@ -112,9 +112,14 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid():
-            serializer.save()
+
+
+
+
+            #serializer.save()
             response_to_page = {
-                "data_serializer": serializer.data
+                #"data_serializer": serializer.data
+                "data_serializer": 0
             }
 
             return Response(response_to_page, status=status.HTTP_201_CREATED)
