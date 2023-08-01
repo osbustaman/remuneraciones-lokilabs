@@ -17,18 +17,47 @@ from django.contrib import admin
 from django.urls import path, re_path, include
 
 from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
     TokenRefreshView,
     TokenBlacklistView
 )
 
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+
+from applications.account_base.api.api import Login, Logout
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="API Documentation",
+        default_version='v1',
+        description="API documentation",
+        terms_of_service="https://www.google.com/policies/terms/",
+        contact=openapi.Contact(email="contact@yourcompany.com"),
+        license=openapi.License(name="BSD License"),
+    ),
+    public=True,
+    permission_classes=[],
+)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    path('login/', Login.as_view(), name='login'),
+    path('logout/', Logout.as_view(), name='logout'),
+
     path('', include('applications.account_base.urls')),
     path('', include('applications.base.urls')),
     path('', include('applications.remuneracion.urls')),
     path('', include('applications.empresa.urls')),
     path('', include('applications.configurations.urls')),
     path('', include('applications.usuario.urls')),
+
+    path('api/attendance/', include('applications.attendance.urls')),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
