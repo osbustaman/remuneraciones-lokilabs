@@ -147,7 +147,9 @@
 
 {% block script_tag %}
 <script>
-
+    setTimeout(function() {
+        $(".alert-danger, .alert-success").css("display", "none");
+    },5000);
     const onOrOffButtons = (self) => {
         const camposRequeridos = [
             { tab: "dp-tab", buton: "btn-dp-tab" },

@@ -14,6 +14,7 @@ from openpyxl.worksheet.datavalidation import DataValidation
 from applications.base.models import Comuna, Pais, Region
 
 from applications.empresa.api.serialize import BulkLoadExcelSerializer
+from applications.empresa.models import Cargo, CentroCosto, Empresa, GrupoCentroCosto, Sucursal
 
 
 class DownloadBranchUploadTemplateCreateAPIView(generics.CreateAPIView):
@@ -25,9 +26,9 @@ class DownloadBranchUploadTemplateCreateAPIView(generics.CreateAPIView):
         
         # Define las cabeceras de cada hoja
         cabeceras_cargos = ['nombre cargo']
-        cabeceras_sucursales = ['codigo', 'nombre', 'direccion', 'pais', 'region', 'comuna']
-        cabeceras_grupo_cc = ['nombre gcc', 'codigo gcc']
-        cabeceras_cc = ['codigo gcc', 'nombre cc', 'codigo cc']
+        cabeceras_sucursales = ['nombre', 'direccion', 'pais', 'region', 'comuna']
+        cabeceras_grupo_cc = ['nombre gcc']
+        cabeceras_cc = ['nombre cc', 'nombre gcc']
         cabeceras_col_oculta = ['comunas', 'regiones']
 
         # Crea un DataFrame vacío para cada hoja del Excel
@@ -87,7 +88,7 @@ class DownloadBranchUploadTemplateCreateAPIView(generics.CreateAPIView):
             array_paises.append(pais.pa_nombre)
 
         validation = DataValidation(type="list", formula1=f'"{",".join(array_paises)}"')
-        validation.add(f'D2:D{cantidad_filas}')
+        validation.add(f'C2:C{cantidad_filas}')
         sheet.add_data_validation(validation)
 
         # Crear una lista de opciones para la lista desplegable de regiones
@@ -97,8 +98,17 @@ class DownloadBranchUploadTemplateCreateAPIView(generics.CreateAPIView):
             array_regiones.append(region.re_nombre)
 
         validation_regiones = DataValidation(type="list", formula1=f'"{",".join(array_regiones)}"')
-        validation_regiones.add(f'E2:E{cantidad_filas}')
+        validation_regiones.add(f'D2:D{cantidad_filas}')
         sheet.add_data_validation(validation_regiones)
+
+        # Crear una lista de opciones para la lista desplegable de comunas
+        """array_comunas = []
+        for comunas in object_comunas:
+            array_comunas.append(comunas.com_nombre)
+
+        validation_comunas = DataValidation(type="list", formula1=f'"{",".join(array_comunas)}"')
+        validation_comunas.add(f'E2:E{cantidad_filas}')
+        sheet.add_data_validation(validation_comunas)"""
 
         # Guardamos el archivo con los cambios
         workbook.save(filename_excel)
@@ -113,14 +123,11 @@ class DownloadBranchUploadTemplateCreateAPIView(generics.CreateAPIView):
         }, status=status.HTTP_201_CREATED)
 
 
-
-
 class BulkLoadExcelPositionCreateAPIView(generics.CreateAPIView):
     serializer_class = BulkLoadExcelSerializer
 
     def get_queryset(self):
         pass
-
 
     def post(self, request, *args, **kwargs):
 
@@ -133,7 +140,7 @@ class BulkLoadExcelPositionCreateAPIView(generics.CreateAPIView):
 
         # Obtener el archivo Excel
         try:
-            bytes_excel = base64.b64decode(request.data['excel_carga_masiva'])
+            bytes_excel = base64.b64decode(request.data['archivo_base64'])
         except KeyError:
             transaction.set_rollback(True)
             return Response({'error': 'No se encontró el archivo Excel en la solicitud.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -179,7 +186,6 @@ class BulkLoadExcelPositionCreateAPIView(generics.CreateAPIView):
                 for _val in value:
                     try:
                         sucursal = Sucursal()
-                        sucursal.suc_codigo = _val['codigo']
                         sucursal.suc_descripcion = _val['nombre']
                         sucursal.empresa = Empresa.objects.get(emp_id=pk)
                         sucursal.suc_direccion = _val['direccion']
@@ -196,7 +202,6 @@ class BulkLoadExcelPositionCreateAPIView(generics.CreateAPIView):
                     try:
                         gccosto = GrupoCentroCosto()
                         gccosto.gcencost_nombre = _val['nombre gcc']
-                        gccosto.gcencost_codigo = _val['codigo gcc']
                         gccosto.empresa = Empresa.objects.get(emp_id=pk)
                         gccosto.save()
                     except (IntegrityError, KeyError) as e:
@@ -207,9 +212,8 @@ class BulkLoadExcelPositionCreateAPIView(generics.CreateAPIView):
                 for _val in value:
                     try:
                         ccosto = CentroCosto()
-                        ccosto.grupocentrocosto = GrupoCentroCosto.objects.get(gcencost_codigo=_val['codigo gcc'])
+                        ccosto.grupocentrocosto = GrupoCentroCosto.objects.get(gcencost_nombre=_val['nombre gcc'])
                         ccosto.cencost_nombre = _val['nombre cc']
-                        ccosto.cencost_codigo = _val['codigo cc']
                         ccosto.save()
                     except (IntegrityError, KeyError) as e:
                         transaction.set_rollback(True)

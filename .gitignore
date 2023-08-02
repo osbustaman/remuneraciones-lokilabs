@@ -5,6 +5,7 @@ env
 *.pyc
 *.jpg
 *.png
+
 static/amanda
 static/gentella
 migrations
@@ -16,3 +17,4 @@ migrations
 
 .env
 app01/.env
+*.xlsx

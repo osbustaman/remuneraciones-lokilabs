@@ -141,9 +141,6 @@
     {% endif %}
 
     <script>
-        $("#id_ue_cotizacion").prop("readonly", true);
-        
-
         document.addEventListener('DOMContentLoaded', () => {
             const selectElement = document.querySelector('#id_afp');
             const id_salud = document.querySelector('#id_salud');
@@ -154,6 +151,8 @@
                 if(selectedValue === '1'){
                     $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", true);
                     $("#id_ue_cotizacion").val(7.0);
+                    $("#id_ue_ufisapre").val(0.0);
+                    $("#id_ue_funisapre").val(0);
                 }else{
                     $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", false);
                     $("#id_ue_cotizacion").val(0.0);
