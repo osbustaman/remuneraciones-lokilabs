@@ -10,17 +10,64 @@
                 </button>
             </div>
             <div class="modal-body pd-25">
-                <input type="file" id="input-file-{{id_modal}}" accept=".xlsx, .xls" />
+                <input type="file" name="input-file-{{id_modal}}" id="input-file-{{id_modal}}" accept=".xlsx, .xls" />
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-info pd-x-20" id="btn-cargar-{{id_modal}}">Subir Datos</button>
-                <button type="button" class="btn btn-secondary pd-x-20" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-secondary pd-x-20" onclick="downloadTemplate()">Descargar Plantilla</button>
             </div>
         </div>
     </div><!-- modal-dialog -->
 </div><!-- modal -->
 
 <script>
+
+function base64ToExcel(base64Data, fileName) {
+        // Decodificar el Base64 a datos binarios
+        const binaryData = atob(base64Data);
+
+        // Crear un array para los bytes
+        const bytes = new Uint8Array(binaryData.length);
+        for (let i = 0; i < binaryData.length; i++) {
+            bytes[i] = binaryData.charCodeAt(i);
+        }
+
+        // Crear un Blob con los datos binarios
+        const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+        // Crear una URL para el Blob
+        const url = URL.createObjectURL(blob);
+
+        // Crear un enlace con el archivo
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName; // Nombre del archivo
+        a.style.display = 'none';
+
+        // Añadir el enlace al DOM y simular un clic para descargar el archivo
+        document.body.appendChild(a);
+        a.click();
+
+        // Limpiar el objeto URL después de la descarga
+        URL.revokeObjectURL(url);
+    }
+
+    const downloadTemplate = () => {
+
+        // Envía el archivo Base64 mediante Axios al endpoint
+        axios.get("{% url 'emp_app:DownloadBranchUploadTemplateCreateAPIView' %}", { 
+
+            })
+            .then(response => {
+                console.log('Respuesta del servidor:');
+                console.log(response.data);
+                base64ToExcel(response.data['archivo_base64'], "configuracion_empresa.xlsx");
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error);
+            });
+    }
+
     document.getElementById('btn-cargar-{{id_modal}}').addEventListener('click', function () {
         const inputFile = document.getElementById('input-file-{{id_modal}}').files[0];
         if (!inputFile) {
@@ -40,20 +87,21 @@
                 emp_id: {{emp_id}}
             }
 
-            console.log(json_{{id_modal}})
-
             // Envía el archivo Base64 mediante Axios al endpoint
-            axios.post("{% url 'emp_app:BulkLoadExcelPositionCreateAPIView' %}", json_{{id_modal}}, { 
+            axios.post("{% url 'emp_app:BulkLoadExcelPositionCreateAPIView' emp_id %}", json_{{id_modal}}, { 
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}', // Asegúrate de tener esto en la plantilla
                 }
             })
             .then(response => {
-                console.log('Respuesta del servidor:');
-                console.log(response.data);
+                location.reload();
             })
             .catch(error => {
-                console.error('Error en la solicitud:', error);
+                $.alert({
+                    title: 'Error en la solicitud:', error,
+                    content: 'Selecciona un archivo excel',
+                });
+                return;
             });
         };
 

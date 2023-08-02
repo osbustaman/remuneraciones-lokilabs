@@ -48,7 +48,7 @@ urlpatterns = [
     path('company/add/associated/entities/<int:emp_id>', add_associated_entities, name='add_associated_entities'),
 
 
-    path('company/api/load/excel/', BulkLoadExcelPositionCreateAPIView.as_view(), name='BulkLoadExcelPositionCreateAPIView'),
+    path('company/api/load/excel/<pk>/', BulkLoadExcelPositionCreateAPIView.as_view(), name='BulkLoadExcelPositionCreateAPIView'),
     path('company/api/template/excel/company/', DownloadBranchUploadTemplateCreateAPIView.as_view(), name='DownloadBranchUploadTemplateCreateAPIView'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

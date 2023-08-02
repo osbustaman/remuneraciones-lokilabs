@@ -297,8 +297,8 @@ class UsuarioEmpresa(TimeStampedModel):
                               on_delete=models.PROTECT, null=True, blank=True)
     ue_ufisapre = models.FloatField(
         "Valor en UF isapre", null=True, blank=True, default=0)
-    ue_funisapre = models.IntegerField(
-        "Fun isapre", null=True, blank=True, default=0)
+    ue_funisapre = models.CharField(
+        "Fun isapre", max_length=100, null=True, blank=True)
     ue_cotizacion = models.FloatField(
         "Cotizacion fonasa/isapre", null=True, blank=True, default=0)
 
