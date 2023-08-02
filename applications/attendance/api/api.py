@@ -1,5 +1,3 @@
-
-
 from applications.attendance.api.serializers import MarkAttendanceSerializer
 from applications.attendance.models import MarkAttendance
 
@@ -9,6 +7,9 @@ from django.utils import timezone
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
+
+from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
 
 from rest_framework import status
 from rest_framework import generics, status
@@ -60,10 +61,11 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
             properties={
                 'user': openapi.Schema(type='integer', description='ID del usuario.'),
                 'ma_typeattendance': openapi.Schema(type='integer', description='Tipo de marca.'),
-                'ma_location': openapi.Schema(type='string', description='Localización (dirección, comuna, region, país)'),
-                'ma_datemark': openapi.Schema(type='string', format='date', description='Fecha'),
+                'ma_latitude': openapi.Schema(type='string', description='Latitud ejemplo: -33.419500'),
+                'ma_longitude': openapi.Schema(type='string', description='Latitud ejemplo: -70.604875'),
+                'ma_datemark': openapi.Schema(type='string', format='date', description='Fecha formato YYYY-mm-dd'),
             },
-            required=['user', 'ma_typeattendance', 'ma_location', 'ma_datemark'],
+            required=['user', 'ma_typeattendance', 'ma_latitude', 'ma_longitude', 'ma_datemark'],
         ),
         responses={
                 status.HTTP_500_INTERNAL_SERVER_ERROR: openapi.Response(
@@ -135,6 +137,11 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 actualDate = datetime.strptime(request.data['ma_datemark'], "%Y-%m-%d").date()
                 objectMarkAttendance = MarkAttendance.objects.filter(user=objectUser.first(), ma_datemark=actualDate)
                 
+                # Ejemplo de uso
+                direccion = "Lourdes 1012, Quinta Normal, Santiago, Chile"
+                latitud, longitud = self.obtener_latitud_longitud(direccion)
+                
+                
                 if objectMarkAttendance:
                     if len(objectMarkAttendance) >= 2:
                         return Response({"error": "No Content - 204", "message": f"ya existen marcas de ENTRADA y SALIDA para el dia { request.data['ma_datemark'] }"}, status=status.HTTP_204_NO_CONTENT)
@@ -161,3 +168,17 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 return Response({"error": "Not Found - 404", "message": "Usuario no existe"}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+
+    def obtener_latitud_longitud(self, direccion):
+        # Crear un objeto geolocalizador utilizando el proveedor Nominatim
+        geolocalizador = Nominatim(user_agent="Nominatim")
+
+        # Obtener la ubicación (latitud, longitud) a partir de la dirección
+        ubicacion = geolocalizador.geocode(direccion)
+
+        if ubicacion:
+            latitud = ubicacion.latitude
+            longitud = ubicacion.longitude
+            return latitud, longitud
+        else:
+            return None, None

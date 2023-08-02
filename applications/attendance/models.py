@@ -13,6 +13,11 @@ class MarkAttendance(TimeStampedModel):
         (2, 'SALIDA'),
     )
 
+    TYPE_MARK = (
+        (1, 'MOVIL'),
+        (2, 'HUELLA'),
+    )
+
     OPTIONS = (
         (1, 'SI'),
         (0, 'NO'),
@@ -23,8 +28,14 @@ class MarkAttendance(TimeStampedModel):
                              db_column="ma_user", null=True, blank=True, on_delete=models.PROTECT)
     ma_typeattendance = models.IntegerField(
         "Tipo de marca", choices=TYPE_ATTENDANCE, null=True, blank=True)
-    ma_location = models.TextField("Localización")
+    ma_latitude = models.TextField("Latitud")
+    ma_longitude = models.TextField("Longitude")
+    ma_place = models.TextField("Lugar de marca", null=True, blank=True)
+    ma_modeldevice = models.CharField("Modelo celular", max_length=150, null=True, blank=True)
+    ma_platformmark = models.CharField("Plataforma donde se marco", max_length=150, null=True, blank=True)
     ma_photo = models.TextField("Foto clolaborador", null=True, blank=True)
+    ma_typemark = models.IntegerField(
+        "Tipo marca", choices=TYPE_MARK, null=True, blank=True)
     ma_datemark = models.DateField("Fecha de marca")
     ma_active = models.IntegerField(
         "Marca activa", choices=OPTIONS, null=True, blank=True, default=1)
