@@ -1,5 +1,11 @@
+
+
 from applications.attendance.api.serializers import MarkAttendanceSerializer
 from applications.attendance.models import MarkAttendance
+
+from datetime import datetime
+from django.db.models import F, Count
+from django.utils import timezone
 
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
@@ -55,7 +61,7 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 'user': openapi.Schema(type='integer', description='ID del usuario.'),
                 'ma_typeattendance': openapi.Schema(type='integer', description='Tipo de marca.'),
                 'ma_location': openapi.Schema(type='string', description='Localización (dirección, comuna, region, país)'),
-                'ma_datemark': openapi.Schema(type='string', format='date-time', description='Fecha y hora en formato ISO 8601.'),
+                'ma_datemark': openapi.Schema(type='string', format='date', description='Fecha'),
             },
             required=['user', 'ma_typeattendance', 'ma_location', 'ma_datemark'],
         ),
@@ -66,6 +72,16 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                         type='object',
                         properties={
                             "message": openapi.Schema(type="string", description="Error: Internal Server Error")
+                        }
+                    )
+                ),
+                status.HTTP_204_NO_CONTENT: openapi.Response(
+                    description="Error: No Content",
+                    schema=openapi.Schema(
+                        type='object',
+                        properties={
+                            "error": openapi.Schema(type="string", description="tipo de error"),
+                            "message": openapi.Schema(type="string", description="ya existe una marca de ENTRADA|SALIDA"),
                         }
                     )
                 ),
@@ -112,16 +128,36 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data = request.data)
         if serializer.is_valid():
+            objectUser = User.objects.filter(id = request.data['user'])
 
-
-
-
-            #serializer.save()
-            response_to_page = {
-                #"data_serializer": serializer.data
-                "data_serializer": 0
-            }
-
-            return Response(response_to_page, status=status.HTTP_201_CREATED)
+            if objectUser.exists():
+                # Obtener la fecha y hora actual en el formato de la base de datos
+                actualDate = datetime.strptime(request.data['ma_datemark'], "%Y-%m-%d").date()
+                objectMarkAttendance = MarkAttendance.objects.filter(user=objectUser.first(), ma_datemark=actualDate)
+                
+                if objectMarkAttendance:
+                    if len(objectMarkAttendance) >= 2:
+                        return Response({"error": "No Content - 204", "message": f"ya existen marcas de ENTRADA y SALIDA para el dia { request.data['ma_datemark'] }"}, status=status.HTTP_204_NO_CONTENT)
+                    else:
+                        for mark in objectMarkAttendance:
+                            if mark.ma_typeattendance == int(request.data['ma_typeattendance']):
+                                return Response({"error": "No Content - 204", "message": f"ya existe una marca de { mark.get_ma_typeattendance_display() }"}, status=status.HTTP_204_NO_CONTENT)
+                            else:
+                                serializer.save()
+                                response_to_page = {
+                                    "data_serializer": serializer.data
+                                }
+                                return Response(response_to_page, status=status.HTTP_201_CREATED)
+                else:
+                    if not objectMarkAttendance and int(request.data['ma_typeattendance']) == 2:
+                        return Response({"error": "No Content - 204", "message": f"para marcar la SALIDA debe existir una ENTRADA"}, status=status.HTTP_204_NO_CONTENT)
+                    else:
+                        serializer.save()
+                        response_to_page = {
+                            "data_serializer": serializer.data
+                        }
+                        return Response(response_to_page, status=status.HTTP_201_CREATED)
+            else:
+                return Response({"error": "Not Found - 404", "message": "Usuario no existe"}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
