@@ -62,10 +62,10 @@
 <button type="button" id="btn-ea" class="btn btn-orange btn-off" onclick="redirectToUrl('{% url 'emp_app:add_associated_entities' emp_id %}')">Agregar Entidad Asociada <i
     class="icon ion-plus-circled"></i></button>
 {% endif %}
-
+{% if action|lower == 'editar' %}
 <button type="button" id="btn-upload" class="btn btn-orange" data-toggle="modal" data-target="#add_branch">Carga Masiva <i
     class="icon ion-plus-circled"></i></button>
-
+{% endif %}
 <button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:list_company' %}')">Volver <i
         class="icon ion-arrow-left-a"></i></button>
 {% endif %}
