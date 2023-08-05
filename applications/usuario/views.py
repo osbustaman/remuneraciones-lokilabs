@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
+from app01.functions import getLatitudeLongitude
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Empresa, Salud, Sucursal
 from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FamilyResponsibilitiesForm, FormsForecastData, FormsPayments, UserForm
 from django.contrib.auth.models import User
@@ -40,6 +41,12 @@ def add_collaborator_file(request):
             # Guardar los datos del formulario ColaboradorForm con el ID del usuario
             colaborador = formColaboradorForm.save(commit=False)
             colaborador.user_id = user.id
+
+            address = f"{ colaborador.col_direccion }, { colaborador.comuna.com_nombre }, { colaborador.region.re_nombre }, { colaborador.pais.pa_nombre }"
+            lat, lng = getLatitudeLongitude(address)
+            
+            colaborador.col_latitude = lat
+            colaborador.col_longitude = lng
             colaborador.save()
 
             messages.success(request, 'Datos personales creados exitosamente!.')
@@ -76,9 +83,15 @@ def edit_collaborator_file(request, id, col_id):
     if request.method == 'POST':
         formUserForm = UserForm(request.POST, instance=user)
         formColaboradorForm = ColaboradorForm(request.POST, instance=colaborador)
-        formDatosLaboralesForm = DatosLaboralesForm(instance=usuario_empresa)
-        formFormsPayments = FormsPayments(instance=colaborador)
-        formFormsForecastData = FormsForecastData(instance=usuario_empresa)
+
+        if usuario_empresa:
+            formDatosLaboralesForm = DatosLaboralesForm(instance=usuario_empresa)
+            formFormsPayments = FormsPayments(instance=colaborador)
+            formFormsForecastData = FormsForecastData(instance=usuario_empresa)
+        else:
+            formDatosLaboralesForm = DatosLaboralesForm()
+            formFormsPayments = FormsPayments()
+            formFormsForecastData = FormsForecastData()
 
         if formUserForm.is_valid() and formColaboradorForm.is_valid():
             user = formUserForm.save(commit=False)
@@ -91,6 +104,13 @@ def edit_collaborator_file(request, id, col_id):
 
             colaborador = formColaboradorForm.save(commit=False)
             colaborador.user = user
+
+            address = f"{ colaborador.col_direccion }, { colaborador.comuna.com_nombre }, { colaborador.region.re_nombre }, { colaborador.pais.pa_nombre }"
+            lat, lng = getLatitudeLongitude(address)
+            
+            colaborador.col_latitude = lat
+            colaborador.col_longitude = lng
+
             colaborador.save()
 
             messages.success(request, 'Datos personales editados exitosamente!.')

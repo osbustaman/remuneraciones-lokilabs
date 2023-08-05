@@ -117,6 +117,8 @@ class Empresa(models.Model):
         Region, verbose_name="Región", db_column="emp_region", on_delete=models.PROTECT)
     comuna = models.ForeignKey(
         Comuna, verbose_name="Comuna", db_column="emp_comuna", on_delete=models.PROTECT)
+    emp_latitude = models.CharField("Latitud", max_length=255, null=True, blank=True)
+    emp_longitude = models.CharField("Longitud", max_length=255, null=True, blank=True)
     emp_cospostal = models.CharField(
         "Código postal", max_length=25, null=True, blank=True)
     emp_fonouno = models.CharField("Télefono 1", max_length=25)
@@ -174,6 +176,12 @@ class Sucursal(models.Model):
         ('N', 'NO'),
     )
 
+
+    MATRIX_HOUSE = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+
     suc_id = models.AutoField("Key", primary_key=True)
     suc_codigo = models.CharField(
         "Código de la unidad", max_length=50, null=True, blank=True)
@@ -189,6 +197,10 @@ class Sucursal(models.Model):
         Region, verbose_name="Región", db_column="suc_region", on_delete=models.PROTECT)
     comuna = models.ForeignKey(
         Comuna, verbose_name="Comuna", db_column="suc_comuna", on_delete=models.PROTECT)
+    suc_latitude = models.CharField("Latitud", max_length=255, null=True, blank=True)
+    suc_longitude = models.CharField("Longitud", max_length=255, null=True, blank=True)
+    suc_matrixhouse = models.CharField(
+        "Es casa matriz", max_length=1, choices=OPCIONES, null=True, blank=True, default="N")
     suc_estado = models.CharField(
         "Sucursal activa", max_length=1, choices=OPCIONES, default="S")
 

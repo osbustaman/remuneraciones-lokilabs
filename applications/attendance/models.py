@@ -16,6 +16,7 @@ class MarkAttendance(TimeStampedModel):
     TYPE_MARK = (
         (1, 'MOVIL'),
         (2, 'HUELLA'),
+        (3, 'WEB'),
     )
 
     OPTIONS = (

@@ -2,7 +2,8 @@ from applications.attendance.api.serializers import MarkAttendanceSerializer
 from applications.attendance.models import MarkAttendance
 
 from datetime import datetime
-from django.db.models import F, Count
+from django.db.models import F, Count, F, Value, CharField
+from django.db.models.functions import Concat
 from django.utils import timezone
 
 from drf_yasg import openapi
@@ -11,11 +12,15 @@ from drf_yasg.utils import swagger_auto_schema
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 
+from itertools import chain
+
 from rest_framework import status
 from rest_framework import generics, status
 from rest_framework.response import Response
 
 from django.contrib.auth.models import User
+
+from applications.usuario.models import Colaborador, UsuarioEmpresa
 
 # Define el objeto Parameter para el encabezado Authorization
 header_param = openapi.Parameter(
@@ -137,10 +142,44 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 actualDate = datetime.strptime(request.data['ma_datemark'], "%Y-%m-%d").date()
                 objectMarkAttendance = MarkAttendance.objects.filter(user=objectUser.first(), ma_datemark=actualDate)
                 
-                # Ejemplo de uso
-                direccion = "Lourdes 1012, Quinta Normal, Santiago, Chile"
-                latitud, longitud = self.obtener_latitud_longitud(direccion)
                 
+                colaborador_data = Colaborador.objects.filter(user=objectUser.first()).values('col_latitude', 'col_longitude', 'col_direccion', 'comuna__com_nombre', 'region__re_nombre', 'pais__pa_nombre')
+                usuario_empresa_data = UsuarioEmpresa.objects.filter(user=objectUser.first()).values('sucursal__suc_latitude', 'sucursal__suc_longitude', 'sucursal__suc_direccion', 'sucursal__comuna__com_nombre', 'sucursal__region__re_nombre', 'sucursal__pais__pa_nombre')
+
+                result_list = list(chain(
+                    [{'latitud': item['col_latitude'], 'longitud': item['col_longitude'], 'direccion': f"{item['col_direccion']}, {item['comuna__com_nombre']}, {item['region__re_nombre']}, {item['pais__pa_nombre']}"} for item in colaborador_data],
+                    [{'latitud': item['sucursal__suc_latitude'], 'longitud': item['sucursal__suc_longitude'], 'direccion': f"{item['sucursal__suc_direccion']}, {item['sucursal__comuna__com_nombre']}, {item['sucursal__region__re_nombre']}, {item['sucursal__pais__pa_nombre']}"} for item in usuario_empresa_data]
+                ))
+                
+                itsRadio = False
+                locationData = []
+                for val in result_list:
+                    itsRadio = self.isWithinTheDiameter(
+                        float(val['latitud'])
+                        , float(val['longitud'])
+                        , float(request.data['ma_latitude'])
+                        , float(request.data['ma_longitude']))
+                    if itsRadio:
+                        locationData.append(
+                            {
+                                "lugar": "sucursal",
+                                "latitud": float(val['latitud']),
+                                "longitud": float(val['longitud']),
+                                "direccion": val['direccion']
+                            }
+                        )
+                        break
+                    
+                if not itsRadio:
+                    return Response({"error": "Not Found - 404", "message": "No se encuantra en el rango del lugar de trabajando"}, status=status.HTTP_404_NOT_FOUND)
+                
+                locationData.append(
+                    {
+                        "lugar": "posicion",
+                        "latitud": float(request.data['ma_latitude']),
+                        "longitud": float(request.data['ma_longitude'])
+                    }
+                )
                 
                 if objectMarkAttendance:
                     if len(objectMarkAttendance) >= 2:
@@ -152,7 +191,8 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                             else:
                                 serializer.save()
                                 response_to_page = {
-                                    "data_serializer": serializer.data
+                                    "data_serializer": serializer.data,
+                                    "locationData": locationData
                                 }
                                 return Response(response_to_page, status=status.HTTP_201_CREATED)
                 else:
@@ -161,7 +201,8 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                     else:
                         serializer.save()
                         response_to_page = {
-                            "data_serializer": serializer.data
+                            "data_serializer": serializer.data,
+                            "locationData": locationData
                         }
                         return Response(response_to_page, status=status.HTTP_201_CREATED)
             else:
@@ -169,16 +210,27 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
-    def obtener_latitud_longitud(self, direccion):
-        # Crear un objeto geolocalizador utilizando el proveedor Nominatim
-        geolocalizador = Nominatim(user_agent="Nominatim")
+    def getLatitudeLongitude(self, address):
+        # Crear un objeto geolocator utilizando el proveedor Nominatim
+        geolocator = Nominatim(user_agent="Nominatim")
 
         # Obtener la ubicación (latitud, longitud) a partir de la dirección
-        ubicacion = geolocalizador.geocode(direccion)
+        location = geolocator.geocode(address)
 
-        if ubicacion:
-            latitud = ubicacion.latitude
-            longitud = ubicacion.longitude
-            return latitud, longitud
+        if location:
+            latitude = location.latitude
+            longitude = location.longitude
+            return latitude, longitude
         else:
             return None, None
+        
+    def isWithinTheDiameter(self, lat_a, lon_a, lat_b, lon_b, radio_km = 0.1):
+        # Crear objetos de ubicación para A y B
+        location_a = (lat_a, lon_a)
+        location_b = (lat_b, lon_b)
+
+        # Calcular la distancia entre las ubicaciones A y B en kilómetros
+        distance_km = geodesic(location_a, location_b).kilometers
+
+        # Verificar si la distancia es menor o igual al radio deseado
+        return distance_km <= radio_km

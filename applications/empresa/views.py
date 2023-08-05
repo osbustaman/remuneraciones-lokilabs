@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
+from app01.functions import getLatitudeLongitude
 from applications.empresa.forms import AssociatedEntitiesForm, CargoForm, CentroCostoForm, EmpresaForm, GrupoCentroCostoForm, SucursalForm
 from applications.empresa.models import CajasCompensacion, Cargo, CentroCosto, Empresa, GrupoCentroCosto, MutualSecurity, Sucursal
 
@@ -25,13 +26,33 @@ def add_company(request):
     if request.method == 'POST':
         form = EmpresaForm(request.POST, request.FILES)
         if form.is_valid():
-            company = form.save()
+            company = form.save(commit=False)
+
+            address = f"{ company.emp_direccion } { company.emp_numero }, { company.comuna.com_nombre }, { company.region.re_nombre }, { company.pais.pa_nombre }"
+            lat, lng = getLatitudeLongitude(address)
+
+            company.emp_latitude = str(lat)
+            company.emp_longitude = str(lng)
+            company.save()
+
+            suc = Sucursal()
+            suc.suc_descripcion = "Casa Matriz"
+            suc.empresa = company
+            suc.suc_direccion = address
+            suc.pais = company.pais
+            suc.region = company.region
+            suc.comuna = company.comuna
+            suc.suc_latitude = str(lat)
+            suc.suc_longitude = str(lng)
+            suc.suc_matrixhouse = "S"
+            suc.save()
+
+            messages.success(request, 'Empresa creada exitosamente.')
             return redirect('emp_app:edit_company', emp_id=company.emp_id)
 
-        lista_err = []
         for field in form:
             for error in field.errors:
-                lista_err.append(field.label + ': ' + error)
+                messages.error(request, f"{field.label}: {error}")
     else:
         form = EmpresaForm()
 
@@ -48,7 +69,24 @@ def edit_company(request, emp_id):
     if request.method == 'POST':
         form = EmpresaForm(request.POST, request.FILES, instance=company)
         if form.is_valid():
-            form.save()
+            com = form.save(commit=False)
+
+            address = f"{ company.emp_direccion } { company.emp_numero }, { company.comuna.com_nombre }, { company.region.re_nombre }, { company.pais.pa_nombre }"
+            lat, lng = getLatitudeLongitude(address)
+
+            com.emp_latitude = str(lat)
+            com.emp_longitude = str(lng)
+            com.save()
+
+            suc = Sucursal.objects.get(suc_matrixhouse = "S", empresa = company, suc_estado = "S")
+            suc.suc_direccion = f"{ company.emp_direccion } { company.emp_numero }"
+            suc.pais = company.pais
+            suc.region = company.region
+            suc.comuna = company.comuna
+            suc.suc_latitude = str(lat)
+            suc.suc_longitude = str(lng)
+            suc.save()
+
     else:
         form = EmpresaForm(instance=company)
 
@@ -97,6 +135,12 @@ def add_branch_office(request, emp_id):
         if form.is_valid():
             branch_office = form.save(commit=False)
             branch_office.empresa = Empresa.objects.get(emp_id=emp_id)
+
+            address = f"{ branch_office.suc_direccion }, { branch_office.comuna.com_nombre }, { branch_office.region.re_nombre }, { branch_office.pais.pa_nombre }"
+            lat, lng = getLatitudeLongitude(address)
+
+            branch_office.suc_latitude = str(lat)
+            branch_office.suc_longitude = str(lng)
             branch_office.save()
 
             # Agregar mensaje de éxito
@@ -124,7 +168,14 @@ def edit_branch_office(request, emp_id, suc_id):
     if request.method == 'POST':
         form = SucursalForm(request.POST, instance=branch)
         if form.is_valid():
-            form.save()
+            branch_office = form.save(commit=False)
+
+            address = f"{ branch_office.suc_direccion }, { branch_office.comuna.com_nombre }, { branch_office.region.re_nombre }, { branch_office.pais.pa_nombre }"
+            lat, lng = getLatitudeLongitude(address)
+
+            branch_office.suc_latitude = str(lat)
+            branch_office.suc_longitude = str(lng)
+            branch_office.save()
             # Agregar mensaje de éxito
             messages.success(request, 'Sucursal editada exitosamente.')
         else:

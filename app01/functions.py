@@ -3,8 +3,23 @@ from decouple import config
 from django.db import connections
 from app01.settings.local import DATABASES
 
+from geopy.geocoders import Nominatim
+
 from applications.base.models import Cliente
 
+def getLatitudeLongitude(address):
+    # Crear un objeto geolocator utilizando el proveedor Nominatim
+    geolocator = Nominatim(user_agent="Nominatim")
+
+    # Obtener la ubicación (latitud, longitud) a partir de la dirección
+    location = geolocator.geocode(address)
+
+    if location:
+        latitude = location.latitude
+        longitude = location.longitude
+        return latitude, longitude
+    else:
+        return None, None
 
 def elige_choices(obj_choice, str):
     valor = ""

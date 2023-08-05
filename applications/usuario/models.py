@@ -114,6 +114,8 @@ class Colaborador(TimeStampedModel):
         Region, verbose_name="Región", db_column="usu_region", on_delete=models.PROTECT)
     comuna = models.ForeignKey(
         Comuna, verbose_name="Comuna", db_column="usu_comuna", on_delete=models.PROTECT)
+    col_latitude = models.CharField("Latitud", max_length=255, null=True, blank=True)
+    col_longitude = models.CharField("Longitud", max_length=255, null=True, blank=True)
     col_tipousuario = models.IntegerField(
         "Tipo usuario", choices=TIPO_USUARIO, null=True, blank=True)
     col_estudios = models.IntegerField(
