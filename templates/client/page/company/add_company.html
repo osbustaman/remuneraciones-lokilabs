@@ -131,9 +131,9 @@
 
 
 
-
+{% if action|lower == 'editar' %}
 {% include "client/includes/modal_form_html.html" with id_modal='add_branch' title='Carga masiva de sucursales' %}
-
+{% endif %}
 
 {% endblock %}
 
