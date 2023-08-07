@@ -68,6 +68,12 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 'ma_typeattendance': openapi.Schema(type='integer', description='Tipo de marca.'),
                 'ma_latitude': openapi.Schema(type='string', description='Latitud ejemplo: -33.419500'),
                 'ma_longitude': openapi.Schema(type='string', description='Latitud ejemplo: -70.604875'),
+
+                'ma_modeldevice': openapi.Schema(type='string', description='Iphone 12'),
+                'ma_photo': openapi.Schema(type='string', description='String en base64'),
+                'ma_typemark': openapi.Schema(type='integer', description='MOVIL|HUELLEREO|WEB'),
+                'ma_platformmark': openapi.Schema(type='string', description='navegador de internet en el caso que la marca sea desde la web'),
+
                 'ma_datemark': openapi.Schema(type='string', format='date', description='Fecha formato YYYY-mm-dd'),
             },
             required=['user', 'ma_typeattendance', 'ma_latitude', 'ma_longitude', 'ma_datemark'],
@@ -122,6 +128,8 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                                 "ma_typeattendance": openapi.Schema(type='integer'),
                                 "ma_location": openapi.Schema(type='string'),
                                 "ma_datemark": openapi.Schema(type='string', format='date-time'),
+
+                                
                                 "ma_active": openapi.Schema(type='integer'),
                                 "user": openapi.Schema(type='integer'),
                             }
@@ -141,7 +149,6 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 # Obtener la fecha y hora actual en el formato de la base de datos
                 actualDate = datetime.strptime(request.data['ma_datemark'], "%Y-%m-%d").date()
                 objectMarkAttendance = MarkAttendance.objects.filter(user=objectUser.first(), ma_datemark=actualDate)
-                
                 
                 colaborador_data = Colaborador.objects.filter(user=objectUser.first()).values('col_latitude', 'col_longitude', 'col_direccion', 'comuna__com_nombre', 'region__re_nombre', 'pais__pa_nombre')
                 usuario_empresa_data = UsuarioEmpresa.objects.filter(user=objectUser.first()).values('sucursal__suc_latitude', 'sucursal__suc_longitude', 'sucursal__suc_direccion', 'sucursal__comuna__com_nombre', 'sucursal__region__re_nombre', 'sucursal__pais__pa_nombre')
