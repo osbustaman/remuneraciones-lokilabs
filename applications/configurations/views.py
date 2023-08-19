@@ -7,10 +7,13 @@ from applications.configurations.forms import AfpForm, ApvForm, BanksForm, Cajas
 
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, MutualSecurity, Salud
 from applications.remuneracion.models import Concept
+from applications.security.decorators import existsCompany
+
 
 # Create your views here.
 
 @login_required
+@existsCompany
 def countries(request):
 
     objects = Pais.objects.all()
@@ -22,6 +25,7 @@ def countries(request):
 
 
 @login_required
+@existsCompany
 def regions(request):
 
     objects = Region.objects.all()
@@ -33,6 +37,7 @@ def regions(request):
 
 
 @login_required
+@existsCompany
 def communes(request):
 
     objects = Comuna.objects.all()
@@ -44,6 +49,7 @@ def communes(request):
 
 
 @login_required
+@existsCompany
 def afp(request):
 
     objects = Afp.objects.filter(afp_activo="S")
@@ -110,6 +116,7 @@ def afp_delete(request, afp_id):
 
 
 @login_required
+@existsCompany
 def health(request):
 
     objects = Salud.objects.filter(sa_activo="S")
@@ -177,6 +184,7 @@ def health_delete(request, sa_id):
 
 
 @login_required
+@existsCompany
 def compensation_box(request):
 
     objects = CajasCompensacion.objects.filter(cc_activo="S")
@@ -244,6 +252,7 @@ def compensation_box_delete(request, cc_id):
 
 
 @login_required
+@existsCompany
 def banks(request):
 
     list_banks = Banco.objects.filter(ban_activo="S")
@@ -307,6 +316,7 @@ def delete_bank(request, ban_id):
 
 
 @login_required
+@existsCompany
 def apv(request):
 
     objects = Apv.objects.filter(apv_activo="S")
@@ -375,6 +385,7 @@ def apv_delete(request, apv_id):
 
 
 @login_required
+@existsCompany
 def mutual_security(request):
 
     objects = MutualSecurity.objects.filter(ms_active="S")
@@ -442,8 +453,8 @@ def mutual_security_delete(request, ms_id):
     return redirect('conf_app:mutual_security_app')
 
 
-
 @login_required
+@existsCompany
 def concepts(request):
 
     objects = Concept.objects.filter(conc_active="S")

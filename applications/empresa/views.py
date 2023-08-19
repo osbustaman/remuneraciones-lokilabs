@@ -1,13 +1,58 @@
-from django.contrib import messages
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404
 from app01.functions import getLatitudeLongitude
-from applications.empresa.forms import AssociatedEntitiesForm, CargoForm, CentroCostoForm, EmpresaForm, GrupoCentroCostoForm, SucursalForm
-from applications.empresa.models import CajasCompensacion, Cargo, CentroCosto, Empresa, GrupoCentroCosto, MutualSecurity, Sucursal
+
+from applications.empresa.forms import (
+    AssociatedEntitiesForm, 
+    CargoForm, 
+    CentroCostoForm, 
+    EmpresaForm, 
+    GrupoCentroCostoForm, 
+    SucursalForm
+)
+from applications.empresa.models import (
+    CajasCompensacion, 
+    Cargo, 
+    CentroCosto, 
+    Empresa, 
+    GrupoCentroCosto, 
+    MutualSecurity, 
+    Sucursal
+)
+
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import Http404, HttpResponseRedirect
+from django.shortcuts import render
+from django.shortcuts import redirect, get_object_or_404
+from django.urls import resolve
+
+from urllib.parse import urlparse
+
+
 
 # Create your views here.
 
+@login_required
+def cambiarEmpresa(request, emp_id):
+    # **************************************************
+    # AREA DE LAS SESSIONES
+    # **************************************************
+    empresa = Empresa.objects.get(emp_id=emp_id)
+
+    request.session['la_empresa'] = empresa.emp_id
+    request.session['razon_social'] = empresa.emp_namecompany
+    request.session['emp_namecompany'] = empresa.emp_namecompany
+
+    next = request.META.get('HTTP_REFERER', None) or '/'
+    response = HttpResponseRedirect(next)
+
+    view, args, kwargs = resolve(urlparse(next)[2])
+    kwargs['request'] = request
+
+    try:
+        view(*args, **kwargs)
+    except Http404:
+        return HttpResponseRedirect('/')
+    return response
 
 @login_required
 def list_company(request):

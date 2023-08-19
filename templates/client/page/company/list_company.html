@@ -12,10 +12,10 @@
 
 {% block title_page %}Listado de empresas{% endblock %}
 {% block buttons %}
-    {% if not request.session.is_company %}
+    
     <button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'emp_app:add_company' %}')">Crear Empresa <i
         class="icon ion-plus-circled"></i></button>
-    {% endif %}    
+      
 {% endblock %}
 
 {% block content_page %}
@@ -27,6 +27,7 @@
                 <tr>
                     <th class="wd-15p">ID</th>
                     <th class="wd-15p">Rut Empresa</th>
+                    <th class="wd-20p">Nombre Empresa</th>
                     <th class="wd-20p">Razon Social</th>
                     <th class="wd-15p">Teléfono</th>
                     <th class="wd-10p">Correo</th>
@@ -38,6 +39,7 @@
                 <tr>
                     <td>{{ company.emp_id }}</td>
                     <td>{{ company.emp_rut }}</td>
+                    <td>{{ company.emp_namecompany | title }}</td>
                     <td>{{ company.emp_razonsocial }}</td>
                     <td>{{ company.emp_fonouno }}</td>
                     <td>{{ company.emp_mailuno }}</td>

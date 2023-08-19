@@ -20,10 +20,13 @@ from applications.empresa.views import (
     , edit_cc
     , delete_cc
     , add_associated_entities
+    , cambiarEmpresa
 )
 app_name = 'emp_app'
 
 urlpatterns = [
+
+    path('cambiar-empresa/<int:emp_id>', cambiarEmpresa, name='cambiar_empresa'),
 
     path('company/list/', list_company, name='list_company'),
     path('company/add/', add_company, name='add_company'),

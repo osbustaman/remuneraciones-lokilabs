@@ -1,0 +1,28 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} Error 404 {% endblock %}
+
+{% block static_up %}
+
+{% endblock %}
+
+{% block title_page %} Error 404 {% endblock %}
+{% block buttons %}
+{% endblock %}
+
+{% block content_page %}
+<div class="alert alert-danger" role="alert">
+    <strong class="d-block d-sm-inline-block-force"><span class="fa fa-close"></span> Error 404: </strong> {{ message }}.
+</div>
+{% endblock %}
+
+{% block static_down %}
+
+{% endblock %}
+
+{% block script_tag %}
+
+{% endblock %}

@@ -22,7 +22,13 @@
                     {{ form.emp_rutrepresentante }}
                 </div>
             </div><!-- col-4 -->
-            <div class="col-lg-8">
+            <div class="col-lg-4">
+                <div class="form-group mg-b-10-force">
+                    <label class="form-control-label">{{ form.emp_namecompany.label }} <span class="tx-danger">*</span></label>
+                    {{ form.emp_namecompany }}
+                </div>
+            </div><!-- col-8 -->
+            <div class="col-lg-4">
                 <div class="form-group mg-b-10-force">
                     <label class="form-control-label">{{ form.emp_razonsocial.label }} <span class="tx-danger">*</span></label>
                     {{ form.emp_razonsocial }}

@@ -66,6 +66,11 @@
                     <ul class="list-unstyled user-profile-nav">
                         <li><a href=""><i class="icon ion-ios-person-outline"></i> Edit Profile</a></li>
                         <li><a href="{% url 'account_base:logout_client' %}"><i class="icon ion-power"></i> Sign Out</a></li>
+
+                        {% for e in request.session.list_company %}
+                        <li><a href="{% url 'emp_app:cambiar_empresa' e.key %}">{{e.value|title}}</a></li>
+                        {% endfor %}
+
                     </ul>
                 </div><!-- dropdown-menu -->
             </div><!-- dropdown -->
@@ -271,7 +276,7 @@
     </div><!-- am-sideleft -->
 
     <div class="am-pagetitle">
-        <h5 class="am-title">{% block title_page %}{% endblock %}</h5>
+        <h5 class="am-title">{{ request.session.emp_namecompany | title }}: {% block title_page %}{% endblock %}</h5>
         <div id="searchBar" class="search-bar">
             {% block buttons %}{% endblock %}
         </div>

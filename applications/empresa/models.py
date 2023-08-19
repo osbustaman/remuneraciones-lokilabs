@@ -97,13 +97,13 @@ class Empresa(models.Model):
     )
 
     emp_id = models.AutoField("Key", primary_key=True)
-    emp_codigo = models.CharField("Código de la empresa", max_length=150)
     emp_rut = models.CharField("Rut", max_length=25)
     emp_nombrerepresentante = models.CharField(
         "Nombre representante", max_length=255, null=True, blank=True)
     emp_rutrepresentante = models.CharField("Rut representante", max_length=25)
     emp_isestatal = models.CharField(
         "Es estatal", max_length=1, choices=OPCIONES, default="N")
+    emp_namecompany = models.CharField("Nombre empresa", max_length=150)
     emp_razonsocial = models.CharField("Razón social", max_length=150)
     emp_giro = models.CharField("Giro", max_length=150)
     emp_direccion = models.TextField("Calle")
@@ -152,8 +152,8 @@ class Empresa(models.Model):
         return self.emp_id
 
     def __str__(self):
-        return self.emp_razonsocial
-
+        return f"{ self.emp_id } - { self.emp_namecompany }"
+    
     def __generador_ruta_logo(self):
         rutaLogo = "{a}/{b}".format(a=self.emp_rutalogo,
                                     b=self.emp_nombreimagen)

@@ -9,7 +9,7 @@ from applications.base.models import Cliente
 
 def getLatitudeLongitude(address):
     # Crear un objeto geolocator utilizando el proveedor Nominatim
-    geolocator = Nominatim(user_agent="Nominatim")
+    geolocator = Nominatim(user_agent="Nominatim", timeout=10)
 
     # Obtener la ubicación (latitud, longitud) a partir de la dirección
     location = geolocator.geocode(address)

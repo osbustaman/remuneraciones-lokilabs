@@ -43,9 +43,9 @@
                 {% for obj in list_objects %} 
                 <tr>
                     <td>{{ obj.col_rut }}</td>
-                    <td>{{ obj.user.first_name|title }} {{ obj.user.last_name|title }}</td>
-                    <td>--</td>
-                    <td>--</td>
+                    <td>{{ obj.full_name|title }}</td>
+                    <td>{{ obj.cargo_nombre|title }}</td>
+                    <td>{{ obj.centro_costo_nombre|title }}</td>
                     <td>
                         <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'usuario_app:edit_collaborator_file' obj.user.id obj.col_id %}')">Editar</button>
                     </td>

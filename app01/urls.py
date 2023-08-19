@@ -55,6 +55,7 @@ urlpatterns = [
     path('', include('applications.empresa.urls')),
     path('', include('applications.configurations.urls')),
     path('', include('applications.usuario.urls')),
+    path('', include('applications.security.urls')),
 
     path('api/attendance/', include('applications.attendance.urls')),
 

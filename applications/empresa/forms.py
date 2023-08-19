@@ -118,6 +118,8 @@ class EmpresaForm(forms.ModelForm):
         attrs=tags_input_general), required=True)
     emp_isestatal = forms.ChoiceField(initial='S', label='Es Estatal?', choices=Empresa.OPCIONES,
                                       widget=forms.Select(attrs=tags_input_general), required=False)
+    emp_namecompany = forms.CharField(label="Nombre empresa", widget=forms.TextInput(
+        attrs=tags_input_general), required=True)
     emp_razonsocial = forms.CharField(label="Razón Social", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
     emp_giro = forms.CharField(label="Giro", widget=forms.TextInput(
@@ -182,6 +184,7 @@ class EmpresaForm(forms.ModelForm):
             , "emp_nombrerepresentante"
             , "emp_rutrepresentante"
             , "emp_isestatal"
+            , "emp_namecompany"
             , "emp_razonsocial"
             , "emp_giro"
             , "emp_direccion"

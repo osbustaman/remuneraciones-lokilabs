@@ -74,6 +74,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'app01.middleware.middleware_menu.menu_middleware_items',
     'app01.middleware.middleware_sessions.middleware_sessions',
+    'app01.middleware.middleware_menu_company.middleware_menu_company',
 ]
 
 REST_FRAMEWORK = {

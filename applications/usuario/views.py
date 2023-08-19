@@ -5,18 +5,32 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from app01.functions import getLatitudeLongitude
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Empresa, Salud, Sucursal
+from applications.security.decorators import existsCompany
 from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FamilyResponsibilitiesForm, FormsForecastData, FormsPayments, UserForm
 from django.contrib.auth.models import User
+
+from django.db.models import F, Value
+from django.db.models.functions import Concat
 
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
 
 # Create your views here.
 
 @login_required
+@existsCompany
 def collaborator_file(request):
 
-    list_objects = Colaborador.objects.filter(col_activo=1)
+    #list_objects = Colaborador.objects.filter(col_activo=1)
 
+    # Realizar el join entre Colaborador, UsuarioEmpresa y User
+    list_objects = Colaborador.objects.filter(
+        user__usuarioempresa__empresa_id=request.session['la_empresa']
+    ).annotate(
+        full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
+        cargo_nombre=F('user__usuarioempresa__cargo__car_nombre'),
+        centro_costo_nombre=F('user__usuarioempresa__centrocosto__cencost_nombre')
+    )
+    
     data = {
         'list_objects': list_objects
     }
