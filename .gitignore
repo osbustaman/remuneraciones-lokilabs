@@ -5,6 +5,7 @@ env
 *.pyc
 *.jpg
 *.png
+*.json
 
 static/amanda
 static/gentella
