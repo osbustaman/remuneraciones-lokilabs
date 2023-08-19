@@ -96,6 +96,16 @@ class Empresa(models.Model):
         ('N', 'NO'),
     )
 
+    BUSSINESS_SOCIAL_REASON = (
+        (0, '( Seleccione )'),
+        (1, 'Empresa Individual de Responsabilidad Limitada (E.I.R.L.)'),
+        (2, 'Sociedad de Responsabilidad Limitada (S.R.L.)'),
+        (3, 'Sociedad por Acciones (SpA)'),
+        (4, 'Sociedad Anónima (S.A.)'),
+        (5, 'Sociedad Anónima de Garantía Recíproca (S.A.G.R.)'),
+    )
+
+
     emp_id = models.AutoField("Key", primary_key=True)
     emp_rut = models.CharField("Rut", max_length=25)
     emp_nombrerepresentante = models.CharField(
@@ -104,7 +114,7 @@ class Empresa(models.Model):
     emp_isestatal = models.CharField(
         "Es estatal", max_length=1, choices=OPCIONES, default="N")
     emp_namecompany = models.CharField("Nombre empresa", max_length=150)
-    emp_razonsocial = models.CharField("Razón social", max_length=150)
+    emp_razonsocial = models.IntegerField("Razón social", choices=BUSSINESS_SOCIAL_REASON, null=True, blank=True)
     emp_giro = models.CharField("Giro", max_length=150)
     emp_direccion = models.TextField("Calle")
     emp_numero = models.IntegerField("N°")
@@ -162,7 +172,6 @@ class Empresa(models.Model):
     emp_generadorrutalogo = property(__generador_ruta_logo)
 
     def save(self, *args, **kwargs):
-        self.emp_razonsocial = self.emp_razonsocial.title()
         super(Empresa, self).save(*args, **kwargs)
 
     class Meta:

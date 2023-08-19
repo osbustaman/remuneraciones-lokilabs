@@ -40,7 +40,7 @@
                     <td>{{ company.emp_id }}</td>
                     <td>{{ company.emp_rut }}</td>
                     <td>{{ company.emp_namecompany | title }}</td>
-                    <td>{{ company.emp_razonsocial }}</td>
+                    <td>{{ company.get_emp_razonsocial_display }}</td>
                     <td>{{ company.emp_fonouno }}</td>
                     <td>{{ company.emp_mailuno }}</td>
                     <td><button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'emp_app:edit_company' company.emp_id %}')">Editar</button></td>

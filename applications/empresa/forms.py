@@ -120,8 +120,8 @@ class EmpresaForm(forms.ModelForm):
                                       widget=forms.Select(attrs=tags_input_general), required=False)
     emp_namecompany = forms.CharField(label="Nombre empresa", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
-    emp_razonsocial = forms.CharField(label="Razón Social", widget=forms.TextInput(
-        attrs=tags_input_general), required=True)
+    emp_razonsocial = forms.ChoiceField(initial='S', label='Razón Social', choices=Empresa.BUSSINESS_SOCIAL_REASON,
+                                      widget=forms.Select(attrs=tags_input_general), required=False)
     emp_giro = forms.CharField(label="Giro", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
     emp_direccion = forms.CharField(label="Dirección", widget=forms.TextInput(

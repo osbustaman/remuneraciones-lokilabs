@@ -366,7 +366,7 @@ class Contact(TimeStampedModel):
         "Correo de contacto", max_length=120, null=True, blank=True)
     con_phone_contact = models.CharField(
         "Teléfono de contacto", max_length=120, null=True, blank=True)
-    cont_name_contact = models.CharField("Nombre del contacto", max_length=15)
+    cont_name_contact = models.CharField("Nombre del contacto", max_length=150)
     user = models.ForeignKey(User, verbose_name="Usuario",
                              db_column="con_user", on_delete=models.PROTECT)
     con_actiove = models.CharField(
