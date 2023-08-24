@@ -51,4 +51,3 @@ migrations
 
 .env
 app01/.env
-*.xlsx
