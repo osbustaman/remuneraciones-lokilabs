@@ -1,9 +1,7 @@
+from decouple import config
 from django.db import models
 
 from model_utils.models import TimeStampedModel
-from decouple import config
-from app01.settings.local import NAME_HOST, PORT_LOCALHOST
-
 
 class Pais(TimeStampedModel):
     pa_id = models.AutoField("Key", primary_key=True)
