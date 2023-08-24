@@ -16,6 +16,10 @@ migrations
 **/gentella/*.html
 **/migrations/!(__init__.py)
 
+**/settings/*
+!**/settings/base.py
+
+
 .env
 app01/.env
 *.xlsx
