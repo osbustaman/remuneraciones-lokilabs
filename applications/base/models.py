@@ -1,6 +1,7 @@
 from django.db import models
 
 from model_utils.models import TimeStampedModel
+from decouple import config
 from app01.settings.local import NAME_HOST, PORT_LOCALHOST
 
 
@@ -127,7 +128,7 @@ class Cliente(TimeStampedModel):
         isCliente = Cliente.objects.filter(
             rut_cliente=self.rut_cliente).exists()
         if not isCliente:
-            return f"http://{self.nombre_cliente}.{NAME_HOST}{PORT_LOCALHOST}"
+            return f"http://{self.nombre_cliente}.{config('NAME_HOST')}{config('PORT_LOCALHOST')}"
         return self.cli_link
 
     create_url_client = property(__create_url_client)
