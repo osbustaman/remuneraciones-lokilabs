@@ -6,6 +6,35 @@ env
 *.jpg
 *.png
 *.json
+*.pdf
+*.xlsx
+*.xlsb
+*.xls
+*.docx
+*.doc
+*.pptx
+*.ppt
+*.csv
+*.accdb
+*.mdb
+*.one
+*.ppsx
+*.ppsm
+*.potx
+*.potm
+*.pptm
+*.xlt
+*.xlsm
+*.xlam
+*.xla
+*.xltm
+*.xll
+*.xltx
+*.xld
+*.xlc
+*.odt
+*.ods
+*.odp
 
 static/amanda
 static/gentella
@@ -14,7 +43,7 @@ migrations
 
 **/amanda/*.html
 **/gentella/*.html
-**/migrations/!(__init__.py)
+
 
 **/settings/*
 !**/settings/base.py
