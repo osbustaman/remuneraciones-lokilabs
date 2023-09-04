@@ -64,12 +64,13 @@
                 </a>
                 <div class="dropdown-menu wd-200">
                     <ul class="list-unstyled user-profile-nav">
-                        <li><a href=""><i class="icon ion-ios-person-outline"></i> Edit Profile</a></li>
-                        <li><a href="{% url 'account_base:logout_client' %}"><i class="icon ion-power"></i> Sign Out</a></li>
+                        <li><a href="{% url 'account_base:logout_client' %}"><i class="icon ion-power"></i> Cerrar Sesión</a></li>
 
+                        {% if request.session.user_nivel == 3 %}
                         {% for e in request.session.list_company %}
                         <li><a href="{% url 'emp_app:cambiar_empresa' e.key %}">{{e.value|title}}</a></li>
                         {% endfor %}
+                        {% endif %}
 
                     </ul>
                 </div><!-- dropdown-menu -->

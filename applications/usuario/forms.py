@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import User
-from applications.base.models import Comuna, Pais, Region
+from applications.base.models import Comuna, Pais, Region, TablaGeneral
 from applications.base.utils import validarRut
 from applications.empresa.models import (
     Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Salud, Sucursal
@@ -209,6 +209,8 @@ class DatosLaboralesForm(forms.ModelForm):
                                          widget=forms.Select(attrs=tags_input_select), required=True)
     ue_estate = forms.ChoiceField(initial=0, label='Estado', choices=UsuarioEmpresa.ESTATE_JOB,
                                   widget=forms.Select(attrs=tags_input_select), required=True)
+    working_day = forms.ModelChoiceField(label="Jornada de trabajo", required=True,
+                                   queryset=TablaGeneral.objects.filter(tg_nombretabla="tb_working_day"), widget=forms.Select(attrs=tags_input_select))
 
     class Meta:
         model = UsuarioEmpresa
@@ -221,7 +223,8 @@ class DatosLaboralesForm(forms.ModelForm):
             'ue_fechatermino',
             'ue_tipocontrato',
             'ue_tipotrabajdor',
-            'ue_estate'
+            'ue_estate',
+            'working_day'
         ]
 
 

@@ -4,12 +4,13 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, get_object_or_404
 from app01.functions import getLatitudeLongitude
+from applications.base.models import TablaGeneral
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Empresa, Salud, Sucursal
 from applications.security.decorators import existsCompany
 from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FamilyResponsibilitiesForm, FormsForecastData, FormsPayments, UserForm
 from django.contrib.auth.models import User
 
-from django.db.models import F, Value
+from django.db.models import F, Value, CharField
 from django.db.models.functions import Concat
 
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
@@ -20,21 +21,24 @@ from applications.usuario.models import Colaborador, Contact, FamilyResponsibili
 @existsCompany
 def collaborator_file(request):
 
-    #list_objects = Colaborador.objects.filter(col_activo=1)
-
     # Realizar el join entre Colaborador, UsuarioEmpresa y User
-    list_objects = Colaborador.objects.filter(
-        user__usuarioempresa__empresa_id=request.session['la_empresa']
-    ).annotate(
-        full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
-        cargo_nombre=F('user__usuarioempresa__cargo__car_nombre'),
-        centro_costo_nombre=F('user__usuarioempresa__centrocosto__cencost_nombre')
-    )
-    
-    data = {
-        'list_objects': list_objects
-    }
-    return render(request, 'client/page/usuario/collaborator_file.html', data)
+    try:
+        list_objects = Colaborador.objects.filter(
+            user__usuarioempresa__empresa_id=request.session['la_empresa']
+        ).annotate(
+            full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
+            cargo_nombre=F('user__usuarioempresa__cargo__car_nombre'),
+            centro_costo_nombre=F('user__usuarioempresa__centrocosto__cencost_nombre')
+        )
+        
+        data = {
+            'list_objects': list_objects
+        }
+        return render(request, 'client/page/usuario/collaborator_file.html', data)
+    except KeyError:
+        return redirect('usuario_app:add_collaborator_file')
+    except Exception as ex:
+        return redirect('security_app:error404')
 
 
 @login_required
@@ -62,6 +66,12 @@ def add_collaborator_file(request):
             colaborador.col_latitude = lat
             colaborador.col_longitude = lng
             colaborador.save()
+
+            usuarioEmpresa = UsuarioEmpresa()
+            usuarioEmpresa.user = user
+            usuarioEmpresa.empresa = Empresa.objects.get(emp_id = int(request.session['la_empresa']))
+            usuarioEmpresa.save()
+
 
             messages.success(request, 'Datos personales creados exitosamente!.')
 
@@ -149,6 +159,12 @@ def edit_collaborator_file(request, id, col_id):
     list_contact = Contact.objects.filter(con_actiove="S")
     list_familyResponsibilities = FamilyResponsibilities.objects.filter(fr_activo=1)
 
+    opciones_working_day = TablaGeneral.objects.filter(tg_nombretabla="tb_working_day").annotate(display_name=Concat(
+                F('tg_id'), Value(' - '), F('tg_short_description'), output_field=CharField())).values_list('display_name', flat=True)  # flat=True para obtener una lista plana
+
+    # Crear una instancia del formulario y establecer el valor inicial para working_day
+    formularioWorkingDay = DatosLaboralesForm(initial={'working_day': opciones_working_day.first()})
+
     data = {
         'action': 'Editar',
         'formUserForm': formUserForm,
@@ -156,6 +172,7 @@ def edit_collaborator_file(request, id, col_id):
         'formDatosLaboralesForm': formDatosLaboralesForm,
         'formFormsPayments': formFormsPayments,
         'formFormsForecastData': formFormsForecastData,
+        'formularioWorkingDay': formularioWorkingDay,
         'id': id,
         'col_id': col_id,
         'list_contact': list_contact,

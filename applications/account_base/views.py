@@ -1,3 +1,5 @@
+from django.contrib import messages
+
 from django.shortcuts import render, redirect
 
 from django.contrib.auth import authenticate, login, logout
@@ -68,7 +70,7 @@ def login_view(request):
             request.session['id'] = user.id
             return HttpResponseRedirect(reverse('base_app:control-panel'))
         else:
-            data['error'] = 'Usuario o contraseña incorrectos.'
+            messages.error(request, f"Usuario o contraseña incorrectos.")
             return render(request, 'base/login.html', data)
     else:
         return render(request, 'base/login.html', data)

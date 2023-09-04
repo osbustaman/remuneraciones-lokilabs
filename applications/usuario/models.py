@@ -224,11 +224,13 @@ class UsuarioEmpresa(TimeStampedModel):
     empresa = models.ForeignKey(
         Empresa, verbose_name="Empresa", db_column="ue_empresa", on_delete=models.PROTECT)
     cargo = models.ForeignKey(
-        Cargo, verbose_name="Cargo", db_column="ue_cargo", on_delete=models.PROTECT)
+        Cargo, verbose_name="Cargo", db_column="ue_cargo", on_delete=models.PROTECT, null=True, blank=True, related_name="usuarios_empresa_cargo")
     centrocosto = models.ForeignKey(
-        CentroCosto, verbose_name="Centro de costo ", db_column="ue_contro_costo", on_delete=models.PROTECT)
+        CentroCosto, verbose_name="Centro de costo ", db_column="ue_contro_costo", on_delete=models.PROTECT, null=True, blank=True)
     sucursal = models.ForeignKey(
-        Sucursal, verbose_name="Sucursal", db_column="ue_sucursal", on_delete=models.PROTECT)
+        Sucursal, verbose_name="Sucursal", db_column="ue_sucursal", on_delete=models.PROTECT, null=True, blank=True)
+    working_day = models.ForeignKey(
+        TablaGeneral, verbose_name="TablaGeneral", db_column="ue_working_day", on_delete=models.PROTECT, null=True, blank=True, related_name="usuarios_empresa_working_day")
 
     # DATOS LABORALES
     ue_estate = models.IntegerField(
@@ -352,6 +354,8 @@ class Contact(TimeStampedModel):
         (2, 'Email Corporativo'),
         (3, 'Teléfono Movil'),
         (4, 'Teléfono Fijo'),
+        (5, 'Teléfono Familiar'),
+        (6, 'Email Familiar'),
     )
 
     OPCIONES = (

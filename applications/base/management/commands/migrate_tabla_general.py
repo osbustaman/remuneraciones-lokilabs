@@ -105,6 +105,44 @@ class Command(BaseCommand):
                 'tg_idelemento': '15',
                 'tg_descripcion': '(Causal del artículo 163 bis) La que se configura por haber sido sometido el empleador, mediante resolución judicial, a un procedimiento concursal de liquidación de sus bienes. Su invocación corresponde efectuarla al liquidador designado en dicho procedimiento. Esta causal opera aún cuando se apruebe la continuación de las actividades económicas del deudor, caso en el cual el liquidador deberá celebrar los nuevos contratos de trabajo que estime necesarios para llevar adelante tal continuación.'
             },
+
+
+            {
+                'tg_nombretabla': 'tb_working_day',
+                'tg_idelemento': '1',
+                'tg_short_description': '45 horas',
+                'tg_descripcion': 'En Chile, la jornada laboral promedio es de 45 horas a la semana, con un límite de 10 horas diarias. Se otorgan 1-2 días de descanso por semana. También es posible acordar un horario flexible en el contrato de trabajo.'
+            },
+            {
+                'tg_nombretabla': 'tb_working_day',
+                'tg_idelemento': '2',
+                'tg_short_description': '40 horas',
+                'tg_descripcion': '--'
+            },
+            {
+                'tg_nombretabla': 'tb_working_day',
+                'tg_idelemento': '3',
+                'tg_short_description': '60 horas',
+                'tg_descripcion': 'Las jornadas laborales de 60 horas son conocidas en Chile como jornadas ordinarias largas y están dirigidas a turnos en donde es requerida una atención al público continúa, como en el caso de hoteles, clubes o restaurantes. Las jornadas laborales varían: 60 horas para atención al público, 45 horas para administración, cocina, etc. Las de 60 horas se distribuyen en 12 horas diarias durante 5 días, con 1 hora de descanso. Si es mensual, se compensa con un descanso semanal. Para conductores, se aplican reglas específicas: 8 horas de descanso cada 24 horas de trabajo, no más de 5 horas de conducción continua, y ejercicios para mantener la salud'
+            },
+            {
+                'tg_nombretabla': 'tb_working_day',
+                'tg_idelemento': '4',
+                'tg_short_description': 'Bisemanales',
+                'tg_descripcion': 'Empleador y empleado pueden acordar jornadas de hasta 90 horas en 10-12 días o 2 semanas, con descansos de 2-4 días, que incluyen festivos. Comunes en trabajos remotos, como la minería.'
+            },
+            {
+                'tg_nombretabla': 'tb_working_day',
+                'tg_idelemento': '5',
+                'tg_short_description': 'Parciales',
+                'tg_descripcion': 'Jornadas laborales enfocadas en la inclusión de jóvenes al mercado. Duran un máximo de 30 horas a la semana, con una restricción de 10 horas al día. Se permiten breves pausas de hasta 1 hora para tomar un refrigerio durante el día de trabajo.'
+            },
+            {
+                'tg_nombretabla': 'tb_working_day',
+                'tg_idelemento': '6',
+                'tg_short_description': 'Horas Extras',
+                'tg_descripcion': 'Horas extras en Chile son pactadas por empleador y empleado para superar horas regulares, pagadas con 50% extra. Deben ser situaciones temporales, escritas, hasta 3 meses, máximo 2 horas diarias, y voluntarias para el empleado.'
+            },
         ]
 
         for base in lista:
@@ -118,6 +156,8 @@ class Command(BaseCommand):
                     tbg.tg_nombretabla = value['tg_nombretabla']
                     tbg.tg_idelemento = value['tg_idelemento']
                     tbg.tg_descripcion = value['tg_descripcion']
+                    if value['tg_short_description']:
+                        tbg.tg_short_description = value['tg_short_description']
                     tbg.save(using=nombre_bd)
                 else:
                     tg_nombretabla = value['tg_nombretabla']

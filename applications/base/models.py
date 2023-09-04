@@ -183,6 +183,7 @@ class TablaGeneral(TimeStampedModel):
     tg_idelemento = models.CharField(
         "elemento_id", null=True, blank=True, max_length=25)
     tg_descripcion = models.TextField("descripcion", null=True, blank=True)
+    tg_short_description = models.CharField("descripcion corta", max_length=255, null=True, blank=True)
     tg_activo = models.CharField(
         "Activo", max_length=1, choices=OPCIONES, default="S")
 
