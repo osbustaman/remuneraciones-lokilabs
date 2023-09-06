@@ -183,15 +183,6 @@ def edit_collaborator_file(request, id, col_id):
     return render(request, 'client/page/usuario/add_collaborator_file.html', data)
 
 
-"""@login_required
-def mutual_security_delete(request, ms_id):
-    object = MutualSecurity.objects.get(ms_id=ms_id)
-    object.ms_active = 'N'
-    object.save()
-    return redirect('conf_app:mutual_security_app')"""
-
-
-
 @login_required
 def add_contact(request, user_id, col_id):
 
