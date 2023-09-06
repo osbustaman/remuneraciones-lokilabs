@@ -8,8 +8,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         list_directories = [
-            'applications/account/migrations/',
-            'applications/reinventor/migrations/'
+            'applications/account_base/migrations/',
+            'applications/attendance/migrations/',
+            'applications/base/migrations/',
+            'applications/configurations/migrations/',
+            'applications/empresa/migrations/',
+            'applications/remuneracion/migrations/',
+            'applications/security/migrations/',
+            'applications/usuario/migrations/',
         ]
 
         for dir in list_directories:
