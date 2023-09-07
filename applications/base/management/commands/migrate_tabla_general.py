@@ -156,8 +156,10 @@ class Command(BaseCommand):
                     tbg.tg_nombretabla = value['tg_nombretabla']
                     tbg.tg_idelemento = value['tg_idelemento']
                     tbg.tg_descripcion = value['tg_descripcion']
-                    if value['tg_short_description']:
+                    try:
                         tbg.tg_short_description = value['tg_short_description']
+                    except:
+                        pass
                     tbg.save(using=nombre_bd)
                 else:
                     tg_nombretabla = value['tg_nombretabla']
