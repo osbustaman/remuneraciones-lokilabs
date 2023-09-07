@@ -12,5 +12,5 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'app01.settings.local')
 application = get_wsgi_application()
 
-# from app01.functions import load_data_base
-# load_data_base()
+from app01.functions import load_data_base
+load_data_base()
