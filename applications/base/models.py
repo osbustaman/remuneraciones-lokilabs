@@ -191,7 +191,7 @@ class TablaGeneral(TimeStampedModel):
         return self.tg_id
 
     def __str__(self):
-        return f"{self.tg_id} - {self.tg_nombretabla}"
+        return f"{self.tg_idelemento} - {self.tg_short_description}"
 
     def save(self, *args, **kwargs):
         super(TablaGeneral, self).save(*args, **kwargs)
