@@ -4,6 +4,7 @@ from app01.functions import load_data_base
 
 from applications.base.models import Cliente
 from applications.empresa.models import Afp, Banco, TipoContrato, CajasCompensacion, Salud
+from applications.security.models import Rol
 
 class Command(BaseCommand):
 
@@ -233,6 +234,31 @@ class Command(BaseCommand):
                 'afp_tasatrabajadorindependiente': 12.24
             }
         ]
+
+
+        listado_roles = [
+            {
+                'rol_name': 'Super-Admin',
+                'rol_nivel': 8,
+                'rol_client': 'N',
+            }, {
+                'rol_name': 'Recursos Humanos',
+                'rol_nivel': 2,
+                'rol_client': 'Y',
+            }, {
+                'rol_name': 'Recursos Humanos Adm',
+                'rol_nivel': 1,
+                'rol_client': 'Y',
+            }, {
+                'rol_name': 'Jefatura',
+                'rol_nivel': 3,
+                'rol_client': 'Y',
+            }, {
+                'rol_name': 'Colaborador',
+                'rol_nivel': 4,
+                'rol_client': 'Y',
+            }
+        ]
         
         for base in lista:
             nombre_bd = base.nombre_bd
@@ -296,4 +322,12 @@ class Command(BaseCommand):
                 else:
                     afp_codigoprevired = value['afp_codigoprevired']
                     print(f"la entidad de AFP {afp_codigoprevired} ya existe")
+
+            for value in listado_roles:
+                r = Rol()
+                r.rol_name = value['rol_name']
+                r.rol_nivel = value['rol_nivel']
+                r.rol_client = value['rol_client']
+                r.save(using=nombre_bd)
+
             print(f" ********** Finalizada la carga para {nombre_bd} **************** ")

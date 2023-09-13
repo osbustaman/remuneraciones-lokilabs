@@ -31,9 +31,9 @@ def login_client(request):
 
             try:
                 objectColaborator = Colaborador.objects.get(user=user)
-                request.session['user_nivel'] = objectColaborator.rol.rol_nivel
+                request.session['user_nivel'] = objectColaborator.col_tipousuario.rol_nivel
             except:
-                request.session['user_nivel'] = 3
+                request.session['user_nivel'] = 8
 
             #return HttpResponseRedirect(reverse('remun_app:panel'))
             return redirect('remun_app:control_panel')

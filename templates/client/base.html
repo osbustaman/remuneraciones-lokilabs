@@ -66,7 +66,7 @@
                     <ul class="list-unstyled user-profile-nav">
                         <li><a href="{% url 'account_base:logout_client' %}"><i class="icon ion-power"></i> Cerrar Sesión</a></li>
 
-                        {% if request.session.user_nivel == 3 %}
+                        {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %}
                         {% for e in request.session.list_company %}
                         <li><a href="{% url 'emp_app:cambiar_empresa' e.key %}">{{e.value|title}}</a></li>
                         {% endfor %}
@@ -103,13 +103,13 @@
                             <span>Dashboard</span>
                         </a>
                     </li><!-- nav-item -->
-                    {% if request.session.user_nivel == 3 %}
+                    {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %}
                     {% include "client/includes/items_rrhh.html" %}
 
-                    {% elif request.session.user_nivel == 2 %}
+                    {% elif request.session.user_nivel == 3 %}
                     {% include "client/includes/items_lider.html" %}
 
-                    {% elif request.session.user_nivel == 1 %}
+                    {% elif request.session.user_nivel == 4 %}
                     {% include "client/includes/items_colaborador.html" %}
 
                     {% endif %}

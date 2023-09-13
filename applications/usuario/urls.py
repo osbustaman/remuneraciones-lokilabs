@@ -14,6 +14,7 @@ from applications.usuario.views import (
     , edit_family_responsibilities
     , family_responsibilities_delete
 )
+from applications.usuario.views_collaborator import mark_in_out
 
 
 app_name = 'usuario_app'
@@ -37,4 +38,10 @@ urlpatterns = [
 
     #API
     path('collaborator/api/search/data/afp/<pk>/', AfpDetailApiView.as_view(), name='AfpDetailApiView'),
+
+
+
+
+    # module of in and out
+    path('module-in-out/', mark_in_out, name='mark_in_out'),
 ]

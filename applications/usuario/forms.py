@@ -330,11 +330,12 @@ class ColaboradorForm(forms.ModelForm):
                                              widget=forms.Select(attrs=tags_input_select), required=True)
     col_tipolicencia = forms.CharField(label="Clase", widget=forms.TextInput(
         attrs=tags_input_general), required=False)
-    col_tipousuario = forms.ChoiceField(
-        label="Tipo de usuario", choices=Colaborador.TIPO_USUARIO, widget=forms.Select(attrs=tags_input_select), required=True)
+    
+    col_tipousuario = forms.ModelChoiceField(label="Rol colaborador", required=True,
+                                  queryset=Rol.objects.filter(), widget=forms.Select(attrs=tags_input_select))
 
-    rol = forms.ModelChoiceField(label="Rol colaborador", required=True,
-                                  queryset=Rol.objects.filter(rol_active = 'S', rol_client = 'S'), widget=forms.Select(attrs=tags_input_select))
+    #rol = forms.ModelChoiceField(label="Rol colaborador", required=True,
+    #                              queryset=Rol.objects.filter(rol_active = 'S', rol_client = 'S'), widget=forms.Select(attrs=tags_input_select))
     
     def clean_col_rut(self):
         data = self.cleaned_data["col_rut"]
@@ -362,7 +363,7 @@ class ColaboradorForm(forms.ModelForm):
             'col_licenciaconducir',
             'col_tipolicencia',
             "col_tipousuario",
-            "rol"
+            #"rol"
         ]
 
 

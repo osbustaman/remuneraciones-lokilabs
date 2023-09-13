@@ -16,7 +16,6 @@ from django.db.models.functions import Concat
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
 
 # Create your views here.
-
 @login_required
 @existsCompany
 def collaborator_file(request):

@@ -116,8 +116,14 @@ class Colaborador(TimeStampedModel):
         Comuna, verbose_name="Comuna", db_column="usu_comuna", on_delete=models.PROTECT)
     col_latitude = models.CharField("Latitud", max_length=255, null=True, blank=True)
     col_longitude = models.CharField("Longitud", max_length=255, null=True, blank=True)
-    col_tipousuario = models.IntegerField(
-        "Tipo usuario", choices=TIPO_USUARIO, null=True, blank=True)
+
+
+    #col_tipousuario = models.IntegerField(
+    #    "Tipo usuario", choices=TIPO_USUARIO, null=True, blank=True)
+    
+    col_tipousuario = models.ForeignKey(Rol, verbose_name="Rol", db_column="col_tipousuario",
+                              null=True, blank=True, on_delete=models.PROTECT)
+
     col_estudios = models.IntegerField(
         "Tipo estudios", choices=TIPO_ESTUDIOS, default=1)
     col_estadoestudios = models.IntegerField(
@@ -141,8 +147,6 @@ class Colaborador(TimeStampedModel):
     col_fotousuario = models.TextField("Foto usuario", null=True, blank=True)
     col_activo = models.IntegerField(
         "Colaborador Activo", choices=OPCIONES, default=1)
-    rol = models.ForeignKey(Rol, verbose_name="Rol",
-                             db_column="rr_rol", on_delete=models.PROTECT)
 
     def __int__(self):
         return self.col_id

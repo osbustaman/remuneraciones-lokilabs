@@ -92,6 +92,11 @@ class menu_middleware_items(object):
                 request.session['item'] = 'configuracion'
                 request.session['sub_item'] = 'colaboradores' 
                 request.session['sub_sub_item'] = 'search-user'
+
+            if '/module-in-out/' in request.path:
+                request.session['item'] = 'eventos'
+                request.session['sub_item'] = 'evento' 
+                request.session['sub_sub_item'] = 'evento'
             
         except:
             pass

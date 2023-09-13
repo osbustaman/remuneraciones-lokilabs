@@ -33,7 +33,7 @@ class Rol(TimeStampedModel):
         return self.rol_id
 
     def __str__(self):
-        return f"{self.rol_id} - {self.rol_name}"
+        return f"{self.rol_id} - {self.rol_name} - {self.rol_nivel}"
 
     def save(self, *args, **kwargs):
         super(Rol, self).save(*args, **kwargs)
