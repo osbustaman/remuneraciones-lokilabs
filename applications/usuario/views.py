@@ -163,7 +163,7 @@ def edit_collaborator_file(request, id, col_id):
                 F('tg_id'), Value(' - '), F('tg_short_description'), output_field=CharField())).values_list('display_name', flat=True)  # flat=True para obtener una lista plana
 
     # Crear una instancia del formulario y establecer el valor inicial para working_day
-    formularioWorkingDay = DatosLaboralesForm(initial={'working_day': opciones_working_day.first()})
+    #formularioWorkingDay = DatosLaboralesForm(initial={'working_day': opciones_working_day.first()})
 
     data = {
         'action': 'Editar',
@@ -172,7 +172,6 @@ def edit_collaborator_file(request, id, col_id):
         'formDatosLaboralesForm': formDatosLaboralesForm,
         'formFormsPayments': formFormsPayments,
         'formFormsForecastData': formFormsForecastData,
-        'formularioWorkingDay': formularioWorkingDay,
         'id': id,
         'col_id': col_id,
         'list_contact': list_contact,
