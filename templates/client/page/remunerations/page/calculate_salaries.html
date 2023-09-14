@@ -27,13 +27,19 @@
                 <div class="row mg-b-25">
                     <div class="col-lg-3">
                         <div class="form-group">
-                            <label class="form-control-label">{{ form.desired_salary.label }} <span class="tx-danger">*</span></label>
-                            {{ form.desired_salary }}
+                            <label class="form-control-label">{{ form.base_salary.label }} <span class="tx-danger">*</span></label>
+                            {{ form.base_salary }}
                         </div>
                     </div><!-- col-4 -->
                     <div class="col-lg-3">
                         <div class="form-group">
-                            <label class="form-control-label">{{ form.type_of_gratification.label }} <span class="tx-danger">*</span></label>
+                            <label class="form-control-label">{{ form.has_legal_gratification.label }} <span class="tx-danger">*</span></label>
+                            {{ form.has_legal_gratification }}
+                        </div>
+                    </div><!-- col-4 -->
+                    <div class="col-lg-3">
+                        <div class="form-group">
+                            <label class="form-control-label">{{ form.type_of_gratification.label }} <span class="tx-danger"></span></label>
                             {{ form.type_of_gratification }}
                         </div>
                     </div><!-- col-4 -->
@@ -43,15 +49,16 @@
                             {{ form.type_of_work }}
                         </div>
                     </div><!-- col-4 -->
+                    
+                </div><!-- col-4 -->
+
+                <div class="row mg-b-25">
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label class="form-control-label">{{ form.afp.label }} <span class="tx-danger">*</span></label>
                             {{ form.afp }}
                         </div>
                     </div><!-- col-4 -->
-                </div><!-- col-4 -->
-
-                <div class="row mg-b-25">
                     <div class="col-lg-3">
                         <div class="form-group">
                             <label class="form-control-label">{{ form.salud.label }} <span class="tx-danger">*</span></label>
@@ -60,8 +67,8 @@
                     </div><!-- col-4 -->
                     <div class="col-lg-2">
                         <div class="form-group">
-                            <label class="form-control-label">{{ form.uf.label }} <span class="tx-danger"></span></label>
-                            {{ form.uf }}
+                            <label class="form-control-label">{{ form.quantity_uf_health.label }} <span class="tx-danger"></span></label>
+                            {{ form.quantity_uf_health }}
                         </div>
                     </div><!-- col-4 -->
                 </div><!-- col-4 -->
@@ -88,6 +95,17 @@
 {% endblock %}
 
 {% block script_tag %}
-
-
+<script>
+    const idSaludInput = document.getElementById('id_salud');
+    const idUfInput = document.getElementById('id_quantity_uf_health');
+    idUfInput.readOnly = true;
+    idSaludInput.addEventListener('change', function() {
+        if (idSaludInput.value === '1' ) {
+            idUfInput.readOnly = true;
+            idUfInput.value = "";
+        } else {
+            idUfInput.readOnly = false;
+        }
+    });
+</script>
 {% endblock %}

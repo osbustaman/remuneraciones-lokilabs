@@ -11,6 +11,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 from applications.remuneracion.forms import SalaryCalculatorForm
+from applications.remuneracion.indicadores import IndicatorEconomic
+from applications.remuneracion.remuneracion import Remunerations
 
 # Create your views here.
 
@@ -30,6 +32,23 @@ def calculate_salaries(request):
     if request.method == 'POST':
         form = SalaryCalculatorForm(request.POST)
         if form.is_valid():
+
+
+            get_uf = IndicatorEconomic.get_uf_value_last_day()
+
+            data_afp = Remunerations.calculate_afp_quote(request.POST['afp'], request.POST['type_of_work'], request.POST['base_salary'])
+
+            uf_valor = request.POST.get('quantity_uf_health', '0')
+            data_health = Remunerations.calculate_health_discount(request.POST['base_salary'], request.POST['salud'], uf_valor)
+
+            
+            bonus_cap = 0
+            if int(request.POST['has_legal_gratification']) == 1:
+                bonus_cap = Remunerations.obtain_legal_bonus_cap(request.POST['type_of_gratification'], request.POST['base_salary'], True)
+
+
+            taxable_salary = int(request.POST['base_salary']) + bonus_cap['legal_bonus_cap']
+            
 
             print(request.POST)
 
