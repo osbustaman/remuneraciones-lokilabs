@@ -29,4 +29,11 @@
             </ul>
         </li>
     </ul>
+    <a href="" class="nav-link with-sub {% if request.session.item == 'remuneraciones' %}active show-sub{% else %}{% endif %}">
+        <i class="icon ion-calculator"></i>
+        <span>Remuneraciones</span>
+    </a>
+    <ul class="nav-sub">
+        <li class="nav-item"><a href="{% url 'remun_app:calculate_salaries' %}" class="nav-link {% if request.session.sub_item == 'calculator' %}active{% endif %}">Calculadora</a></li>
+    </ul>
 </li><!-- nav-item -->

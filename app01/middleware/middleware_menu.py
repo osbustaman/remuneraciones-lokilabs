@@ -97,6 +97,17 @@ class menu_middleware_items(object):
                 request.session['item'] = 'eventos'
                 request.session['sub_item'] = 'evento' 
                 request.session['sub_sub_item'] = 'evento'
+
+
+
+
+
+
+
+            if '/calculate-salaries/' in request.path:
+                request.session['item'] = 'remuneraciones'
+                request.session['sub_item'] = 'calculator' 
+                request.session['sub_sub_item'] = 'calculator'
             
         except:
             pass
