@@ -30,8 +30,10 @@
                     <th class="wd-20p">Nombre Empresa</th>
                     <th class="wd-20p">Razon Social</th>
                     <th class="wd-15p">Teléfono</th>
-                    <th class="wd-10p">Correo</th>
+                    <th class="wd-10p">Email</th>
                     <th class="wd-25p">Acción</th>
+                    <th class="wd-10p">Correo2</th>
+                    <th class="wd-25p">Acción2</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,6 +46,8 @@
                     <td>{{ company.emp_fonouno }}</td>
                     <td>{{ company.emp_mailuno }}</td>
                     <td><button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'emp_app:edit_company' company.emp_id %}')">Editar</button></td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 {% endfor %}
                 

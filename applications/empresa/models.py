@@ -171,6 +171,14 @@ class Empresa(models.Model):
 
     emp_generadorrutalogo = property(__generador_ruta_logo)
 
+    def __company_address(self):
+        floor = ''
+        if len(self.emp_piso) > 0 and len(self.emp_dptooficina) > 0:
+            floor = f" piso {self.emp_piso}, oficina {self.emp_dptooficina}"
+
+        return f"{self.emp_direccion} {self.emp_numero}{floor}, {self.region.re_nombre}, {self.comuna.com_nombre}"
+    emp_company_address = property(__company_address)
+
     def save(self, *args, **kwargs):
         super(Empresa, self).save(*args, **kwargs)
 

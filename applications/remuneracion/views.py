@@ -1,18 +1,25 @@
 import json
+import pdfkit
 
-from django.shortcuts import render
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, get_object_or_404
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.models import User
-
-
 from django.contrib import messages
+from django.http import HttpResponse
+from django.shortcuts import redirect, get_object_or_404, render
+from django.views.decorators.csrf import csrf_exempt
+from applications.empresa.models import Empresa
+
+
 
 from applications.remuneracion.forms import SalaryCalculatorForm
 from applications.remuneracion.indicadores import IndicatorEconomic
 from applications.remuneracion.remuneracion import Remunerations
+
+
+
+
+
 
 # Create your views here.
 
@@ -23,6 +30,58 @@ def control_panel(request):
 
     }
     return render(request, 'client/page/company/dashboard.html', data)
+
+
+@login_required
+def render_pdf2(request):
+
+    base_dir = f"{settings.BASE_DIR}/templates/"
+    # Ruta al archivo HTML existente que deseas convertir en PDF
+    html_file_path = f"{base_dir}pdf/salary_settlement.html"  # Reemplaza esto con la ruta real de tu archivo HTML
+
+    # Lee el contenido del archivo HTML
+    with open(html_file_path, 'r') as file:
+        html_content = file.read()
+
+    # Convierte el HTML en PDF
+    pdf = pdfkit.from_string(html_content, False)
+
+    # Devuelve el PDF como respuesta
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="archivo.pdf"'
+    return response
+
+
+def render_pdf(request):
+    # Variables que deseas pasar al template
+    titulo = "Título del PDF"
+    contenido = "Este es el contenido del PDF con variables."
+
+
+    company = Empresa.objects.get(emp_id = int(request.session['la_empresa']))
+
+
+    # Renderiza el template con las variables
+    context = {
+
+        'emp_namecompany': company.emp_namecompany,
+        'emp_rut': company.emp_rut,
+        'emp_company_address': company.emp_company_address,
+        'emp_fonouno': company.emp_fonouno,
+
+
+        'titulo': titulo,
+        'contenido': contenido,
+    }
+    rendered_html = render(request, 'pdf/salary_settlement.html', context).content.decode('utf-8')
+
+    # Convierte el HTML en PDF
+    pdf = pdfkit.from_string(rendered_html, False)
+
+    # Devuelve el PDF como respuesta
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="archivo.pdf"'
+    return response
 
 
 @login_required
@@ -48,7 +107,6 @@ def calculate_salaries(request):
 
 
             taxable_salary = int(request.POST['base_salary']) + bonus_cap['legal_bonus_cap']
-            
 
             print(request.POST)
 

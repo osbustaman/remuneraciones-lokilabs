@@ -168,3 +168,9 @@ JWT_AUTH = {
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS_ORIGIN_ALLOW_ALL = True
+
+WKHTMLTOPDF_BIN_PATH = '/usr/local/bin/wkhtmltopdf'
+
+PDFKIT_CONFIG = {
+    'wkhtmltopdf': '/usr/local/bin/wkhtmltopdf'
+}
