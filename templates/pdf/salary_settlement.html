@@ -44,13 +44,45 @@
 			color: #313030;
 		}
 
+        .ancho-10{
+            width: 10%;
+        }
+
+        .ancho-25{
+            width: 25%;
+        }
+
         .ancho-33{
             width: 33%;
+        }
+
+        .ancho-35{
+            width: 35%;
+        }
+
+        .ancho-45{
+            width: 45%;
+        }
+
+        .ancho-50{
+            width: 50%;
         }
 
         .ancho-100{
             width: 100%;
             text-align: center;
+        }
+
+        .table-left{
+            text-align: left !important;
+        }
+
+        .table-right{
+            text-align: right !important;
+        }
+
+        .p-10{
+            padding: 3px !important;
         }
 	</style>
     </style>
@@ -69,8 +101,6 @@
 
     <br>
     <br>
-    <br>
-    <br>
 
     <table>
         <tr>
@@ -79,30 +109,56 @@
             <td class="ancho-33"></td>
         </tr>
         <tr>
-            <td colspan="3" class="ancho-100"><h1>LIQUIDACIÓN DE SUELDO</h1></td>
+            <td colspan="3" class="ancho-100">
+                <div><h1>LIQUIDACIÓN DE SUELDO</h1></div>
+                <div>{{ month }} {{ year }}</div>
+            </td>
         </tr>
     </table>
 
     <br>
     <br>
+
+    <table style="border:1px solid #b3adad !important;">
+        <tr>
+            <td class="p-10 ancho-10 table-right">Sr(a).: </td>
+            <td class="p-10 ancho-35 table-left">Osvaldo Andres Bustamante Navarro</td>
+            <td class="p-10 ancho-25 table-right">Rut: </td>
+            <td class="p-10 ancho-25 table-left">16090942-0</td>
+        </tr>
+        <tr>
+            <td class="p-10 ancho-10 table-right">Cargo: </td>
+            <td class="p-10 ancho-35 table-left">Analista Programador</td>
+            <td class="p-10 ancho-25 table-right">Ingreso: </td>
+            <td class="p-10 ancho-25 table-left">2023-07-01</td>
+        </tr>
+        <tr>
+            <td class="p-10 ancho-10 table-right">C. Costo: </td>
+            <td class="p-10 ancho-35 table-left">Desarrollo de proyecto</td>
+            <td class="p-10 ancho-25 table-right">Días trabajados</td>
+            <td class="p-10 ancho-25 table-left">30</td>
+        </tr>
+    </table>
+
     <br>
     <br>
 
     <table class="x-table">
         <tr>
-            <td class="ancho">{{ titulo }}</td>
-            <td class="ancho">{{ contenido }}</td>
+            <td class="ancho-50">Concepto</td>
+            <td class="ancho-25">Heberes</td>
+            <td class="ancho-25">Descuentos</td>
         </tr>
     </table>
+    <table class="x-table">
+        {% for obj in data_dict %}
+        <tr>
+            <td class="table-left ancho-50">{{ obj.concepto }}</td>
+            <td class="table-left ancho-25">{{ obj.haberes }}</td>
+            <td class="table-left ancho-25">{{ obj.descuentos }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 
-
-
-    <br>
-    <br>
-    <br>
-    <br>
-
-    <div class="title-left"></div>
-    <div class="title-right"></div>
 </body>
 </html>

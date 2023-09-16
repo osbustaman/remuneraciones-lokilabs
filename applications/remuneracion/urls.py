@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from applications.remuneracion.views import calculate_salaries, control_panel, render_pdf
+from applications.remuneracion.views import calculate_salaries, control_panel, render_pdf, serve_pdf
 
 app_name = 'remun_app'
 
@@ -12,5 +12,6 @@ urlpatterns = [
 
     path('calculate-salaries/', calculate_salaries, name='calculate_salaries'),
     path('render-pdf/', render_pdf, name='render_pdf'),
+    path('serve-pdf/<str:pdf_filename>', serve_pdf, name='serve_pdf'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

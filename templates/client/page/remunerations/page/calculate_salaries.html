@@ -79,9 +79,11 @@
                 <div class="form-layout-footer mg-t-30">
                     <button type="submit" class="btn btn-info mg-r-5" onclick="">Calcular Sueldo</button>
                 </div><!-- form-layout-footer -->
+                {% if pdf_response %}
                 <div class="form-layout-footer mg-t-30">
-                    <a class="btn btn-info mg-r-5" href="{% url 'remun_app:render_pdf' %}">Liquidación en PDF</a>
+                    <a class="btn btn-info mg-r-5" href="{% url 'remun_app:serve_pdf' pdf_response %}" target="_blank">¡PDF generado!</a>
                 </div><!-- form-layout-footer -->
+                {% endif %}                
             </div>
         </form>
 

@@ -4,13 +4,39 @@ import requests
 from datetime import datetime, timedelta
 from decouple import config
 
-from applications.empresa.models import Afp
+from applications.empresa.models import Afp, Salud
 from applications.remuneracion.indicadores import IndicatorEconomic
 
 class Remunerations():
 
     MINIMUM_SALARY = 460000
     TOPE_GRATIFICATION = 4.75
+
+    @classmethod
+    def translate_month(self, month, language = 'es_cl'):
+
+        idioms = {
+            'es_cl': {
+                'january': 'enero',
+                'february': 'febrero',
+                'march': 'marzo',
+                'april': 'abril',
+                'may': 'mayo',
+                'june': 'junio',
+                'july': 'julio',
+                'august': 'agosto',
+                'september': 'septiembre',
+                'october': 'octubre',
+                'november': 'noviembre',
+                'december': 'diciembre',
+            }
+        }
+
+        month_lower = month.lower()
+        translation = idioms.get(language, {}).get(month_lower, month)
+
+        return translation
+
 
 
     @classmethod
@@ -22,9 +48,11 @@ class Remunerations():
             else:
                 quote_rate = value.afp_tasatrabajadorindependiente
 
-        quote_afp = float(desired_salary) * (quote_rate / 100)
+        quote_afp = int(float(desired_salary) * (quote_rate / 100))
         return {
-            'discount_afp': round(quote_afp, 2)
+            'discount_afp': quote_afp,
+            'afp_nombre': objects_afp[0].afp_nombre,
+            'quote_rate': quote_rate,
         }
     
     @classmethod
@@ -33,17 +61,24 @@ class Remunerations():
         maximum_discount_rate = 0.07
         health_discount = int(desired_salary) * maximum_discount_rate
         difference_of_amount = 0
+        health_discount_uf = 0
+
+        object_healt = Salud.objects.filter(sa_id = int(health_entity))
 
         if not int(health_entity) == 1:
             get_uf = IndicatorEconomic.get_uf_value_last_day()
+            valor_str = get_uf['Valor'].replace('.', '').replace(',', '.')
+            valor_float = float(valor_str)
 
-            health_discount_uf = quantity_uf_health * get_uf            
+            health_discount_uf = int(float(quantity_uf_health) * valor_float)         
             difference_of_amount = health_discount_uf - health_discount
-            health_discount = health_discount_uf
 
         return {
-            'health_discount': round(health_discount, 2),
-            'difference_of_amount': round(difference_of_amount, 2)
+            'health_discount': int(health_discount),
+            'difference_of_amount': int(difference_of_amount),
+            'sa_nombre': object_healt[0].sa_nombre,
+            'quantity_uf_health':quantity_uf_health,
+            'health_discount_uf':health_discount_uf,
         }
     
 
