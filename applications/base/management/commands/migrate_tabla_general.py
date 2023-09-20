@@ -20,7 +20,7 @@ class Command(BaseCommand):
             lista = Cliente.objects.filter(nombre_bd = kwargs['base'])
 
         # causas legales de terminación de contrato
-        causas_finiquito = [
+        data_general_table = [
             {
                 'tg_nombretabla': 'tb_causas_legales_finiquito',
                 'tg_idelemento': '1',
@@ -143,78 +143,13 @@ class Command(BaseCommand):
                 'tg_short_description': 'Horas Extras',
                 'tg_descripcion': 'Horas extras en Chile son pactadas por empleador y empleado para superar horas regulares, pagadas con 50% extra. Deben ser situaciones temporales, escritas, hasta 3 meses, máximo 2 horas diarias, y voluntarias para el empleado.'
             },
-
-            # tb_salary_cap = renta tope
-            {
-                'tg_nombretabla': 'tb_salary_cap',
-                'tg_idelemento': '1',
-                'tg_short_description': 'afp',
-                'tg_descripcion': '81.6'
-            }, 
-            {
-                'tg_nombretabla': 'tb_salary_cap',
-                'tg_idelemento': '2',
-                'tg_short_description': 'ips',
-                'tg_descripcion': '60'
-            },
-            {
-                'tg_nombretabla': 'tb_salary_cap',
-                'tg_idelemento': '3',
-                'tg_short_description': 'ccf',
-                'tg_descripcion': '122.6'
-            },
-
-            # tb_tope_apv = tb_tope_apv
-            {
-                'tg_nombretabla': 'tb_tope_apv',
-                'tg_idelemento': '1',
-                'tg_short_description': 'Tope Mensual',
-                'tg_descripcion': '50'
-            }, 
-            {
-                'tg_nombretabla': 'tb_tope_apv',
-                'tg_idelemento': '2',
-                'tg_short_description': 'Tope Anual',
-                'tg_descripcion': '600'
-            },
-
-            # tb_deposit_agreement = tb_deposito_convenio
-            {
-                'tg_nombretabla': 'tb_deposit_agreement',
-                'tg_idelemento': '1',
-                'tg_short_description': 'Tope Anual',
-                'tg_descripcion': '900'
-            }, 
-
-            # tb_unemployment_insurance = tb_seguro_cesantia
-            {
-                'tg_nombretabla': 'tb_unemployment_insurance',
-                'tg_idelemento': '1',
-                'tg_short_description': 'Plazo Indefinido',
-                'tg_value_one': '{ "empleador": 2.4, "empleado": 0.6 }'
-            },{
-                'tg_nombretabla': 'tb_unemployment_insurance',
-                'tg_idelemento': '2',
-                'tg_short_description': 'Plazo Fijo',
-                'tg_value_one': '{ "empleador": 3.0, "empleado": 0 }'
-            },{
-                'tg_nombretabla': 'tb_unemployment_insurance',
-                'tg_idelemento': '3',
-                'tg_short_description': 'Plazo Indefinido 11 años o más',
-                'tg_value_one': '{ "empleador": 0.8, "empleado": 0 }'
-            },{
-                'tg_nombretabla': 'tb_unemployment_insurance',
-                'tg_idelemento': '4',
-                'tg_short_description': 'Trabajador de Casa Particular',
-                'tg_value_one': '{ "empleador": 3.0 "empleado": 0 }'
-            },
         ]
 
         for base in lista:
             nombre_bd = base.nombre_bd
             print(f" ********** Cargando datos para {nombre_bd} ********** ")
 
-            for value in causas_finiquito:
+            for value in data_general_table:
                 tg = TablaGeneral.objects.using(nombre_bd).filter(tg_nombretabla=value['tg_nombretabla'], tg_idelemento=value['tg_idelemento'])
                 if not tg.exists():
                     tbg = TablaGeneral()

@@ -118,8 +118,6 @@ def render_pdf(request):
         'sueldo_liquido': 0,
     }
 
-
-
     # Renderiza el template con las variables
     context = {
         'emp_namecompany': company.emp_namecompany,
@@ -133,23 +131,21 @@ def render_pdf(request):
     }
     rendered_html = render(request, 'pdf/salary_settlement.html', context).content.decode('utf-8')
 
-    base_dir = settings.BASE_DIR
-    pdf_dir = os.path.join(base_dir, 'templates', 'pdf')
+
+    # Obtener la fecha y hora actual
+    fecha_actual = datetime.now()
+
+    # Formatear la fecha en el formato YYYYmmdd_hhmmss
+    pdf_filename = fecha_actual.strftime('%Y%m%d_%H%M%S.pdf')
 
     # Ruta donde se guardará el PDF
-    pdf_path = os.path.join(pdf_dir, 'archivo.pdf')
+    pdf_path = os.path.join(settings.BASE_DIR, 'templates', 'pdf', pdf_filename)
 
     # Convierte el HTML en PDF y guárdalo en la ruta especificada
-    pdfkit.from_string(rendered_html, pdf_path)
-
-    # Convierte el HTML en PDF y guárdalo en la ruta especificada
-    pdf_filename = 'archivo.pdf'
-    pdf_path = os.path.join(pdf_dir, pdf_filename)
     pdfkit.from_string(rendered_html, pdf_path)
 
     # Devuelve el nombre del archivo PDF, no la ruta completa
     return pdf_filename
-
 
 
 def render_pdf2(request):

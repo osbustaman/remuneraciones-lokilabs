@@ -13,6 +13,96 @@ class Remunerations():
     MINIMUM_SALARY = 460000
     TOPE_GRATIFICATION = 4.75
 
+
+    def __calculate_amount_range(utm_value, utm_quantity, more_one = 0):
+        """
+        Calucula el monto a rebajar
+
+        :param utm_value: valor de la utm
+        :param utm_quantity: cantidad de utm
+        :param more_one: mas uno para el tope del siguiente
+        :return 
+            retorna el monto a rebajar
+        """
+        return (utm_value * utm_quantity) + more_one
+    
+    def __to_string_float(string):
+        """
+        Obtiene el numero float en string y lo retorna en float
+
+        :param string: valor utm en string
+        :return 
+            retorna la utm en float
+        """
+        return float(string.replace(".", ""))
+
+    @classmethod
+    def monthly_income_tax_parameters(self, salary_imponible_mount):
+        """
+        parametros_impuesto_renta_mensual - Funcion que retorna el impuesto a la renta
+
+        :param salary_imponible_mount: sueldo base imponible
+        :return
+        """
+
+        get_utm = IndicatorEconomic.get_utm()
+
+
+        parametros_impuesto_renta_mensual = [
+            {
+                "desde": 0,
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 13.50),
+                "factor": 0,
+                "cantidad_a_rebajar": 0,
+                "tipo_impuesto": 0
+            },{
+                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 13.50, 1),
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 30),
+                "factor": 0.04,
+                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 0.54),
+                "tipo_impuesto": 2.20
+            },{
+                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 30, 1),
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 50),
+                "factor": 0.08,
+                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 1.74),
+                "tipo_impuesto": 4.52
+            },{
+                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 50, 1),
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 70),
+                "factor": 0.135,
+                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 4.49),
+                "tipo_impuesto": 7.09
+            },{
+                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 70, 1),
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 90),
+                "factor": 0.23,
+                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 11.14),
+                "tipo_impuesto": 10.62
+            },{
+                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 90, 1),
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 120),
+                "factor": 0.304,
+                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 17.80),
+                "tipo_impuesto": 15.57
+            },{
+                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 120, 1),
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 310),
+                "factor": 0.35,
+                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 23.32),
+                "tipo_impuesto": 27.48
+            },{
+                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 310, 1),
+                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 310, 1),
+                "factor": 0.4,
+                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 38.82),
+                "tipo_impuesto": 27.48
+            },
+        ]
+
+
+
+
     @classmethod
     def translate_month(self, month, language = 'es_cl'):
 

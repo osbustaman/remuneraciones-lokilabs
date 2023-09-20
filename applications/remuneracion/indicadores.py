@@ -9,6 +9,22 @@ class IndicatorEconomic():
     url_base = 'https://api.cmfchile.cl/api-sbifv3/'
     api_key = config('API_KEY_INDICATORS')
 
+
+    @classmethod
+    def get_utm(self, date, format = 'json'):
+
+        utm = f'{self.url_base}recursos_api/utm?apikey={self.api_key}&formato=json'
+        data_utm = requests.get(utm) 
+        data_utm_json = data_utm.json()
+
+        x_value = {}
+        for key, value in data_utm_json.items():
+            for dicc in value:
+                x_value = dicc
+
+        return dict(x_value)
+
+
     @classmethod
     def get_uf(self, date, format = 'json'):
 

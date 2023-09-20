@@ -2,7 +2,8 @@
 from django.core.management.base import BaseCommand
 from app01.functions import load_data_base
 
-from applications.base.models import Cliente, ParametrosIndicadoresPrevisionales
+from applications.base.models import Cliente, ParametrosIndicadoresPrevisionales, TablaGeneral
+from applications.remuneracion.indicadores import IndicatorEconomic
 
 class Command(BaseCommand):
 
@@ -22,48 +23,120 @@ class Command(BaseCommand):
             lista = Cliente.objects.filter(nombre_bd = kwargs['base'])
 
 
-        seguro_cesantia = [
+        get_utm = IndicatorEconomic.get_utm()
+
+
+        data_forecast_indicators = [
+            # tb_salary_cap = renta tope
             {
-                "pip_codigo": "PI",
-                "contrato": "Plazo Indefinido",
-                "empleador": 2.4,
-                "empleado": 0.6
+                'tg_nombretabla': 'tb_salary_cap',
+                'tg_idelemento': '1',
+                'tg_short_description': 'afp',
+                'tg_descripcion': '81.6'
+            }, 
+            {
+                'tg_nombretabla': 'tb_salary_cap',
+                'tg_idelemento': '2',
+                'tg_short_description': 'ips',
+                'tg_descripcion': '60'
+            },
+            {
+                'tg_nombretabla': 'tb_salary_cap',
+                'tg_idelemento': '3',
+                'tg_short_description': 'ccf',
+                'tg_descripcion': '122.6'
+            },
+
+            # tb_tope_apv = tb_tope_apv
+            {
+                'tg_nombretabla': 'tb_tope_apv',
+                'tg_idelemento': '1',
+                'tg_short_description': 'Tope Mensual',
+                'tg_descripcion': '50'
+            }, 
+            {
+                'tg_nombretabla': 'tb_tope_apv',
+                'tg_idelemento': '2',
+                'tg_short_description': 'Tope Anual',
+                'tg_descripcion': '600'
+            },
+
+            # tb_deposit_agreement = tb_deposito_convenio
+            {
+                'tg_nombretabla': 'tb_deposit_agreement',
+                'tg_idelemento': '1',
+                'tg_short_description': 'Tope Anual',
+                'tg_descripcion': '900'
+            }, 
+
+            # tb_unemployment_insurance = tb_seguro_cesantia
+            {
+                'tg_nombretabla': 'tb_unemployment_insurance',
+                'tg_idelemento': '1',
+                'tg_short_description': 'Plazo Indefinido',
+                'tg_value_one': '{ "empleador": 2.4, "empleado": 0.6 }'
             },{
-                "pip_codigo": "PF",
-                "contrato": "Plazo Fijo",
-                "empleador": 3.0,
-                "empleado": 0
+                'tg_nombretabla': 'tb_unemployment_insurance',
+                'tg_idelemento': '2',
+                'tg_short_description': 'Plazo Fijo',
+                'tg_value_one': '{ "empleador": 3.0, "empleado": 0 }'
             },{
-                "pip_codigo": "PI11",
-                "contrato": "Plazo Indefinido 11 años o más",
-                "empleador": 0.8,
-                "empleado": 0
+                'tg_nombretabla': 'tb_unemployment_insurance',
+                'tg_idelemento': '3',
+                'tg_short_description': 'Plazo Indefinido 11 años o más',
+                'tg_value_one': '{ "empleador": 0.8, "empleado": 0 }'
             },{
-                "pip_codigo": "TCP",
-                "contrato": "Trabajador de Casa Particular",
-                "empleador": 3.0,
-                "empleado": 0
-            }
+                'tg_nombretabla': 'tb_unemployment_insurance',
+                'tg_idelemento': '4',
+                'tg_short_description': 'Trabajador de Casa Particular',
+                'tg_value_one': '{ "empleador": 3.0 "empleado": 0 }'
+            },
+
+            # tb_tax_second_category = tb_impuesto_segunda_categoria
+            {
+                'tg_nombretabla': 'tb_tax_second_category',
+                'tg_idelemento': '1',
+                'tg_short_description': 'mensual',
+                'tg_value_one': """
+                                    {
+                                        "desde": 0,
+                                        "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 13.51),
+                                        "factor": 0,
+                                        "cantidad_a_rebajar": 0,
+                                        "tipo_impuesto": 0
+                                    }
+                                """
+            },
         ]
 
         for base in lista:
             nombre_bd = base.nombre_bd
             print(f" ********** Cargando datos para {nombre_bd} ********** ")
 
-            for value in seguro_cesantia:
-                tc = ParametrosIndicadoresPrevisionales.objects.using(nombre_bd).filter(pip_codigo=value['pip_codigo'])
-                pip_codigo = value['pip_codigo']
-                if not tc.exists():
-                    pip = ParametrosIndicadoresPrevisionales()
+            for value in data_forecast_indicators:
+                tg = TablaGeneral.objects.using(nombre_bd).filter(tg_nombretabla=value['tg_nombretabla'], tg_idelemento=value['tg_idelemento'])
+                if not tg.exists():
+                    tbg = TablaGeneral()
+                    tbg.tg_nombretabla = value['tg_nombretabla']
+                    tbg.tg_idelemento = value['tg_idelemento']
+                    try:
+                        tbg.tg_descripcion = value['tg_descripcion']
+                    except:
+                        pass
+                    
+                    try:
+                        tbg.tg_short_description = value['tg_short_description']
+                    except:
+                        pass
 
-                    pip.pip_codigo = value['pip_codigo']
-                    pip.pip_descripcion = value['contrato']
-                    pip.pip_valor = ""
-                    pip.pip_rangoini = value['empleador']
-                    pip.pip_rangofin = value['empleado']
-                    pip.pip_factor = ""
-                    pip.pip_activo = "S"
-                    pip.save(using=nombre_bd)
-                    print(f"El parámetro {pip_codigo} fue creado con éxito")
+                    try:
+                        tbg.tg_value_one = value['tg_value_one']
+                    except:
+                        pass
+                    tbg.save(using=nombre_bd)
                 else:
-                    print(f"El parámetro {pip_codigo} ya existe")
+                    tg_nombretabla = value['tg_nombretabla']
+                    tg_idelemento = value['tg_idelemento']
+                    print(f"El elemento {tg_nombretabla} - {tg_idelemento} ya existe")
+
+            print(f" ********** Carga de datos para {nombre_bd} terminada********** ")
