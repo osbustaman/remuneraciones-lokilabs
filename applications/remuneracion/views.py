@@ -75,9 +75,6 @@ def render_pdf(request):
         salud_name = f"{data_health['sa_nombre']} - 7%"
         health_discount = data_health['health_discount']
 
-   
-
-    taxable_salary = int(request.POST['base_salary']) + bonus_cap['legal_bonus_cap']
 
     company = Empresa.objects.get(emp_id=int(request.session['la_empresa']))
 
@@ -87,6 +84,7 @@ def render_pdf(request):
 
     month_translate = Remunerations.translate_month(month)
 
+    sesantia_insurance = Remunerations.calculate_sesantia_insurance(salary_imponible_mount, request.POST['type_of_contract'])
 
     mounts_dict = [
             {
@@ -105,7 +103,12 @@ def render_pdf(request):
                 'concepto': salud_name,
                 'haberes': '',
                 'descuentos': health_discount,
+            },{
+                'concepto': sesantia_insurance['concept'],
+                'haberes': '',
+                'descuentos': sesantia_insurance['employee_contribution'],
             }
+
         ]
     
     totales = {

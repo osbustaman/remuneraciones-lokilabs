@@ -1,4 +1,5 @@
 from django import forms
+from applications.base.models import ParametrosIndicadoresPrevisionales
 
 from applications.empresa.models import Afp, Salud
 
@@ -46,4 +47,10 @@ class SalaryCalculatorForm(forms.Form):
     
     quantity_uf_health = forms.CharField(label="UF", widget=forms.TextInput(
         attrs=tags_input_general), required=False)
+    
+    type_of_contract = forms.ModelChoiceField(label="Tipo de contrato", required=True,
+                                queryset=ParametrosIndicadoresPrevisionales.objects.filter(pip_activo="S"), widget=forms.Select(attrs=tags_input_general))
+
+
+
 

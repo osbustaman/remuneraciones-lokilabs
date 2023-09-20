@@ -3,6 +3,7 @@ import requests
 
 from datetime import datetime, timedelta
 from decouple import config
+from applications.base.models import TablaGeneral
 
 from applications.empresa.models import Afp, Salud
 from applications.remuneracion.indicadores import IndicatorEconomic
@@ -37,6 +38,29 @@ class Remunerations():
 
         return translation
 
+    @classmethod
+    def calculate_sesantia_insurance(self, salary_imponible_mount, contract_type):
+
+        obj_contract_type = TablaGeneral.objects.get(tg_nombretabla='tb_unemployment_insurance', tg_idelemento=contract_type)
+        json_contract_type = json.loads(obj_contract_type.tg_value_one)
+
+        tabla_general = TablaGeneral.objects.get(tg_nombretabla='tb_salary_cap', tg_idelemento='3')
+        get_uf = IndicatorEconomic.get_uf_value_last_day()
+        valor_str = get_uf['Valor'].replace('.', '').replace(',', '.')
+
+        uf_tope = float(tabla_general.tg_descripcion) * float(valor_str)
+        if float(salary_imponible_mount) > uf_tope:
+            salary_imponible_mount = int(uf_tope)
+        
+        employee_contribution = int(salary_imponible_mount * (json_contract_type['empleado'] / 100))
+        employer_contribution = int(salary_imponible_mount * (json_contract_type['empleador'] / 100))
+
+        concept = f"Seguro de Cesantia: {json_contract_type['empleado']}% sobre {salary_imponible_mount}"
+        return {
+            'employee_contribution': int(employee_contribution), 
+            'employer_contribution': int(employer_contribution),
+            'concept': concept
+        }
 
 
     @classmethod
@@ -48,11 +72,23 @@ class Remunerations():
             else:
                 quote_rate = value.afp_tasatrabajadorindependiente
 
+        tabla_general = TablaGeneral.objects.get(tg_nombretabla='tb_salary_cap', tg_idelemento='1')
+
+        get_uf = IndicatorEconomic.get_uf_value_last_day()
+        valor_str = get_uf['Valor'].replace('.', '').replace(',', '.')
+
+        description_tope = False
+        uf_tope = float(tabla_general.tg_descripcion) * float(valor_str)
+        if float(desired_salary) > uf_tope:
+            desired_salary = uf_tope
+            description_tope = True
+
         quote_afp = int(float(desired_salary) * (quote_rate / 100))
         return {
             'discount_afp': quote_afp,
             'afp_nombre': objects_afp[0].afp_nombre,
             'quote_rate': quote_rate,
+            'description_tope': description_tope
         }
     
     @classmethod

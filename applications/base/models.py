@@ -163,6 +163,9 @@ class ParametrosIndicadoresPrevisionales(TimeStampedModel):
 
     def __int__(self):
         return self.pip_id
+    
+    def __str__(self):
+        return f"{self.pip_id} - {self.pip_descripcion}"
 
     def save(self, *args, **kwargs):
         super(ParametrosIndicadoresPrevisionales, self).save(*args, **kwargs)
@@ -184,6 +187,12 @@ class TablaGeneral(TimeStampedModel):
         "elemento_id", null=True, blank=True, max_length=25)
     tg_descripcion = models.TextField("descripcion", null=True, blank=True)
     tg_short_description = models.CharField("descripcion corta", max_length=255, null=True, blank=True)
+    tg_value_one = models.CharField("extra 1", max_length=255, null=True, blank=True)
+    tg_value_two = models.CharField("extra 2", max_length=255, null=True, blank=True)
+    tg_value_three = models.CharField("extra 3", max_length=255, null=True, blank=True)
+    tg_value_four = models.CharField("extra 4", max_length=255, null=True, blank=True)
+    tg_value_five = models.CharField("extra 5", max_length=255, null=True, blank=True)
+    tg_value_six = models.CharField("extra 6", max_length=255, null=True, blank=True)
     tg_activo = models.CharField(
         "Activo", max_length=1, choices=OPCIONES, default="S")
 
