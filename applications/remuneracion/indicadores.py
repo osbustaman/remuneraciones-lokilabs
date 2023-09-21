@@ -11,7 +11,7 @@ class IndicatorEconomic():
 
 
     @classmethod
-    def get_utm(self, date, format = 'json'):
+    def get_utm(self, format = 'json'):
 
         utm = f'{self.url_base}recursos_api/utm?apikey={self.api_key}&formato=json'
         data_utm = requests.get(utm) 

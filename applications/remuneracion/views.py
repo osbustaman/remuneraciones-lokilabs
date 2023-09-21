@@ -86,6 +86,15 @@ def render_pdf(request):
 
     sesantia_insurance = Remunerations.calculate_sesantia_insurance(salary_imponible_mount, request.POST['type_of_contract'])
 
+
+
+    tax_base = int(salary_imponible_mount) - int(data_afp['discount_afp']) - int(health_discount) - int(sesantia_insurance['employee_contribution'])
+
+    income_tax = Remunerations.monthly_income_tax_parameters(tax_base)
+
+
+    
+
     mounts_dict = [
             {
                 'concepto': 'Sueldo Base',
@@ -107,7 +116,12 @@ def render_pdf(request):
                 'concepto': sesantia_insurance['concept'],
                 'haberes': '',
                 'descuentos': sesantia_insurance['employee_contribution'],
+            },{
+                'concepto': income_tax['concept'],
+                'haberes': '',
+                'descuentos': income_tax['amount_tax'],
             }
+
 
         ]
     

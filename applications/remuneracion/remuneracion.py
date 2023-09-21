@@ -42,66 +42,33 @@ class Remunerations():
         parametros_impuesto_renta_mensual - Funcion que retorna el impuesto a la renta
 
         :param salary_imponible_mount: sueldo base imponible
-        :return
+        :return: valor del impuesto en int
         """
+        
+        monthly_income_tax_parameters = TablaGeneral.objects.filter(tg_nombretabla = 'tb_tax_second_category')
+        list_income_tax_percentage = []
 
-        get_utm = IndicatorEconomic.get_utm()
+        for value in monthly_income_tax_parameters:
+            value_one = value.tg_value_one
+            
+            # Reemplazar comillas simples por comillas dobles
+            string_json = value_one.replace("'", "\"")
 
+            # Analizar el string JSON y convertirlo en un diccionario de Python
+            dictionary = json.loads(string_json)
 
-        parametros_impuesto_renta_mensual = [
-            {
-                "desde": 0,
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 13.50),
-                "factor": 0,
-                "cantidad_a_rebajar": 0,
-                "tipo_impuesto": 0
-            },{
-                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 13.50, 1),
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 30),
-                "factor": 0.04,
-                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 0.54),
-                "tipo_impuesto": 2.20
-            },{
-                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 30, 1),
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 50),
-                "factor": 0.08,
-                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 1.74),
-                "tipo_impuesto": 4.52
-            },{
-                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 50, 1),
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 70),
-                "factor": 0.135,
-                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 4.49),
-                "tipo_impuesto": 7.09
-            },{
-                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 70, 1),
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 90),
-                "factor": 0.23,
-                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 11.14),
-                "tipo_impuesto": 10.62
-            },{
-                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 90, 1),
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 120),
-                "factor": 0.304,
-                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 17.80),
-                "tipo_impuesto": 15.57
-            },{
-                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 120, 1),
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 310),
-                "factor": 0.35,
-                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 23.32),
-                "tipo_impuesto": 27.48
-            },{
-                "desde": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 310, 1),
-                "hasta": self.__calculate_amount_range(self.__to_string_float(get_utm['Valor']), 310, 1),
-                "factor": 0.4,
-                "cantidad_a_rebajar": (self.__to_string_float(get_utm['Valor']) * 38.82),
-                "tipo_impuesto": 27.48
-            },
-        ]
+            list_income_tax_percentage.append(dictionary)
 
+        porcentaje_impuesto_renta = 0
+        for value in list_income_tax_percentage:
+            if value['desde'] <= salary_imponible_mount <= value['hasta']:
+                porcentaje_impuesto_renta = salary_imponible_mount * value['factor'] - value['cantidad_a_rebajar']
 
-
+        return {
+            'amount_tax': int(porcentaje_impuesto_renta),
+            'concept': f'Impuesto a la renta (sobre: {salary_imponible_mount})'
+        }
+        
 
     @classmethod
     def translate_month(self, month, language = 'es_cl'):

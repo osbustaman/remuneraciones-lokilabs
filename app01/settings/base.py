@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 from datetime import timedelta
 import os
+import sys
 from pathlib import Path
 from decouple import config
 
@@ -169,9 +170,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS_ORIGIN_ALLOW_ALL = True
 
+if sys.platform.startswith('win'):
+    WKHTMLTOPDF_BIN_PATH = 'C:\\Program Files\\wkhtmltopdf'
 
-WKHTMLTOPDF_BIN_PATH = '/usr/local/bin/wkhtmltopdf'
+    PDFKIT_CONFIG = {
+        'wkhtmltopdf': 'C:\\Program Files\\wkhtmltopdf'
+    }
+else:
+    WKHTMLTOPDF_BIN_PATH = '/usr/local/bin/wkhtmltopdf'
 
-PDFKIT_CONFIG = {
-    'wkhtmltopdf': '/usr/local/bin/wkhtmltopdf'
-}
+    PDFKIT_CONFIG = {
+        'wkhtmltopdf': '/usr/local/bin/wkhtmltopdf'
+    }
+
