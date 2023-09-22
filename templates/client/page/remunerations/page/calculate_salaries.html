@@ -87,7 +87,7 @@
                 </div><!-- form-layout-footer -->
                 {% if pdf_response %}
                 <div class="form-layout-footer mg-t-30">
-                    <a class="btn btn-info mg-r-5" href="{% url 'remun_app:serve_pdf' pdf_response %}" target="_blank">¡PDF generado!</a>
+                    <a class="btn btn-info mg-r-5" href="{% url 'remun_app:download_pdf' pdf_response %}" target="_blank">¡PDF generado!</a>
                 </div><!-- form-layout-footer -->
                 {% endif %}                
             </div>

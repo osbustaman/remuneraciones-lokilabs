@@ -36,12 +36,13 @@ def control_panel(request):
     return render(request, 'client/page/company/dashboard.html', data)
 
 
-def serve_pdf(request, pdf_filename):
-    pdf_path = os.path.join(settings.BASE_DIR, 'templates', 'pdf', pdf_filename)
-    if os.path.exists(pdf_path):
-        with open(pdf_path, 'rb') as pdf_file:
-            response = FileResponse(pdf_file, content_type='application/pdf')
-            response['Content-Disposition'] = f'inline; filename="{pdf_filename}"'
+def download_pdf(request, pdf_filename):
+    pdf_file_path = os.path.join(settings.BASE_DIR, 'templates', 'pdf', pdf_filename)
+    if os.path.exists(pdf_file_path):
+        # Abre y lee el archivo PDF
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(pdf_file_path)}"'
             return response
     else:
         # Maneja el caso en el que el archivo PDF no existe
@@ -51,6 +52,14 @@ def serve_pdf(request, pdf_filename):
 def render_pdf(request):
 
     get_uf = IndicatorEconomic.get_uf_value_last_day()
+
+    collaborator_name = 'xxxxx xxxxx xxxxx xxxxx'
+    position_company = 'xxxxx'
+    cost_center = 'xxxxx'
+    rut_dni = 'xxxxxxxx-x'
+    entry_to_the_company = 'yyyy-mm-dd'
+    number_days_worked = '30'
+    way_to_pay = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
     bonus_cap = 0
     if int(request.POST['has_legal_gratification']) == 1:
@@ -62,9 +71,6 @@ def render_pdf(request):
     data_afp = Remunerations.calculate_afp_quote(request.POST['afp'], request.POST['type_of_work'], salary_imponible_mount)
     afp_nombre = f"AFP: {data_afp['afp_nombre']} - {data_afp['quote_rate']}%"
     
-    
-    
-    
     uf_valor = request.POST.get('quantity_uf_health', '0')
     data_health = Remunerations.calculate_health_discount(salary_imponible_mount, request.POST['salud'], uf_valor)
 
@@ -74,8 +80,6 @@ def render_pdf(request):
     else:
         salud_name = f"{data_health['sa_nombre']} - 7%"
         health_discount = data_health['health_discount']
-
-
     company = Empresa.objects.get(emp_id=int(request.session['la_empresa']))
 
     date_now = datetime.now()
@@ -83,22 +87,14 @@ def render_pdf(request):
     year = date_now.year
 
     month_translate = Remunerations.translate_month(month)
-
     sesantia_insurance = Remunerations.calculate_sesantia_insurance(salary_imponible_mount, request.POST['type_of_contract'])
-
-
-
     tax_base = int(salary_imponible_mount) - int(data_afp['discount_afp']) - int(health_discount) - int(sesantia_insurance['employee_contribution'])
-
     income_tax = Remunerations.monthly_income_tax_parameters(tax_base)
-
-
     
-
     mounts_dict = [
             {
                 'concepto': 'Sueldo Base',
-                'haberes': request.POST['base_salary'],
+                'haberes': int(request.POST['base_salary']),
                 'descuentos': '',
             },{
                 'concepto': 'Gratificación Legal',
@@ -121,15 +117,31 @@ def render_pdf(request):
                 'haberes': '',
                 'descuentos': income_tax['amount_tax'],
             }
-
-
         ]
     
+    total_assets = 0
+    total_discounts = 0
+    for value in mounts_dict:
+        try:
+            total_assets = total_assets + value['haberes']
+        except:
+            pass
+
+        try:
+            total_discounts = total_discounts + value['descuentos']
+        except:
+            pass
+
+    liquid_salary = total_assets - total_discounts
+    legal_discounts = data_afp['discount_afp'] + health_discount + sesantia_insurance['employee_contribution'] + income_tax['amount_tax']
+    
     totales = {
-        'tributable': 0,
-        'base_imponible': 0,
-        'descuentos_legales': 0,
-        'sueldo_liquido': 0,
+        'tax_base': tax_base,
+        'base_imponible': salary_imponible_mount,
+        'total_discounts': total_discounts,
+        'total_assets': total_assets,
+        'liquid_salary': liquid_salary,
+        'legal_discounts': legal_discounts,
     }
 
     # Renderiza el template con las variables
@@ -141,7 +153,16 @@ def render_pdf(request):
         'month': month_translate.title(),
         'year': year,
 
-        'data_dict': mounts_dict
+        'collaborator_name': collaborator_name,
+        'position_company': position_company,
+        'cost_center': cost_center,
+        'rut_dni': rut_dni,
+        'entry_to_the_company': entry_to_the_company,
+        'number_days_worked': number_days_worked,
+        'way_to_pay': way_to_pay,
+
+        'data_dict': mounts_dict,
+        'totales': totales
     }
     rendered_html = render(request, 'pdf/salary_settlement.html', context).content.decode('utf-8')
 

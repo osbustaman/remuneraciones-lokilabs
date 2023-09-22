@@ -60,6 +60,10 @@
             width: 35%;
         }
 
+        .ancho-40{
+            width: 40%;
+        }
+
         .ancho-45{
             width: 45%;
         }
@@ -81,8 +85,20 @@
             text-align: right !important;
         }
 
+        .table-center{
+            text-align: center !important;
+        }
+
         .p-10{
             padding: 3px !important;
+        }
+
+        .negrita-1{
+            font-weight: bold;
+        }
+
+        .border-line-top{
+            border-top: 1px solid #000;
         }
 	</style>
     </style>
@@ -122,21 +138,21 @@
     <table style="border:1px solid #b3adad !important;">
         <tr>
             <td class="p-10 ancho-10 table-right">Sr(a).: </td>
-            <td class="p-10 ancho-35 table-left">Osvaldo Andres Bustamante Navarro</td>
+            <td class="p-10 ancho-35 table-left">{{ collaborator_name }}</td>
             <td class="p-10 ancho-25 table-right">Rut: </td>
-            <td class="p-10 ancho-25 table-left">16090942-0</td>
+            <td class="p-10 ancho-25 table-left">{{ rut_dni }}</td>
         </tr>
         <tr>
             <td class="p-10 ancho-10 table-right">Cargo: </td>
-            <td class="p-10 ancho-35 table-left">Analista Programador</td>
+            <td class="p-10 ancho-35 table-left">{{ position_company }}</td>
             <td class="p-10 ancho-25 table-right">Ingreso: </td>
-            <td class="p-10 ancho-25 table-left">2023-07-01</td>
+            <td class="p-10 ancho-25 table-left">{{ entry_to_the_company }}</td>
         </tr>
         <tr>
             <td class="p-10 ancho-10 table-right">C. Costo: </td>
-            <td class="p-10 ancho-35 table-left">Desarrollo de proyecto</td>
+            <td class="p-10 ancho-35 table-left">{{ cost_center }}</td>
             <td class="p-10 ancho-25 table-right">Días trabajados</td>
-            <td class="p-10 ancho-25 table-left">30</td>
+            <td class="p-10 ancho-25 table-left">{{ number_days_worked }}</td>
         </tr>
     </table>
 
@@ -158,7 +174,61 @@
             <td class="table-left ancho-25">{{ obj.descuentos }}</td>
         </tr>
         {% endfor %}
+        <tr>
+            <td class="table-left ancho-50">Totales: </td>
+            <td class="table-left ancho-25">{{ totales.total_assets }}</td>
+            <td class="table-left ancho-25">{{ totales.total_discounts }}</td>
+        </tr>
     </table>
 
+
+    <table>
+        <tr>
+            <td colspan="3" class="ancho-100 table-right negrita-1">
+                <h2>LIQUIDO A PAGAR: ${{ totales.liquid_salary }}</h2>
+            </td>
+        </tr>
+    </table>
+
+
+    <table>
+        <tr>
+            <td colspan="3" class="ancho-100 table-left">
+                <strong>Forma de pago: </strong>{{ way_to_pay }}
+            </td>
+        </tr>
+    </table>
+
+    <br>
+    <br>
+    <br>
+
+    <table style="border:1px solid #b3adad !important;">
+        <tr>
+            <td class="p-10 ancho-33 table-center">Tributable</td>
+            <td class="p-10 ancho-33 table-center">Base Imponible</td>
+            <td class="p-10 ancho-33 table-center">Descuentos Legales </td>
+        </tr>
+        <tr>
+            <td class="p-10 ancho-33 table-center">{{ totales.tax_base }}</td>
+            <td class="p-10 ancho-33 table-center">{{ totales.base_imponible }}</td>
+            <td class="p-10 ancho-33 table-center">{{ totales.legal_discounts }}</td>
+        </tr>
+    </table>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <table class="ancho-40">
+        <tr>
+            <td colspan="3" class="table-center border-line-top">
+                <small>{{ collaborator_name }}</small>
+            </td>
+        </tr>
+    </table>
 </body>
 </html>

@@ -13,6 +13,12 @@ class Remunerations():
     MINIMUM_SALARY = 460000
     TOPE_GRATIFICATION = 4.75
 
+    @classmethod
+    def format_number(self, number):
+        """
+        Toma un número y devuelve una cadena con separadores de miles (comas).
+        """
+        return ('{:,}'.format(number)).replace(',', '.')
 
     def __calculate_amount_range(utm_value, utm_quantity, more_one = 0):
         """
