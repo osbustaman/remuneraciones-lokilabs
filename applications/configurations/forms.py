@@ -247,20 +247,14 @@ class ConceptsForm(forms.ModelForm):
 
     conc_name = forms.CharField(label="Nombre Concepto", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
-    conc_typeconcept = forms.ChoiceField(label='Tipo Concepto', choices=Concept.TYPE,
+    conc_typeconcept = forms.ChoiceField(label="Tipo concepto", choices=Concept.TYPE_CLASSIFICATION,
                                   widget=forms.Select(attrs=tags_input_general), required=True)
-    conc_description = forms.CharField(label="Descripción", help_text="150 caracteres máximos", widget=forms.TextInput(
-        attrs=tags_input_general), required=False)
-    
-    def clean_conc_description(self):
-        data = self.cleaned_data["conc_description"]
+    conc_clasificationconcept = forms.ChoiceField(label="Clasificación concepto", choices=Concept.CLASSIFICATION,
+                                  widget=forms.Select(attrs=tags_input_general), required=True)
 
-        if len(data) > 150:
-            self.add_error('conc_description', "No puede ecribir mas de 150 caracteres")
-        return data
 
     class Meta:
         model = Concept
         fields = (
-            "conc_name", "conc_typeconcept", "conc_description"
+            "conc_name", "conc_typeconcept", "conc_clasificationconcept"
         )

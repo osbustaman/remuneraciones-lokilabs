@@ -19,6 +19,7 @@ from applications.empresa.models import Empresa
 from applications.remuneracion.forms import SalaryCalculatorForm
 from applications.remuneracion.indicadores import IndicatorEconomic
 from applications.remuneracion.remuneracion import Remunerations
+from applications.usuario.models import Colaborador, UsuarioEmpresa
 
 
 
@@ -47,11 +48,39 @@ def download_pdf(request, pdf_filename):
     else:
         # Maneja el caso en el que el archivo PDF no existe
         return HttpResponse("El archivo PDF no se encontró.", status=404)
+    
+def salary_liquidation_calculations(data, user_id = 3):
+
+    data_colaborador = Colaborador.objects.filter(user__id=user_id).first()
+
+    # forma de pago
+    if data_colaborador.col_formapago == 4:
+        way_to_pay = f"{ data_colaborador.get_col_formapago_display() }, banco: { data_colaborador.banco.ban_nombre.title() }, N° Cuenta { data_colaborador.col_cuentabancaria }"
+    else:
+        way_to_pay = data_colaborador.get_col_formapago_display()
+
+    data_user = UsuarioEmpresa.objects.select_related('cargo', 'centrocosto').get(user__id=user_id)
+
+    datos_usuario = {
+        'collaborator_name': f"{ data_user.user.first_name.title() } { data_user.user.last_name.title() }",
+        'position_company': data_user.cargo.car_nombre,
+        'cost_center': data_user.centrocosto.cencost_nombre,
+        'rut_dni': data_user.user.username,
+        'entry_to_the_company': data_user.ue_fechacontratacion.strftime("%Y-%m-%d"),
+        'number_days_worked': '30',
+        'way_to_pay': way_to_pay,
+
+        'uf': IndicatorEconomic.get_uf_value_last_day(),
+        'utm': IndicatorEconomic.get_utm(),
+    }
+    
+    return datos_usuario
 
 
 def render_pdf(request):
 
     get_uf = IndicatorEconomic.get_uf_value_last_day()
+    get_utm = IndicatorEconomic.get_utm()
 
     collaborator_name = 'xxxxx xxxxx xxxxx xxxxx'
     position_company = 'xxxxx'
@@ -162,7 +191,8 @@ def render_pdf(request):
         'way_to_pay': way_to_pay,
 
         'data_dict': mounts_dict,
-        'totales': totales
+        'totales': totales,
+        'get_uf': get_uf
     }
     rendered_html = render(request, 'pdf/salary_settlement.html', context).content.decode('utf-8')
 
@@ -183,50 +213,6 @@ def render_pdf(request):
     return pdf_filename
 
 
-def render_pdf2(request):
-
-    get_uf = IndicatorEconomic.get_uf_value_last_day()
-    data_afp = Remunerations.calculate_afp_quote(request.POST['afp'], request.POST['type_of_work'], request.POST['base_salary'])
-    uf_valor = request.POST.get('quantity_uf_health', '0')
-    data_health = Remunerations.calculate_health_discount(request.POST['base_salary'], request.POST['salud'], uf_valor)
-
-    bonus_cap = 0
-    if int(request.POST['has_legal_gratification']) == 1:
-        bonus_cap = Remunerations.obtain_legal_bonus_cap(request.POST['type_of_gratification'], request.POST['base_salary'], True)
-
-    taxable_salary = int(request.POST['base_salary']) + bonus_cap['legal_bonus_cap']
-
-    company = Empresa.objects.get(emp_id = int(request.session['la_empresa']))
-
-    date_now = datetime.now()
-    month = calendar.month_name[date_now.month]
-    year = date_now.year
-
-
-    month_translate = Remunerations.translate_month(month)
-
-    # Renderiza el template con las variables
-    context = {
-
-        'emp_namecompany': company.emp_namecompany,
-        'emp_rut': company.emp_rut,
-        'emp_company_address': company.emp_company_address,
-        'emp_fonouno': company.emp_fonouno,
-        'month': month_translate.title(),
-        'year': year,
-
-    }
-    rendered_html = render(request, 'pdf/salary_settlement.html', context).content.decode('utf-8')
-
-    # Convierte el HTML en PDF
-    pdf = pdfkit.from_string(rendered_html, False)
-
-    # Devuelve el PDF como respuesta
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="archivo.pdf"'
-    return response
-
-
 @login_required
 def calculate_salaries(request):
 
@@ -234,7 +220,8 @@ def calculate_salaries(request):
     if request.method == 'POST':
         form = SalaryCalculatorForm(request.POST)
         if form.is_valid():
-            pdf_response = render_pdf(request)
+            #pdf_response = render_pdf(request)
+            pdf_response = salary_liquidation_calculations(request)
         for field in form:
             for error in field.errors:
                 messages.error(request, f"{field.label}: {error}")

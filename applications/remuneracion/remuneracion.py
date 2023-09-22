@@ -48,7 +48,8 @@ class Remunerations():
         parametros_impuesto_renta_mensual - Funcion que retorna el impuesto a la renta
 
         :param salary_imponible_mount: sueldo base imponible
-        :return: valor del impuesto en int
+        :return: 
+            valor del impuesto en int
         """
         
         monthly_income_tax_parameters = TablaGeneral.objects.filter(tg_nombretabla = 'tb_tax_second_category')
@@ -78,6 +79,14 @@ class Remunerations():
 
     @classmethod
     def translate_month(self, month, language = 'es_cl'):
+        """
+        translate_month - Funcion obtiene el mes en español
+
+        :param month: mes a consultar
+        :param language: lenguaje a traducir, por defecto es en español chileno
+        :return: 
+            translation retorna el mes consultado
+        """
 
         idioms = {
             'es_cl': {
@@ -103,6 +112,14 @@ class Remunerations():
 
     @classmethod
     def calculate_sesantia_insurance(self, salary_imponible_mount, contract_type):
+        """
+        calculate_sesantia_insurance - Funcion que calcula el valor del seguro de cesantia
+        
+        :param salary_imponible_mount: monto del salario imponible
+        :param contract_type: tipo de contrarto para determinar el porcentaje del descuento
+        :return: 
+            un diccionario con los montos correspondientes al aporte del empleado y el empleador
+        """
 
         obj_contract_type = TablaGeneral.objects.get(tg_nombretabla='tb_unemployment_insurance', tg_idelemento=contract_type)
         json_contract_type = json.loads(obj_contract_type.tg_value_one)
@@ -127,7 +144,17 @@ class Remunerations():
 
 
     @classmethod
-    def calculate_afp_quote(self, afp_id, type_of_work, desired_salary):
+    def calculate_afp_quote(self, afp_id, type_of_work, salary_imponible_mount):
+        """
+        calculate_afp_quote - Funcion que se encarga de ontener el monto a descontar de una AFP
+        
+        :param afp_id: ID de la AFP
+        :param type_of_work: tipo de trabajador puede ser independiente o dependiente
+        :param salary_imponible_mount: monto de salario imponible
+        :return: 
+            un diccionario con los montos y datos de el descuento y la AFP
+        """
+
         objects_afp = Afp.objects.filter(afp_id=afp_id)
         for value in objects_afp:
             if int(type_of_work) == 1:
@@ -142,11 +169,11 @@ class Remunerations():
 
         description_tope = False
         uf_tope = float(tabla_general.tg_descripcion) * float(valor_str)
-        if float(desired_salary) > uf_tope:
-            desired_salary = uf_tope
+        if float(salary_imponible_mount) > uf_tope:
+            salary_imponible_mount = uf_tope
             description_tope = True
 
-        quote_afp = int(float(desired_salary) * (quote_rate / 100))
+        quote_afp = int(float(salary_imponible_mount) * (quote_rate / 100))
         return {
             'discount_afp': quote_afp,
             'afp_nombre': objects_afp[0].afp_nombre,
@@ -155,10 +182,21 @@ class Remunerations():
         }
     
     @classmethod
-    def calculate_health_discount(self, desired_salary, health_entity, quantity_uf_health):
+    def calculate_health_discount(self, salary_imponible_mount, health_entity, quantity_uf_health):
+
+        """
+        calculate_health_discount - Funcion que se encarga de ontener el monto a descontar de salud
+        
+        :param salary_imponible_mount: monto de salario imponible
+        :param health_entity: ID de la entidad de salud
+        :param quantity_uf_health: cantidad de uf para el caso de las isapres
+        :return: 
+            un diccionario con los montos y datos de el descuento de salud
+        """
+
         # La tasa de descuento máxima para la salud en Chile es del 7%
         maximum_discount_rate = 0.07
-        health_discount = int(desired_salary) * maximum_discount_rate
+        health_discount = int(salary_imponible_mount) * maximum_discount_rate
         difference_of_amount = 0
         health_discount_uf = 0
 

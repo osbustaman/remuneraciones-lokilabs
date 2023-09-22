@@ -230,7 +230,7 @@ class UsuarioEmpresa(TimeStampedModel):
     cargo = models.ForeignKey(
         Cargo, verbose_name="Cargo", db_column="ue_cargo", on_delete=models.PROTECT, null=True, blank=True, related_name="usuarios_empresa_cargo")
     centrocosto = models.ForeignKey(
-        CentroCosto, verbose_name="Centro de costo ", db_column="ue_contro_costo", on_delete=models.PROTECT, null=True, blank=True)
+        CentroCosto, verbose_name="CentroDecosto ", db_column="ue_contro_costo", on_delete=models.PROTECT, null=True, blank=True)
     sucursal = models.ForeignKey(
         Sucursal, verbose_name="Sucursal", db_column="ue_sucursal", on_delete=models.PROTECT, null=True, blank=True)
     working_day = models.ForeignKey(
@@ -393,11 +393,18 @@ class Contact(TimeStampedModel):
 
 class ConceptUser(TimeStampedModel):
 
+    REMUNERATION_TYPE = (
+        (1, 'Orinarias'),
+        (2, 'Extraordinarias'),
+        (3, 'Especiales'),
+    )
+
     cu_id = models.AutoField("Key", primary_key=True)
     user = models.ForeignKey(User, verbose_name="Usuario",
                              db_column="cu_usuario_id", on_delete=models.PROTECT)
     concept = models.ForeignKey(
         Concept, verbose_name="Concept", db_column="cu_concept_id", on_delete=models.PROTECT)
+    cu_typeremuneration = models.IntegerField("Fórmula", choices=REMUNERATION_TYPE, null=True, blank=True)
     cu_formula = models.FloatField("Fórmula", null=True, blank=True)
     cu_value = models.FloatField("Valor", null=True, blank=True, default=0)
     cu_description = models.CharField(
