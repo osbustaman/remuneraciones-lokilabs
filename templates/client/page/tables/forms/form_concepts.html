@@ -30,17 +30,18 @@
                             {{ form.conc_name }}
                         </div>
                     </div><!-- col-4 -->
+                    
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label class="form-control-label">{{ form.conc_typeconcept.label }} <span class="tx-danger">*</span></label>
-                            {{ form.conc_typeconcept }}
+                            <label class="form-control-label">{{ form.conc_clasificationconcept.label }} <span class="tx-danger"></span></label>
+                            {{ form.conc_clasificationconcept }}
+                            <small>{{ form.conc_clasificationconcept.help_text }}</small>
                         </div>
                     </div><!-- col-4 -->
                     <div class="col-lg-4">
                         <div class="form-group">
-                            <label class="form-control-label">{{ form.conc_description.label }} <span class="tx-danger"></span></label>
-                            {{ form.conc_description }}
-                            <small>{{ form.conc_description.help_text }}</small>
+                            <label class="form-control-label">{{ form.conc_typeconcept.label }} <span class="tx-danger">*</span></label>
+                            {{ form.conc_typeconcept }}
                         </div>
                     </div><!-- col-4 -->
                 </div><!-- col-4 -->

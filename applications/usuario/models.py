@@ -222,6 +222,12 @@ class UsuarioEmpresa(TimeStampedModel):
         (2, 'INDIRECTA'),
     )
 
+    WORKER_SECTOR = (
+        (0, '---------'),
+        (1, 'Público'),
+        (2, 'Privado'),
+    )
+
     ue_id = models.AutoField("Key", primary_key=True)
     user = models.ForeignKey(User, verbose_name="Usuario",
                              db_column="ue_usuario", on_delete=models.PROTECT)
@@ -267,7 +273,10 @@ class UsuarioEmpresa(TimeStampedModel):
         "Porcentaje comociones", max_digits=15, decimal_places=2, null=True, blank=True)
     ue_semanacorrida = models.CharField(
         "Tiene semana corrida", choices=OPCIONES, max_length=1, null=True, blank=True)
-
+    
+    ue_workersector = models.IntegerField(
+        "Sector del trabajador", choices=WORKER_SECTOR, null=True, blank=True)
+    
     # AFP
     afp = models.ForeignKey(Afp, verbose_name="AFP", db_column="ue_afp",
                             on_delete=models.PROTECT, null=True, blank=True)

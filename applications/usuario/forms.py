@@ -211,6 +211,8 @@ class DatosLaboralesForm(forms.ModelForm):
                                   widget=forms.Select(attrs=tags_input_select), required=True)
     working_day = forms.ModelChoiceField(label="Jornada de trabajo", required=True,
                                    queryset=TablaGeneral.objects.filter(tg_nombretabla="tb_working_day"), widget=forms.Select(attrs=tags_input_select))
+    ue_workersector = forms.ChoiceField(initial=2, label='Sector del trabajador', choices=UsuarioEmpresa.WORKER_SECTOR,
+                                        widget=forms.Select(attrs=tags_input_select), required=True)
 
     class Meta:
         model = UsuarioEmpresa
@@ -224,7 +226,8 @@ class DatosLaboralesForm(forms.ModelForm):
             'ue_tipocontrato',
             'ue_tipotrabajdor',
             'ue_estate',
-            'working_day'
+            'working_day',
+            'ue_workersector'
         ]
 
 
