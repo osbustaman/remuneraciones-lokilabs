@@ -113,7 +113,7 @@
             </div>
 
             <div class="tab-pane fade" id="cr" role="tabpanel" aria-labelledby="cr-tab">
-                6
+                {% include "client/page/usuario/tables/remuneration_concept.html" %}
             </div>
 
             <div class="tab-pane fade" id="doc" role="tabpanel" aria-labelledby="doc-tab">
@@ -200,7 +200,6 @@
         });
     }
 
-   
     $('.fc-datepicker').datepicker({
         showOtherMonths: true,
         selectOtherMonths: true,
@@ -209,6 +208,10 @@
 
     $('.select2-show-search').select2({
         minimumResultsForSearch: ''
+    });
+
+    $('.select2-one').select2({
+        minimumResultsForSearch: Infinity
     });
 
     const cargarInput = (inputOrigenId, inputDestinoId, inputDestinoId2) => {

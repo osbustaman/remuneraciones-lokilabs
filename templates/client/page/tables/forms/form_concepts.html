@@ -47,6 +47,9 @@
                 </div><!-- col-4 -->
                 <div class="form-layout-footer mg-t-30">
                     <button type="button" class="btn btn-info mg-r-5" onclick="save_data()">{{ action }}</button>
+                    {% if action == 'Editar' %}
+                    <a class="btn btn-info mg-r-5" href="{% url 'conf_app:concepts_add' %}">Agregar Otro</a>
+                    {% endif %}
                 </div><!-- form-layout-footer -->
             </div>
         </form>
