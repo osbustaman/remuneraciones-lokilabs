@@ -176,7 +176,7 @@ class DatosLaboralesForm(forms.ModelForm):
     }
 
     tags_input_select = {
-        'class': 'form-control',
+        'class': 'form-control select2-one',
     }
 
     tags_input_select2 = {
