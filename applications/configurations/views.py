@@ -339,7 +339,6 @@ def apv_add(request):
             messages.success(request, 'Elemento creado exitosamente.')
             return redirect('conf_app:apv_edit', apv_id=object.apv_id)
 
-        lista_err = []
         for field in form:
             for error in field.errors:
                 messages.error(request, f"{field.label}: {error}")

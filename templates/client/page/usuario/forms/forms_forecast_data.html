@@ -141,7 +141,13 @@
     {% endif %}
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        $("#id_ue_tieneapv").on('select2:select', function (e) {
+            const { text, id } = e.params.data;
+            console.log(`${id} - ${text}`)
+
+            
+        });
+        /*document.addEventListener('DOMContentLoaded', () => {
             const selectElement = document.querySelector('#id_afp');
             const id_salud = document.querySelector('#id_salud');
 
@@ -181,7 +187,7 @@
                         console.error('Error en la solicitud:', error.message);
                     });
             });
-        });
+        });*/
 
 
 

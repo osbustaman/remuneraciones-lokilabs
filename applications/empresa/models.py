@@ -416,10 +416,10 @@ class Apv(models.Model):
     )
 
     apv_id = models.AutoField("Key", primary_key=True)
-    apv_codigoprevired = models.CharField("Código previred", max_length=100)
+    apv_codigoprevired = models.CharField("Código previred", max_length=100, null=True, blank=True)
     apv_nombre = models.CharField("Nombre", max_length=100)
     apv_nombrerazonsocial = models.CharField(
-        "Nombre razón social", max_length=150)
+        "Nombre razón social", max_length=150, null=True, blank=True)
     apv_activo = models.CharField(
         "Activo", max_length=1, choices=OPCIONES, default="S")
 

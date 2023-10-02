@@ -31,9 +31,7 @@
             <thead>
                 <tr>
                     <th class="wd-15p">ID</th>
-                    <th class="wd-15p">Código</th>
                     <th class="wd-20p">Nombre</th>
-                    <th class="wd-15p">Razón Social</th>
                     <th class="wd-25p">Acción</th>
                 </tr>
             </thead>
@@ -41,9 +39,7 @@
                 {% for obj in objects %}
                 <tr>
                     <td>{{ obj.apv_id }}</td>
-                    <td>{{ obj.apv_codigoprevired }}</td>
                     <td>{{ obj.apv_nombre }}</td>
-                    <td>{{ obj.apv_nombrerazonsocial }}</td>
                     <td>
                         <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'conf_app:apv_edit' obj.apv_id %}')">Editar</button>
                         <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'conf_app:apv_delete' obj.apv_id %}')">Eliminar</button>

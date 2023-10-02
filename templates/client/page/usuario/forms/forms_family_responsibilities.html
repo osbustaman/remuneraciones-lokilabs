@@ -107,7 +107,7 @@
 
 {% block script_tag %}
 <script>
-const redirectToUrl = (url) => {
+    const redirectToUrl = (url) => {
         location.href = url;
     }
 
@@ -115,6 +115,14 @@ const redirectToUrl = (url) => {
         showOtherMonths: true,
         selectOtherMonths: true,
         dateFormat: 'dd-mm-yy',
+    });
+
+    $('.select2-show-search').select2({
+        minimumResultsForSearch: ''
+    });
+
+    $('.select2-one').select2({
+        minimumResultsForSearch: Infinity
     });
 </script>
 {% endblock %}

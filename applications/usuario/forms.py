@@ -17,7 +17,7 @@ class FormsForecastData(forms.ModelForm):
     }
 
     tags_input_select = {
-        'class': 'form-control',
+        'class': 'form-control select2-one',
     }
 
     tags_input_select2 = {
@@ -30,9 +30,9 @@ class FormsForecastData(forms.ModelForm):
     }
 
     afp = forms.ModelChoiceField(label="AFPs", required=True,
-                                 queryset=Afp.objects.filter(afp_activo="S"), widget=forms.Select(attrs=tags_input_select))
+                                 queryset=Afp.objects.filter(afp_activo="S"), widget=forms.Select(attrs=tags_input_select2))
     salud = forms.ModelChoiceField(label="Salud", required=True,
-                                   queryset=Salud.objects.filter(sa_activo="S"), widget=forms.Select(attrs=tags_input_select))
+                                   queryset=Salud.objects.filter(sa_activo="S"), widget=forms.Select(attrs=tags_input_select2))
     ue_ufisapre = forms.FloatField(label="Monto UF",
                                    widget=forms.TextInput(attrs=tags_input_general), required=False)
     ue_funisapre = forms.CharField(label="FUN Isapre",
@@ -42,7 +42,7 @@ class FormsForecastData(forms.ModelForm):
     ue_tieneapv = forms.ChoiceField(initial=0, label='Tiene APVI', choices=UsuarioEmpresa.OPCIONES,
                                     widget=forms.Select(attrs=tags_input_select), required=False)
     apv = forms.ModelChoiceField(label="APV", required=False,
-                                 queryset=Apv.objects.filter(apv_activo="S"), widget=forms.Select(attrs=tags_input_select))
+                                 queryset=Apv.objects.filter(apv_activo="S"), widget=forms.Select(attrs=tags_input_select2))
     ue_contributiontype = forms.ChoiceField(initial=0, label='Tipo de contribución', choices=UsuarioEmpresa.CONTRIBUTION_TYPE,
                                             widget=forms.Select(attrs=tags_input_select), required=False)
     ue_taxregime = forms.ChoiceField(initial=0, label='Régimen tributario', choices=UsuarioEmpresa.TAX_REGIME,
@@ -55,7 +55,7 @@ class FormsForecastData(forms.ModelForm):
                                                  widget=forms.DateInput(format="%d-%m-%Y",
                                                                         attrs=tags_input_date), required=False)
     caja_compensacion = forms.ModelChoiceField(label="Caja de compensacion", required=False,
-                                               queryset=CajasCompensacion.objects.filter(cc_activo="S"), widget=forms.Select(attrs=tags_input_select))
+                                               queryset=CajasCompensacion.objects.filter(cc_activo="S"), widget=forms.Select(attrs=tags_input_select2))
 
     def clean_caja_compensacion(self):
         data = self.data["caja_compensacion"]
@@ -122,7 +122,7 @@ class FormsPayments(forms.ModelForm):
     }
 
     tags_input_select = {
-        'class': 'form-control',
+        'class': 'form-control select2-one',
     }
 
     tags_input_select2 = {
@@ -132,7 +132,7 @@ class FormsPayments(forms.ModelForm):
     col_formapago = forms.ChoiceField(initial='', label='Forma de pago', choices=Colaborador.FORMA_PAGO,
                                       widget=forms.Select(attrs=tags_input_select), required=True)
     banco = forms.ModelChoiceField(label="Bancos", required=False,
-                                   queryset=Banco.objects.filter(ban_activo="S"), widget=forms.Select(attrs=tags_input_select))
+                                   queryset=Banco.objects.filter(ban_activo="S"), widget=forms.Select(attrs=tags_input_select2))
     col_tipocuenta = forms.ChoiceField(initial='', label='Tipo Cuenta', choices=Colaborador.TIPO_CUENTA_BANCARIA,
                                        widget=forms.Select(attrs=tags_input_select), required=False)
     col_cuentabancaria = forms.CharField(label="Cuenta bancaria",
@@ -189,11 +189,11 @@ class DatosLaboralesForm(forms.ModelForm):
     }
 
     cargo = forms.ModelChoiceField(label="Cargo", required=True,
-                                   queryset=Cargo.objects.filter(car_activa="S"), widget=forms.Select(attrs=tags_input_select))
+                                   queryset=Cargo.objects.filter(car_activa="S"), widget=forms.Select(attrs=tags_input_select2))
     centrocosto = forms.ModelChoiceField(label="Centro de Costo", required=True,
-                                         queryset=CentroCosto.objects.filter(cencost_activo="S"), widget=forms.Select(attrs=tags_input_select))
+                                         queryset=CentroCosto.objects.filter(cencost_activo="S"), widget=forms.Select(attrs=tags_input_select2))
     sucursal = forms.ModelChoiceField(label="Sucursal", required=True,
-                                      queryset=Sucursal.objects.filter(suc_estado="S"), widget=forms.Select(attrs=tags_input_select))
+                                      queryset=Sucursal.objects.filter(suc_estado="S"), widget=forms.Select(attrs=tags_input_select2))
     ue_fechacontratacion = forms.DateField(input_formats=["%d-%m-%Y"], label="Fecha Contratación",
                                            widget=forms.DateInput(format="%d-%m-%Y",
                                                                   attrs=tags_input_date), required=True)
@@ -208,9 +208,9 @@ class DatosLaboralesForm(forms.ModelForm):
     ue_tipotrabajdor = forms.ChoiceField(initial=0, label='Tipo Trabajador', choices=UsuarioEmpresa.TIPO_TRABAJADOR,
                                          widget=forms.Select(attrs=tags_input_select), required=True)
     ue_estate = forms.ChoiceField(initial=0, label='Estado', choices=UsuarioEmpresa.ESTATE_JOB,
-                                  widget=forms.Select(attrs=tags_input_select), required=True)
+                                  widget=forms.Select(attrs=tags_input_select2), required=True)
     working_day = forms.ModelChoiceField(label="Jornada de trabajo", required=True,
-                                   queryset=TablaGeneral.objects.filter(tg_nombretabla="tb_working_day"), widget=forms.Select(attrs=tags_input_select))
+                                   queryset=TablaGeneral.objects.filter(tg_nombretabla="tb_working_day"), widget=forms.Select(attrs=tags_input_select2))
     ue_workersector = forms.ChoiceField(initial=2, label='Sector del trabajador', choices=UsuarioEmpresa.WORKER_SECTOR,
                                         widget=forms.Select(attrs=tags_input_select), required=True)
 
@@ -408,7 +408,11 @@ class FamilyResponsibilitiesForm(forms.ModelForm):
     }
 
     tags_input_select = {
-        'class': 'form-control',
+        'class': 'form-control select2-one',
+    }
+
+    tags_input_select2 = {
+        'class': 'form-control select2-show-search',
     }
 
     tags_input_date = {

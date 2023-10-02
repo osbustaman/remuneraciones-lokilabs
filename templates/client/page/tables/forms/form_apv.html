@@ -24,28 +24,20 @@
             <div class="form-layout">
                 <div class="row mg-b-25">
                     
-                    <div class="col-lg-2">
-                        <div class="form-group">
-                            <label class="form-control-label">{{ form.apv_codigoprevired.label }} <span class="tx-danger">*</span></label>
-                            {{ form.apv_codigoprevired }}
-                        </div>
-                    </div><!-- col-4 -->
+
                     <div class="col-lg-5">
                         <div class="form-group">
                             <label class="form-control-label">{{ form.apv_nombre.label }} <span class="tx-danger"></span></label>
                             {{ form.apv_nombre }}
                         </div>
                     </div><!-- col-4 -->
-                    <div class="col-lg-5">
-                        <div class="form-group">
-                            <label class="form-control-label">{{ form.apv_nombrerazonsocial.label }} <span class="tx-danger">*</span></label>
-                            {{ form.apv_nombrerazonsocial }}
-                        </div>
-                    </div><!-- col-4 -->
                     
                 </div><!-- row -->
                 <div class="form-layout-footer mg-t-30">
                     <button type="button" class="btn btn-info mg-r-5" onclick="save_data()">{{ action }}</button>
+                    {% if action == 'Editar' %}
+                    <button type="button" class="btn btn-info mg-r-5" onclick="redirectToUrl('{% url 'conf_app:apv_add' %}')">Agregar Otra Apv</button>
+                    {% endif %}
                 </div><!-- form-layout-footer -->
             </div>
         </form>
@@ -81,5 +73,6 @@
 <script>
 {% include "client/includes/validate_input.html" with form=form %}
 {% include "client/includes/redirect_to_js.html" %}
+
 </script>
 {% endblock %}

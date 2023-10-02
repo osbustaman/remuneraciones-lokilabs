@@ -1,15 +1,16 @@
-
-<form method="post" id="form" name="form" action="">
+<form method="post" id="form" name="form">
     {% csrf_token %}
 
     <div class="form-layout">
         <div class="row mg-b-25">
+
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formColaboradorForm.col_rut.label }} <span class="tx-danger">*</span></label>
                     {{ formColaboradorForm.col_rut }}
                 </div>
             </div><!-- col-4 -->
+            
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formUserForm.last_name.label }} <span class="tx-danger">*</span></label>
