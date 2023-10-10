@@ -1,5 +1,4 @@
-<form method="post" id="form-forescat-data" name="form-forescat-data"
-    action="{% url 'usuario_app:add_forecast_data' id col_id %}">
+<form method="post" id="form-forescat-data" name="form-forescat-data" action="{% url 'usuario_app:add_forecast_data' id col_id %}">
     {% csrf_token %}
 
     <div class="form-layout">
@@ -7,16 +6,17 @@
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.afp.label }} <span
-                            class="tx-danger">*</span></label>
-                    {{ formFormsForecastData.afp }}
+                            class="tx-danger">*</span></label> {{ formFormsForecastData.afp }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-10">
                 <br>
                 <div class="alert alert-info" role="alert">
                     <small><strong class="d-block d-sm-inline-block-force">CÓDIGO PREVIRED: </strong> <span id="alert-afp">{{ usuario_empresa.afp.afp_codigoprevired }}</span>, </small>
                     <small><strong class="d-block d-sm-inline-block-force">PORCENTAJE: </strong> <span id="alert-afp-porcentaje">{{ usuario_empresa.afp.afp_tasatrabajadordependiente }}</span>%</small>
-                </div><!-- alert -->
+                </div>
+                <!-- alert -->
             </div>
         </div>
 
@@ -24,106 +24,106 @@
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.salud.label }} <span
-                            class="tx-danger">*</span></label>
-                    {{ formFormsForecastData.salud }}
+                            class="tx-danger">*</span></label> {{ formFormsForecastData.salud }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_ufisapre.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_ufisapre }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_ufisapre }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_funisapre.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_funisapre }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_funisapre }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_cotizacion.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_cotizacion }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_cotizacion }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
         </div>
 
         <div class="row mg-b-25">
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_tieneapv.label }} <span
-                            class="tx-danger">*</span></label>
-                    {{ formFormsForecastData.ue_tieneapv }}
+                            class="tx-danger">*</span></label> {{ formFormsForecastData.ue_tieneapv }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.apv.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.apv }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.apv }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_contributiontype.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_contributiontype }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_contributiontype }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
 
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_taxregime.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_taxregime }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_taxregime }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_shape.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_shape }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_shape }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-1">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_apvamount.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_apvamount }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_apvamount }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
             <div class="col-lg-2">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.ue_paymentperioddate.label }} <span
-                            class="tx-danger"></span></label>
-                    {{ formFormsForecastData.ue_paymentperioddate }}
+                            class="tx-danger"></span></label> {{ formFormsForecastData.ue_paymentperioddate }}
                 </div>
-            </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
         </div>
 
         <div class="row mg-b-25">
             <div class="col-lg-4">
                 <div class="form-group">
                     <label class="form-control-label">{{ formFormsForecastData.caja_compensacion.label }} <span
-                            class="tx-danger">*</span></label>
-                    {{ formFormsForecastData.caja_compensacion }}
+                            class="tx-danger">*</span></label> {{ formFormsForecastData.caja_compensacion }}
                 </div>
-            </div><!-- col-4 -->
-        </div><!-- col-4 -->
+            </div>
+            <!-- col-4 -->
+        </div>
+        <!-- col-4 -->
 
 
         <div class="form-layout-footer mg-t-30">
             <button type="submit" class="btn btn-info mg-r-5">Guardar</button>
-        </div><!-- form-layout-footer -->
+        </div>
+        <!-- form-layout-footer -->
     </div>
 </form>
 
-{% if messages %}
-{% for message in messages %}
-{% if message.tags == 'error' %}
+{% if messages %} {% for message in messages %} {% if message.tags == 'error' %}
 <div class="alert alert-danger mt-4" role="alert">
     {% else %}
     <div class="alert alert-success mt-4" role="alert">
@@ -132,34 +132,92 @@
             <span aria-hidden="true">&times;</span>
         </button>
         <div class="d-flex align-items-center justify-content-start">
-            <i
-                class="icon ion-ios-{% if message.tags == 'error' %}close{% else %}checkmark{% endif %} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
+            <i class="icon ion-ios-{% if message.tags == 'error' %}close{% else %}checkmark{% endif %} alert-icon tx-32 mg-t-5 mg-xs-t-0"></i>
             <span><strong>{% if message.tags == 'error' %}Error{% else %}Éxito{% endif %}: </strong> {{ message }}</span>
-        </div><!-- d-flex -->
-    </div><!-- alert -->
-    {% endfor %}
-    {% endif %}
+        </div>
+        <!-- d-flex -->
+    </div>
+    <!-- alert -->
+    {% endfor %} {% endif %}
 
     <script>
-        $("#id_ue_tieneapv").on('select2:select', function (e) {
-            const { text, id } = e.params.data;
+        const id_apv = document.getElementById('id_apv').value;
+        const id_ue_contributiontype = document.getElementById('id_ue_contributiontype').value;
+        const id_ue_taxregime = document.getElementById('id_ue_taxregime').value;
+        const id_ue_shape = document.getElementById('id_ue_shape').value;
+        const id_ue_apvamount = document.getElementById('id_ue_apvamount').value;
+        const id_ue_paymentperioddate = document.getElementById('id_ue_paymentperioddate').value;
+
+        $("#id_ue_tieneapv").on('select2:select', function(e) {
+
+            const {
+                text,
+                id
+            } = e.params.data;
+
             console.log(`${id} - ${text}`)
 
-            
+            if (id == 'S') {
+                // $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", false);
+                // $("#id_banco").val(id_banco).trigger('change');
+                // $("#id_col_tipocuenta").val(id_col_tipocuenta).trigger('change');
+                // $("#id_col_cuentabancaria").val(id_col_cuentabancaria);
+
+                console.log('id_apv: ', id_apv)
+                console.log('id_ue_contributiontype: ', id_ue_contributiontype)
+                console.log('id_ue_taxregime: ', id_ue_taxregime)
+                console.log('id_ue_shape: ', id_ue_shape)
+                console.log('id_ue_apvamount: ', id_ue_apvamount)
+                console.log('id_ue_paymentperioddate: ', id_ue_paymentperioddate)
+
+                document.getElementById('id_apv').value = id_apv;
+                document.getElementById('id_ue_contributiontype').value = id_ue_contributiontype;
+                document.getElementById('id_ue_taxregime').value = id_ue_taxregime;
+                document.getElementById('id_ue_shape').value = id_ue_shape;
+                document.getElementById('id_ue_apvamount').value = id_ue_apvamount;
+                document.getElementById('id_ue_paymentperioddate').value = id_ue_paymentperioddate;
+
+            } else {
+                // $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", true);
+                // $("#id_col_cuentabancaria").val('');
+                // resetSelect2();
+
+
+                document.getElementById('id_apv').value = '';
+                document.getElementById('id_ue_contributiontype').value = '';
+                document.getElementById('id_ue_taxregime').value = '';
+                document.getElementById('id_ue_shape').value = '';
+                document.getElementById('id_ue_apvamount').value = '';
+                document.getElementById('id_ue_paymentperioddate').value = '';
+
+
+            }
+
+
         });
-        /*document.addEventListener('DOMContentLoaded', () => {
+
+        function resetSelect2() {
+            // Desvincula el select2 del elemento y luego destrúyelo
+            $("#id_banco, #id_col_tipocuenta").select2('destroy');
+            $("#id_banco").val('');
+            $("#id_col_tipocuenta").val(0);
+
+            // Vuelve a vincular el select2 al elemento
+            $("#id_banco, #id_col_tipocuenta").select2();
+        }
+        document.addEventListener('DOMContentLoaded', () => {
             const selectElement = document.querySelector('#id_afp');
             const id_salud = document.querySelector('#id_salud');
 
             id_salud.addEventListener('change', (event) => {
                 let selectedValue = event.target.value;
 
-                if(selectedValue === '1'){
+                if (selectedValue === '1') {
                     $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", true);
                     $("#id_ue_cotizacion").val(7.0);
                     $("#id_ue_ufisapre").val(0.0);
                     $("#id_ue_funisapre").val(0);
-                }else{
+                } else {
                     $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", false);
                     $("#id_ue_cotizacion").val(0.0);
                 }
@@ -187,8 +245,5 @@
                         console.error('Error en la solicitud:', error.message);
                     });
             });
-        });*/
-
-
-
+        });
     </script>
