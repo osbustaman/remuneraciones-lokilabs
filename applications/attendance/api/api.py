@@ -150,45 +150,48 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 actualDate = datetime.strptime(request.data['ma_datemark'], "%Y-%m-%d").date()
                 objectMarkAttendance = MarkAttendance.objects.filter(user=objectUser.first(), ma_datemark=actualDate)
                 
-                colaborador_data = Colaborador.objects.filter(user=objectUser.first()).values('col_latitude', 'col_longitude', 'col_direccion', 'comuna__com_nombre', 'region__re_nombre', 'pais__pa_nombre')
-                usuario_empresa_data = UsuarioEmpresa.objects.filter(user=objectUser.first()).values('sucursal__suc_latitude', 'sucursal__suc_longitude', 'sucursal__suc_direccion', 'sucursal__comuna__com_nombre', 'sucursal__region__re_nombre', 'sucursal__pais__pa_nombre')
-
-                result_list = list(chain(
-                    [{'latitud': item['col_latitude'], 'longitud': item['col_longitude'], 'direccion': f"{item['col_direccion']}, {item['comuna__com_nombre']}, {item['region__re_nombre']}, {item['pais__pa_nombre']}"} for item in colaborador_data],
-                    [{'latitud': item['sucursal__suc_latitude'], 'longitud': item['sucursal__suc_longitude'], 'direccion': f"{item['sucursal__suc_direccion']}, {item['sucursal__comuna__com_nombre']}, {item['sucursal__region__re_nombre']}, {item['sucursal__pais__pa_nombre']}"} for item in usuario_empresa_data]
-                ))
                 
-                itsRadio = False
-                locationData = []
-                for val in result_list:
-                    itsRadio = self.isWithinTheDiameter(
-                        float(val['latitud'])
-                        , float(val['longitud'])
-                        , float(request.data['ma_latitude'])
-                        , float(request.data['ma_longitude']))
-                    if itsRadio:
-                        locationData.append(
-                            {
-                                "lugar": "sucursal",
-                                "latitud": float(val['latitud']),
-                                "longitud": float(val['longitud']),
-                                "direccion": val['direccion']
-                            }
-                        )
-                        break
-                    
-                if not itsRadio:
-                    return Response({"error": "Not Found - 404", "message": "No se encuantra en el rango del lugar de trabajando"}, status=status.HTTP_404_NOT_FOUND)
-                
-                locationData.append(
-                    {
-                        "lugar": "posicion",
-                        "latitud": float(request.data['ma_latitude']),
-                        "longitud": float(request.data['ma_longitude'])
-                    }
-                )
                 
                 if objectMarkAttendance:
+
+                    colaborador_data = Colaborador.objects.filter(user=objectUser.first()).values('col_latitude', 'col_longitude', 'col_direccion', 'comuna__com_nombre', 'region__re_nombre', 'pais__pa_nombre')
+                    usuario_empresa_data = UsuarioEmpresa.objects.filter(user=objectUser.first()).values('sucursal__suc_latitude', 'sucursal__suc_longitude', 'sucursal__suc_direccion', 'sucursal__comuna__com_nombre', 'sucursal__region__re_nombre', 'sucursal__pais__pa_nombre')
+
+                    result_list = list(chain(
+                        [{'latitud': item['col_latitude'], 'longitud': item['col_longitude'], 'direccion': f"{item['col_direccion']}, {item['comuna__com_nombre']}, {item['region__re_nombre']}, {item['pais__pa_nombre']}"} for item in colaborador_data],
+                        [{'latitud': item['sucursal__suc_latitude'], 'longitud': item['sucursal__suc_longitude'], 'direccion': f"{item['sucursal__suc_direccion']}, {item['sucursal__comuna__com_nombre']}, {item['sucursal__region__re_nombre']}, {item['sucursal__pais__pa_nombre']}"} for item in usuario_empresa_data]
+                    ))
+                    
+                    itsRadio = False
+                    locationData = []
+                    for val in result_list:
+                        itsRadio = self.isWithinTheDiameter(
+                            float(val['latitud'])
+                            , float(val['longitud'])
+                            , float(request.data['ma_latitude'])
+                            , float(request.data['ma_longitude']))
+                        if itsRadio:
+                            locationData.append(
+                                {
+                                    "lugar": "sucursal",
+                                    "latitud": float(val['latitud']),
+                                    "longitud": float(val['longitud']),
+                                    "direccion": val['direccion']
+                                }
+                            )
+                            break
+                        
+                    if not itsRadio:
+                        return Response({"error": "Not Found - 404", "message": "No se encuantra en el rango del lugar de trabajo"}, status=status.HTTP_404_NOT_FOUND)
+                    
+                    locationData.append(
+                        {
+                            "lugar": "posicion",
+                            "latitud": float(request.data['ma_latitude']),
+                            "longitud": float(request.data['ma_longitude'])
+                        }
+                    )
+
                     if len(objectMarkAttendance) >= 2:
                         return Response({"error": "No Content - 204", "message": f"ya existen marcas de ENTRADA y SALIDA para el dia { request.data['ma_datemark'] }"}, status=status.HTTP_204_NO_CONTENT)
                     else:

@@ -59,7 +59,41 @@
 
     
     $().ready(function(){
-        
+        const id_col_formapago = document.getElementById('id_col_formapago').value;
+        const id_banco = document.getElementById('id_banco').value;
+        const id_col_tipocuenta = document.getElementById('id_col_tipocuenta').value;
+        const id_col_cuentabancaria = document.getElementById('id_col_cuentabancaria').value;
+
+        $("#id_col_formapago").on('select2:select', function (e) {
+            const { text, id } = e.params.data;
+            if (id == 4){
+                $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", false);
+                $("#id_banco").val(id_banco).trigger('change');
+                $("#id_col_tipocuenta").val(id_col_tipocuenta).trigger('change');
+                $("#id_col_cuentabancaria").val(id_col_cuentabancaria);
+            }else{
+                $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", true);
+                $("#id_col_cuentabancaria").val('');
+                resetSelect2();
+            }
+            
+        });
+
+        function resetSelect2() {
+            // Desvincula el select2 del elemento y luego destrúyelo
+            $("#id_banco, #id_col_tipocuenta").select2('destroy');
+            $("#id_banco").val('');
+            $("#id_col_tipocuenta").val(0);
+
+            // Vuelve a vincular el select2 al elemento
+            $("#id_banco, #id_col_tipocuenta").select2();
+        }
+
+        if(id_col_formapago == 4){
+            $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", false);
+        }else{
+            $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", true);
+        }
     });
 </script>
     

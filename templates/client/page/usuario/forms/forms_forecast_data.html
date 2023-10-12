@@ -141,100 +141,20 @@
     {% endfor %} {% endif %}
 
     <script>
-        const id_apv = document.getElementById('id_apv').value;
-        const id_ue_contributiontype = document.getElementById('id_ue_contributiontype').value;
-        const id_ue_taxregime = document.getElementById('id_ue_taxregime').value;
-        const id_ue_shape = document.getElementById('id_ue_shape').value;
-        const id_ue_apvamount = document.getElementById('id_ue_apvamount').value;
-        const id_ue_paymentperioddate = document.getElementById('id_ue_paymentperioddate').value;
+        $(document).ready(function(){
 
-        $("#id_ue_tieneapv").on('select2:select', function(e) {
-
-            const {
-                text,
-                id
-            } = e.params.data;
-
-            console.log(`${id} - ${text}`)
-
-            if (id == 'S') {
-                // $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", false);
-                // $("#id_banco").val(id_banco).trigger('change');
-                // $("#id_col_tipocuenta").val(id_col_tipocuenta).trigger('change');
-                // $("#id_col_cuentabancaria").val(id_col_cuentabancaria);
-
-                console.log('id_apv: ', id_apv)
-                console.log('id_ue_contributiontype: ', id_ue_contributiontype)
-                console.log('id_ue_taxregime: ', id_ue_taxregime)
-                console.log('id_ue_shape: ', id_ue_shape)
-                console.log('id_ue_apvamount: ', id_ue_apvamount)
-                console.log('id_ue_paymentperioddate: ', id_ue_paymentperioddate)
-
-                document.getElementById('id_apv').value = id_apv;
-                document.getElementById('id_ue_contributiontype').value = id_ue_contributiontype;
-                document.getElementById('id_ue_taxregime').value = id_ue_taxregime;
-                document.getElementById('id_ue_shape').value = id_ue_shape;
-                document.getElementById('id_ue_apvamount').value = id_ue_apvamount;
-                document.getElementById('id_ue_paymentperioddate').value = id_ue_paymentperioddate;
-
-            } else {
-                // $("#id_banco, #id_col_tipocuenta, #id_col_cuentabancaria").prop("disabled", true);
-                // $("#id_col_cuentabancaria").val('');
-                // resetSelect2();
+            $("#id_ue_ufisapre").val(0.0).attr("readonly", true);
+            $("#id_ue_funisapre").attr("readonly", true);
+            $("#id_ue_cotizacion").val(0).attr("readonly", true);
 
 
-                document.getElementById('id_apv').value = '';
-                document.getElementById('id_ue_contributiontype').value = '';
-                document.getElementById('id_ue_taxregime').value = '';
-                document.getElementById('id_ue_shape').value = '';
-                document.getElementById('id_ue_apvamount').value = '';
-                document.getElementById('id_ue_paymentperioddate').value = '';
-
-
-            }
-
-
-        });
-
-        function resetSelect2() {
-            // Desvincula el select2 del elemento y luego destrúyelo
-            $("#id_banco, #id_col_tipocuenta").select2('destroy');
-            $("#id_banco").val('');
-            $("#id_col_tipocuenta").val(0);
-
-            // Vuelve a vincular el select2 al elemento
-            $("#id_banco, #id_col_tipocuenta").select2();
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            const selectElement = document.querySelector('#id_afp');
-            const id_salud = document.querySelector('#id_salud');
-
-            id_salud.addEventListener('change', (event) => {
-                let selectedValue = event.target.value;
-
-                if (selectedValue === '1') {
-                    $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", true);
-                    $("#id_ue_cotizacion").val(7.0);
-                    $("#id_ue_ufisapre").val(0.0);
-                    $("#id_ue_funisapre").val(0);
-                } else {
-                    $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", false);
-                    $("#id_ue_cotizacion").val(0.0);
-                }
-            });
-
-            selectElement.addEventListener('change', (event) => {
-                const selectedValue = event.target.value;
-                console.log(selectedValue);
-
+            $("#id_afp").change(function(){
                 // Endpoint al que se realizará la solicitud POST
-                const endpoint = "{% url 'usuario_app:AfpDetailApiView' '__id__' %}".replace('__id__', selectedValue);
-                console.log(endpoint);
+                const endpoint = "{% url 'usuario_app:AfpDetailApiView' '__id__' %}".replace('__id__', this.value);
 
                 // Realizar la solicitud POST utilizando Axios
                 axios.get(endpoint)
                     .then(response => {
-                        console.log(response.data)
                         const spanElement = document.getElementById('alert-afp');
                         const spanElementPorcentaje = document.getElementById('alert-afp-porcentaje');
                         spanElement.textContent = response.data[0]['afp_codigoprevired'];
@@ -244,6 +164,19 @@
                         // Ocurrió un error durante la solicitud
                         console.error('Error en la solicitud:', error.message);
                     });
-            });
+            })
+
+            $("#id_salud").change(function(){
+                console.log(this.value);
+                if (this.value === '1') {
+                    $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", true);
+                    $("#id_ue_cotizacion").val(7.0);
+                    $("#id_ue_ufisapre").val(0.0);
+                    $("#id_ue_funisapre").val(0);
+                } else {
+                    $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", false);
+                    $("#id_ue_cotizacion").val(0.0);
+                }
+            })
         });
     </script>
