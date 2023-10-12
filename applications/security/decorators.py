@@ -1,9 +1,10 @@
 # -*- encoding: utf-8 -*-
-from django.core.exceptions import ObjectDoesNotExist
+from functools import wraps
 from django.shortcuts import redirect
-from django.db.models import Case, CharField, Value, When, BooleanField, IntegerField, Subquery, Sum, Q
-
 from applications.empresa.models import Empresa
+from jwt import encode, decode, ExpiredSignatureError, InvalidSignatureError
+
+from decouple import config
 
 def existsCompany(func):
     def valida(request, *args, **kwargs):
@@ -17,44 +18,9 @@ def existsCompany(func):
     return valida
 
 
-"""def cargo_empresa(func):
-
-    def valida_cargo(request, *args, **kwargs):
-        emp=Empresa.objects.get(emp_id=request.session['la_empresa'])
-        cantCargoEmpresa = CargoEmpresa.objects.filter(empresa=emp).count()
-        if cantCargoEmpresa < 1:
-            valor = redirect('bases:decoradorCargoError403')
-        else:
-            valor = func(request, *args, **kwargs)
-        return valor
-
-    return valida_cargo
-
-
-def centro_costo_empresa(func):
-
-    def valida_cargo(request, *args, **kwargs):
-        emp=Empresa.objects.get(emp_id=request.session['la_empresa'])
-        cantCentroCosto = CentroCosto.objects.filter(grupocentrocosto__empresa=emp).count()
-        if cantCentroCosto < 1:
-            valor = redirect('bases:decoradorCentroCostoError403')
-        else:
-            valor = func(request, *args, **kwargs)
-        return valor
-
-    return valida_cargo
-
-
-
-def verificar_cantidad_ususario(func):
-
-    def valida_cargo(request, *args, **kwargs):
-        emp=Empresa.objects.get(emp_id=request.session['la_empresa'])
-        cantCentroCosto = CentroCosto.objects.filter(grupocentrocosto__empresa=emp).count()
-        if cantCentroCosto < 1:
-            valor = redirect('bases:decoradorCentroCostoError403')
-        else:
-            valor = func(request, *args, **kwargs)
-        return valor
-
-    return valida_cargo"""
+def verify_token(func):
+    @wraps(func)
+    def decorador(*args, **kwargs):
+        secret = config('SECRET_KEY')
+        print(kwargs)
+    return decorador

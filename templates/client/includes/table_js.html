@@ -13,8 +13,11 @@ $(function () {
             },
             info: 'Mostrando _START_ a _END_ de _TOTAL_ registros'
         },
+        {% if is_limit %}
+        lengthMenu: [5, 10, 20, 50, 100],
+        {% endif %}
     });
 
     // Select2
-    $('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
+    //$('.dataTables_length select').select2({ minimumResultsForSearch: Infinity });
 });

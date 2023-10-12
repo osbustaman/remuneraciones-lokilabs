@@ -141,18 +141,15 @@
     {% endfor %} {% endif %}
 
     <script>
-        $(document).ready(function(){
+        $(document).ready(function() {
 
             $("#id_ue_ufisapre").val(0.0).attr("readonly", true);
             $("#id_ue_funisapre").attr("readonly", true);
-            $("#id_ue_cotizacion").val(0).attr("readonly", true);
+            $("#id_ue_cotizacion").attr("readonly", true);
 
-
-            $("#id_afp").change(function(){
-                // Endpoint al que se realizará la solicitud POST
+            $("#id_afp").change(function() {
                 const endpoint = "{% url 'usuario_app:AfpDetailApiView' '__id__' %}".replace('__id__', this.value);
 
-                // Realizar la solicitud POST utilizando Axios
                 axios.get(endpoint)
                     .then(response => {
                         const spanElement = document.getElementById('alert-afp');
@@ -161,13 +158,11 @@
                         spanElementPorcentaje.textContent = response.data[0]['afp_tasatrabajadorindependiente'];
                     })
                     .catch(error => {
-                        // Ocurrió un error durante la solicitud
                         console.error('Error en la solicitud:', error.message);
                     });
             })
 
-            $("#id_salud").change(function(){
-                console.log(this.value);
+            $("#id_salud").change(function() {
                 if (this.value === '1') {
                     $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", true);
                     $("#id_ue_cotizacion").val(7.0);
@@ -176,6 +171,45 @@
                 } else {
                     $("#id_ue_ufisapre, #id_ue_funisapre").prop("readonly", false);
                     $("#id_ue_cotizacion").val(0.0);
+                }
+            })
+
+            let id_apv = $("#id_apv").val();
+            let id_ue_contributiontype = $("#id_ue_contributiontype").val();
+            let id_ue_taxregime = $("#id_ue_taxregime").val();
+            let id_ue_shape = $("#id_ue_shape").val();
+            let id_ue_apvamount = $("#id_ue_apvamount").val();
+            let id_ue_paymentperioddate = $("#id_ue_paymentperioddate").val();
+
+            let required = false
+            if ($("#id_ue_tieneapv").val() === 'S') {
+                required = true
+            }
+
+            $("#id_apv, #id_ue_contributiontype, #id_ue_taxregime, #id_ue_shape").attr("required", required);
+
+            $("#id_ue_tieneapv").change(function() {
+
+                if (this.value === 'S') {
+                    $("#id_apv").val(id_apv).trigger('change');
+                    $("#id_ue_contributiontype").val(id_ue_contributiontype).trigger('change');
+                    $("#id_ue_taxregime").val(id_ue_taxregime).trigger('change');
+                    $("#id_ue_shape").val(id_ue_shape).trigger('change');
+                    $("#id_ue_apvamount").val(id_ue_apvamount);
+                    $("#id_ue_paymentperioddate").val(id_ue_paymentperioddate);
+
+                    $("#id_apv, #id_ue_contributiontype, #id_ue_taxregime, #id_ue_shape").attr("required", true);
+
+                } else {
+                    $("#id_apv").val('').trigger('change');
+                    $("#id_ue_contributiontype").val('').trigger('change');
+                    $("#id_ue_taxregime").val('').trigger('change');
+                    $("#id_ue_shape").val('').trigger('change');
+                    $("#id_ue_apvamount").val('');
+                    $("#id_ue_paymentperioddate").val('');
+
+                    $("#id_apv, #id_ue_contributiontype, #id_ue_taxregime, #id_ue_shape").attr("required", false);
+
                 }
             })
         });

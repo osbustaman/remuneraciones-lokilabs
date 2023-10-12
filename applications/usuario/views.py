@@ -6,6 +6,7 @@ from django.shortcuts import redirect, get_object_or_404
 from app01.functions import getLatitudeLongitude
 from applications.base.models import TablaGeneral
 from applications.empresa.models import Afp, Apv, Banco, CajasCompensacion, Cargo, CentroCosto, Empresa, Salud, Sucursal
+from applications.remuneracion.models import Concept
 from applications.security.decorators import existsCompany
 from applications.usuario.forms import ColaboradorForm, ContactForm, DatosLaboralesForm, FamilyResponsibilitiesForm, FormsForecastData, FormsPayments, UserForm
 from django.contrib.auth.models import User
@@ -13,7 +14,7 @@ from django.contrib.auth.models import User
 from django.db.models import F, Value, CharField
 from django.db.models.functions import Concat
 
-from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
+from applications.usuario.models import Colaborador, ConceptUser, Contact, FamilyResponsibilities, UsuarioEmpresa
 
 # Create your views here.
 @login_required
@@ -164,6 +165,10 @@ def edit_collaborator_file(request, id, col_id):
     # Crear una instancia del formulario y establecer el valor inicial para working_day
     #formularioWorkingDay = DatosLaboralesForm(initial={'working_day': opciones_working_day.first()})
 
+
+    objects_concepts = Concept.objects.filter(conc_active="S")
+    conceppts_user_objects = ConceptUser.objects.filter(user_id=col_id)
+
     data = {
         'action': 'Editar',
         'formUserForm': formUserForm,
@@ -177,6 +182,8 @@ def edit_collaborator_file(request, id, col_id):
         'list_familyResponsibilities': list_familyResponsibilities,
         'colaborador': colaborador,
         'usuario_empresa': usuario_empresa,
+        'objects_concepts': objects_concepts,
+        'conceppts_user_objects': conceppts_user_objects,
     }
     return render(request, 'client/page/usuario/add_collaborator_file.html', data)
 
@@ -316,6 +323,11 @@ def add_forecast_data(request, user_id, col_id):
             if request.POST['apv']:
                 dp.apv = Apv.objects.get(apv_id=request.POST['apv'])
             dp.caja_compensacion = CajasCompensacion.objects.get(cc_id=request.POST['caja_compensacion'])
+
+            dp.ue_contributiontype = request.POST.get("ue_contributiontype", None)
+            dp.ue_taxregime = request.POST.get("ue_taxregime", None)
+            dp.ue_shape = request.POST.get("ue_shape", None)
+
             dp.save()
 
             # Agregar mensaje de éxito personal_information

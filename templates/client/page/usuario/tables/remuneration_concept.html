@@ -1,35 +1,128 @@
-<div class="card pd-20 pd-sm-40 mg-t-50">
-    <h6 class="card-body-title">Basic Form Wizard with Validation</h6>
-    <p class="mg-b-20 mg-sm-b-30">A basic form wizard with form validation using Parsley js form validation plugin.</p>
+<div class="row">
+    <div class="col-md-6">
+        <table id="datatable-concepts" class="table display responsive nowrap" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th class="wd-15p">ID</th>
+                    <th class="wd-15p">Nombre</th>
+                    <th class="wd-20p">Clasificación Concepto</th>
+                    <th class="wd-20p">Tipo Concepto</th>
+                    <th class="wd-25p">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in objects_concepts %}
+                <tr id="add-concept-{{ obj.conc_id }}">
+                    <td>{{ obj.conc_id }}</td>
+                    <td>{{ obj.conc_name }}</td>
+                    <td>{{ obj.get_conc_clasificationconcept_display }}</td>
+                    <td>{{ obj.get_conc_typeconcept_display }}</td>
+                    <td>
+                        <button type="button" class="btn btn-info btn-sm" style="cursor: pointer;" onclick="associate_concept({{ obj.conc_id }})">
+                            Asociar <span class="fa fa-save"></span>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+                
+            </tbody>
+            </tbody>
+        </table>
+    </div>
 
-    <div id="wizard2">
-        <h3>Personal Information</h3>
-        <section>
-            <p>Try the keyboard navigation by clicking arrow left or right!</p>
-            <div class="form-group wd-xs-300">
-                <label class="form-control-label">Firstname: <span class="tx-danger">*</span></label>
-                <input id="firstname" class="form-control" name="firstname" placeholder="Enter firstname" type="text" required>
-            </div>
-            <!-- form-group -->
-            <div class="form-group wd-xs-300">
-                <label class="form-control-label">Lastname: <span class="tx-danger">*</span></label>
-                <input id="lastname" class="form-control" name="lastname" placeholder="Enter lastname" type="text" required>
-            </div>
-            <!-- form-group -->
-        </section>
-        <h3>Billing Information</h3>
-        <section>
-            <p>Wonderful transition effects.</p>
-            <div class="form-group wd-xs-300">
-                <label class="form-control-label">Email: <span class="tx-danger">*</span></label>
-                <input id="email" class="form-control" name="email" placeholder="Enter email address" type="email" required>
-            </div>
-            <!-- form-group -->
-        </section>
-        <h3>Payment Details</h3>
-        <section>
-            <p>The next and previous buttons help you to navigate through your content.</p>
-        </section>
+    <div class="col-md-6">
+        <table class="table table-bordered" id="second-table" style="width: 100%;">
+            <thead class="bg-info">
+                <tr>
+                    <th class="wd-15p">Concepto</th>
+                    <th class="wd-25p">Monto</th>
+                    <th class="wd-25p">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for obj in conceppts_user_objects %}
+
+                <tr id="#add-concept-${conceptId}">
+                    <td class="concept-cell">{{ obj.concept.conc_name }}</td>
+                    <td class="amount-cell"><input type="text" class="form-control" placeholder="Ingrese el monto"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" style="cursor: pointer;" onclick="dissociate_concept({{ obj.concept.conc_id }})">
+                                Eliminar <span class="fa fa-trash"></span>
+                            </button>
+                        
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
-<!-- card -->
+
+<script>
+
+    {% include "client/includes/table_js.html" with id="datatable-concepts" is_limit=True %}
+
+    const associate_concept = (id) => {
+        let d = $("#datatable-concepts");
+        let save_value = d.DataTable().row(`#add-concept-${id}`).data();
+
+        const endpoint = "{% url 'remun_app:add_concept' %}";
+
+        const payload = {
+            'user': {{ col_id }},
+            'concept': id
+        }
+
+        axios.post(endpoint, payload)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error.message);
+            });
+        addToSecondTable(save_value[1], save_value[0])
+    };
+
+    const addToSecondTable = (conceptName, conceptId) => {
+        let there_is_value = false;
+        $('#second-table tbody tr').each(function () {
+            let text_id = `#add-concept-${conceptId}`
+            let rowConceptId = this.id;
+            console.log(`${rowConceptId}-${text_id}`)
+
+            if (rowConceptId == text_id) {
+                there_is_value = true;
+            }
+        });
+
+        if(!there_is_value){
+            var newRow = `
+                <tr id="#add-concept-${conceptId}">
+                    <td class="concept-cell">${conceptName}</td>
+                    <td class="amount-cell"><input type="text" class="form-control" placeholder="Ingrese el monto"></td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" style="cursor: pointer;" onclick="dissociate_concept(${conceptId})">
+                                Eliminar <span class="fa fa-trash"></span>
+                            </button>
+                        
+                    </td>
+                </tr>`;
+            $('#second-table tbody').append(newRow);
+        }
+    };
+
+
+    const dissociate_concept = (conceptId) => {
+        $('#second-table tbody tr').each(function () {
+            let text_id = `#add-concept-${conceptId}`
+            let rowConceptId = this.id;
+            if (rowConceptId == text_id) {
+                this.remove();
+            }
+        });
+    };
+
+
+    
+</script>

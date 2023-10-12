@@ -1,5 +1,4 @@
-{% load static_tags %}
-{% load static %}
+{% load static_tags %} {% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -18,15 +17,15 @@
     <link href="{% statics_tag_amanda 'lib/highlightjs/github.css' %}" rel="stylesheet">
     <link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
     <link href="{% statics_tag_amanda 'lib/spectrum/spectrum.css' %}" rel="stylesheet">
+    <link href="{% statics_tag_amanda 'lib/SpinKit/spinkit.css' %}" rel="stylesheet">
 
     <script src="{% statics_tag_amanda 'lib/jquery/jquery.js' %}"></script>
     <link href="{% statics_tag 'vendors/jqueyconfirm/jquery-confirm.min.css' %}" rel="stylesheet">
     <script src="{% statics_tag 'vendors/jqueyconfirm/jquery-confirm.min.js' %}"></script>
 
     <script src="{% statics_tag_amanda 'lib/axios/axios.min.js' %}"></script>
-    
-    {% block static_up %}
-    {% endblock %}
+
+    {% block static_up %} {% endblock %}
 
     <!-- Amanda CSS -->
     <link rel="stylesheet" href="{% statics_tag_amanda 'css/amanda.css' %}">
@@ -34,14 +33,14 @@
         .am-pagetitle .search-bar {
             right: 28px !important;
         }
-
+        
         .img-thumbnail-logo {
             padding: 0;
             max-width: 30%;
             height: auto;
         }
-
-        .select2-container{
+        
+        .select2-container {
             width: 100% !important;
         }
     </style>
@@ -55,9 +54,10 @@
             <a id="naviconLeftMobile" href="" class="am-navicon d-lg-none"><i class="icon ion-navicon-round"></i></a>
             <a href="javascript:void()" class="am-logo">
                 <img src="{{ request.session.logo_company }}" width="450" class="img-fluid img-thumbnail img-thumbnail-logo" alt="">
-                
+
             </a>
-        </div><!-- am-header-left -->
+        </div>
+        <!-- am-header-left -->
 
         <div class="am-header-right">
             <!-- notification.html -->
@@ -70,17 +70,19 @@
                     <ul class="list-unstyled user-profile-nav">
                         <li><a href="{% url 'account_base:logout_client' %}"><i class="icon ion-power"></i> Cerrar Sesión</a></li>
 
-                        {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %}
-                        {% for e in request.session.list_company %}
+                        {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %} {% for e in request.session.list_company %}
                         <li><a href="{% url 'emp_app:cambiar_empresa' e.key %}">{{e.value|title}}</a></li>
-                        {% endfor %}
-                        {% endif %}
+                        {% endfor %} {% endif %}
 
                     </ul>
-                </div><!-- dropdown-menu -->
-            </div><!-- dropdown -->
-        </div><!-- am-header-right -->
-    </div><!-- am-header -->
+                </div>
+                <!-- dropdown-menu -->
+            </div>
+            <!-- dropdown -->
+        </div>
+        <!-- am-header-right -->
+    </div>
+    <!-- am-header -->
 
     <div class="am-sideleft">
         <ul class="nav am-sideleft-tab">
@@ -106,22 +108,16 @@
                             <i class="icon ion-ios-home-outline"></i>
                             <span>Dashboard</span>
                         </a>
-                    </li><!-- nav-item -->
-                    {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %}
-                    {% include "client/includes/items_rrhh.html" %}
-
-                    {% elif request.session.user_nivel == 3 %}
-                    {% include "client/includes/items_lider.html" %}
-
-                    {% elif request.session.user_nivel == 4 %}
-                    {% include "client/includes/items_colaborador.html" %}
-
-                    {% endif %}
+                    </li>
+                    <!-- nav-item -->
+                    {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %} {% include "client/includes/items_rrhh.html" %} {% elif request.session.user_nivel == 3 %} {% include "client/includes/items_lider.html" %}
+                    {% elif request.session.user_nivel == 4 %} {% include "client/includes/items_colaborador.html" %} {% endif %}
 
 
                 </ul>
-            </div><!-- #mainMenu -->
-            
+            </div>
+            <!-- #mainMenu -->
+
             <div id="emailMenu" class="tab-pane">
                 <div class="pd-x-20 pd-y-10">
                     <a href="" class="btn btn-orange btn-block btn-compose">Compose Email</a>
@@ -132,31 +128,36 @@
                             <i class="icon ion-ios-filing-outline"></i>
                             <span>Inbox</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                     <li class="nav-item">
                         <a href="page-inbox.html" class="nav-link">
                             <i class="icon ion-ios-filing-outline"></i>
                             <span>Drafts</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                     <li class="nav-item">
                         <a href="page-inbox.html" class="nav-link">
                             <i class="icon ion-ios-paperplane-outline"></i>
                             <span>Sent</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                     <li class="nav-item">
                         <a href="page-inbox.html" class="nav-link">
                             <i class="icon ion-ios-trash-outline"></i>
                             <span>Trash</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                     <li class="nav-item">
                         <a href="page-inbox.html" class="nav-link">
                             <i class="icon ion-ios-filing-outline"></i>
                             <span>Spam</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                 </ul>
 
                 <label class="pd-x-20 tx-uppercase tx-11 mg-t-10 tx-orange mg-b-0 tx-medium">My Folder</label>
@@ -166,26 +167,31 @@
                             <i class="icon ion-ios-folder-outline"></i>
                             <span>Updates</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                     <li class="nav-item">
                         <a href="page-inbox.html" class="nav-link">
                             <i class="icon ion-ios-folder-outline"></i>
                             <span>Social</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                     <li class="nav-item">
                         <a href="page-inbox.html" class="nav-link">
                             <i class="icon ion-ios-folder-outline"></i>
                             <span>Promotions</span>
                         </a>
-                    </li><!-- nav-item -->
+                    </li>
+                    <!-- nav-item -->
                 </ul>
-            </div><!-- #emailMenu -->
+            </div>
+            <!-- #emailMenu -->
             <div id="chatMenu" class="tab-pane">
                 <div class="chat-search-bar">
                     <input type="search" class="form-control wd-150" placeholder="Search chat...">
                     <button class="btn btn-secondary"><i class="fa fa-search"></i></button>
-                </div><!-- chat-search-bar -->
+                </div>
+                <!-- chat-search-bar -->
 
                 <label class="pd-x-15 tx-uppercase tx-11 mg-t-20 tx-orange mg-b-10 tx-medium">Recent Chat
                     History</label>
@@ -197,10 +203,11 @@
                                 <h6>Russell M. Evans</h6>
                                 <span>Tuesday, 10:33am</span>
                             </div>
-                        </div><!-- d-flex -->
-                        <p>Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because
-                            it is pain...</p>
-                    </a><!-- list-group-item -->
+                        </div>
+                        <!-- d-flex -->
+                        <p>Nor again is there anyone who loves or pursues or desires to obtain pain of itself, because it is pain...</p>
+                    </a>
+                    <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
                             <img src="img/img7.jpg" class="wd-32 rounded-circle" alt="">
@@ -208,10 +215,12 @@
                                 <h6>James F. Sears</h6>
                                 <span>Monday, 4:21pm</span>
                             </div>
-                        </div><!-- d-flex -->
+                        </div>
+                        <!-- d-flex -->
                         <p>But who has any right to find fault with a man who chooses to enjoy a pleasure that has...
                         </p>
-                    </a><!-- list-group-item -->
+                    </a>
+                    <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
                             <img src="img/img8.jpg" class="wd-32 rounded-circle" alt="">
@@ -219,10 +228,12 @@
                                 <h6>Sharon R. Rowe</h6>
                                 <span>Sunday, 7:45pm</span>
                             </div>
-                        </div><!-- d-flex -->
+                        </div>
+                        <!-- d-flex -->
                         <p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising...
                         </p>
-                    </a><!-- list-group-item -->
+                    </a>
+                    <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
                             <img src="img/img9.jpg" class="wd-32 rounded-circle" alt="">
@@ -230,10 +241,12 @@
                                 <h6>Ruby M. Martin</h6>
                                 <span>Sunday, 7:45pm</span>
                             </div>
-                        </div><!-- d-flex -->
+                        </div>
+                        <!-- d-flex -->
                         <p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising...
                         </p>
-                    </a><!-- list-group-item -->
+                    </a>
+                    <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
                             <img src="img/img10.jpg" class="wd-32 rounded-circle" alt="">
@@ -241,14 +254,18 @@
                                 <h6>Joslyn C. Mayo</h6>
                                 <span>Sunday, 7:45pm</span>
                             </div>
-                        </div><!-- d-flex -->
+                        </div>
+                        <!-- d-flex -->
                         <p>But I must explain to you how all this mistaken idea of denouncing pleasure and praising...
                         </p>
-                    </a><!-- list-group-item -->
-                </div><!-- list-group -->
+                    </a>
+                    <!-- list-group-item -->
+                </div>
+                <!-- list-group -->
                 <span class="d-block pd-15 tx-12">Loading messages...</span>
 
-            </div><!-- #chatMenu -->
+            </div>
+            <!-- #chatMenu -->
             <div id="settingMenu" class="tab-pane">
                 <div class="pd-x-15">
                     <label class="tx-uppercase tx-11 mg-t-10 tx-orange mg-b-15 tx-medium">Quick Settings</label>
@@ -256,47 +273,58 @@
                         <h6 class="tx-13 tx-normal tx-gray-800">Daily Newsletter</h6>
                         <p class="tx-12">Get notified when someone else is trying to access your account.</p>
                         <div class="toggle toggle-light warning"></div>
-                    </div><!-- bd -->
+                    </div>
+                    <!-- bd -->
 
                     <div class="bd pd-15 mg-t-15">
                         <h6 class="tx-13 tx-normal tx-gray-800">Call Phones</h6>
                         <p class="tx-12">Make calls to friends and family right from your account.</p>
                         <div class="toggle toggle-light warning"></div>
-                    </div><!-- bd -->
+                    </div>
+                    <!-- bd -->
 
                     <div class="bd pd-15 mg-t-15">
                         <h6 class="tx-13 tx-normal tx-gray-800">Login Notifications</h6>
                         <p class="tx-12">Get notified when someone else is trying to access your account.</p>
                         <div class="toggle toggle-light warning"></div>
-                    </div><!-- bd -->
+                    </div>
+                    <!-- bd -->
 
                     <div class="bd pd-15 mg-t-15">
                         <h6 class="tx-13 tx-normal tx-gray-800">Phone Approvals</h6>
                         <p class="tx-12">Use your phone when login as an extra layer of security.</p>
                         <div class="toggle toggle-light warning"></div>
-                    </div><!-- bd -->
+                    </div>
+                    <!-- bd -->
                 </div>
-            </div><!-- #settingMenu -->
-        </div><!-- tab-content -->
-    </div><!-- am-sideleft -->
+            </div>
+            <!-- #settingMenu -->
+        </div>
+        <!-- tab-content -->
+    </div>
+    <!-- am-sideleft -->
 
     <div class="am-pagetitle">
         <h5 class="am-title">{{ request.session.emp_namecompany | title }}: {% block title_page %}{% endblock %}</h5>
         <div id="searchBar" class="search-bar">
             {% block buttons %}{% endblock %}
         </div>
-    </div><!-- am-pagetitle -->
+    </div>
+    <!-- am-pagetitle -->
 
     <div class="am-mainpanel">
         <div class="am-pagebody">
             {% block content_page %}content_page{% endblock %}
-        </div><!-- am-pagebody -->
+        </div>
+        <!-- am-pagebody -->
         <br>
         <div class="am-footer">
             <span>LokiLabs 2023 - Loki-Remuneraciones. Derechos Reservados a LokiLabs.</span>
             <span>Nombre Cliente.</span>
-        </div><!-- am-footer -->
-    </div><!-- am-mainpanel -->
+        </div>
+        <!-- am-footer -->
+    </div>
+    <!-- am-mainpanel -->
 
     <script src="{% statics_tag_amanda 'lib/popper.js/popper.js' %}"></script>
     <script src="{% statics_tag_amanda 'lib/bootstrap/bootstrap.js' %}"></script>
@@ -306,15 +334,13 @@
     <script src="{% statics_tag_amanda 'lib/highlightjs/highlight.pack.js' %}"></script>
     <script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
     <script src="{% statics_tag_amanda 'lib/spectrum/spectrum.js' %}"></script>
-    
-    {% block static_down %}
-    {% endblock %}
+
+    {% block static_down %} {% endblock %}
 
     <script src="{% statics_tag_amanda 'js/amanda.js' %}"></script>
     <script src="{% statics_tag_amanda 'js/js.cookie.js' %}"></script>
 
-    {% block script_tag %}
-    {% endblock %}
+    {% block script_tag %} {% endblock %}
 
 </body>
 
