@@ -96,6 +96,11 @@ def add_collaborator_file(request):
 
 @login_required
 def edit_collaborator_file(request, id, col_id):
+    """
+    :params: id, es el id del usuario
+    :params: col_id, es el id del usuario
+
+    """
     user = get_object_or_404(User, id=id)
     colaborador = get_object_or_404(Colaborador, user=user)
 
@@ -118,16 +123,16 @@ def edit_collaborator_file(request, id, col_id):
             formFormsForecastData = FormsForecastData()
 
         if formUserForm.is_valid() and formColaboradorForm.is_valid():
-            user = formUserForm.save(commit=False)
+            _user = formUserForm.save(commit=False)
 
             # Establecer la contraseña utilizando el valor de colaborador.col_rut
             password = colaborador.col_rut
             hashed_password = make_password(password)
-            user.password = hashed_password
-            user.save()
+            _user.password = hashed_password
+            _user.save()
 
             colaborador = formColaboradorForm.save(commit=False)
-            colaborador.user = user
+            colaborador.user = _user
 
             address = f"{ colaborador.col_direccion }, { colaborador.comuna.com_nombre }, { colaborador.region.re_nombre }, { colaborador.pais.pa_nombre }"
             lat, lng = getLatitudeLongitude(address)
@@ -167,7 +172,7 @@ def edit_collaborator_file(request, id, col_id):
 
 
     objects_concepts = Concept.objects.filter(conc_active="S")
-    conceppts_user_objects = ConceptUser.objects.filter(user_id=col_id)
+    conceppts_user_objects = ConceptUser.objects.filter(user=user)
 
     data = {
         'action': 'Editar',
