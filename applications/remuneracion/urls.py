@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from applications.remuneracion.api.api import ApiAddConcept
+from applications.remuneracion.api.api import ApiAddConcept, ApiConceptUserDeleteView
 
 from applications.remuneracion.views import calculate_salaries, control_panel, render_pdf, download_pdf
 
@@ -21,5 +21,6 @@ urlpatterns = [
 
     #API
     path('add-concept', ApiAddConcept.as_view(), name='add_concept'),
+    path('concept-user-delete/<str:user_id>/<str:concept_id>', ApiConceptUserDeleteView.as_view(), name='conceptuser_delete'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

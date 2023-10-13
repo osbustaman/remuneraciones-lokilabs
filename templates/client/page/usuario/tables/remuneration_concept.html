@@ -19,7 +19,7 @@
                     <td>{{ obj.get_conc_typeconcept_display }}</td>
                     <td>
                         <button type="button" class="btn btn-info btn-sm" style="cursor: pointer;" onclick="associate_concept({{ obj.conc_id }})">
-                            Asociar <span class="fa fa-save"></span>
+                            Asociar <span class="fa fa-thumb-tack"></span>
                         </button>
                     </td>
                 </tr>
@@ -42,9 +42,18 @@
             <tbody>
                 {% for obj in conceppts_user_objects %}
 
-                <tr id="#add-concept-${conceptId}">
+                <tr id="#add-concept-{{ obj.concept.conc_id }}">
                     <td class="concept-cell">{{ obj.concept.conc_name }}</td>
-                    <td class="amount-cell"><input type="text" class="form-control" placeholder="Ingrese el monto"></td>
+                    <td class="amount-cell">
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-sm">
+                                <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-sm" style="cursor: pointer;">
+                                    <span class="fa fa-save"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" style="cursor: pointer;" onclick="dissociate_concept({{ obj.concept.conc_id }})">
                                 Eliminar <span class="fa fa-trash"></span>
@@ -100,7 +109,16 @@
             var newRow = `
                 <tr id="#add-concept-${conceptId}">
                     <td class="concept-cell">${conceptName}</td>
-                    <td class="amount-cell"><input type="text" class="form-control" placeholder="Ingrese el monto"></td>
+                    <td class="amount-cell">
+                        <div class="input-group">
+                            <input type="text" class="form-control form-control-sm">
+                                <span class="input-group-btn">
+                                <button type="button" class="btn btn-primary btn-sm" style="cursor: pointer;">
+                                    <span class="fa fa-save"></span>
+                                </button>
+                            </span>
+                        </div>
+                    </td>
                     <td>
                         <button type="button" class="btn btn-danger btn-sm" style="cursor: pointer;" onclick="dissociate_concept(${conceptId})">
                                 Eliminar <span class="fa fa-trash"></span>
@@ -112,17 +130,35 @@
         }
     };
 
-
     const dissociate_concept = (conceptId) => {
-        $('#second-table tbody tr').each(function () {
-            let text_id = `#add-concept-${conceptId}`
-            let rowConceptId = this.id;
-            if (rowConceptId == text_id) {
-                this.remove();
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Estas seguro de quitar el concepto?!',
+            buttons: {
+                si: function () {
+                    $('#second-table tbody tr').each(function () {
+                        let text_id = `#add-concept-${conceptId}`
+                        let rowConceptId = this.id;
+                        if (rowConceptId == text_id) {
+
+                            const endpoint = "{% url 'remun_app:conceptuser_delete' id 'concept_id' %}".replace('concept_id', conceptId);
+
+                            console.log(endpoint)
+
+                            axios.delete(endpoint)
+                                .then(response => {
+                                    this.remove();
+                                    $.alert('Se quito el concepto con éxito!');
+                                })
+                                .catch(error => {
+                                    console.error('Error en la solicitud:', error.message);
+                                });
+                        }
+                    });
+                },
+                no: function () {;
+                }
             }
         });
     };
-
-
-    
 </script>
