@@ -1,12 +1,11 @@
 # -*- encoding: utf-8 -*-
 from django.core.management.base import BaseCommand
 from app01.functions import load_data_base
-from applications.attendance.api.serializers import MarkAttendanceSerializer
 from applications.attendance.models import MarkAttendance
-from applications.base.models import Cliente, TablaGeneral
+from applications.base.models import Cliente
 from django.contrib.auth.models import User
 
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 import random
 
 class Command(BaseCommand):
