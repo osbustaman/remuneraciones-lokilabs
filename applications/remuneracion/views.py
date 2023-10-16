@@ -220,8 +220,8 @@ def calculate_salaries(request):
     if request.method == 'POST':
         form = SalaryCalculatorForm(request.POST)
         if form.is_valid():
-            #pdf_response = render_pdf(request)
-            pdf_response = salary_liquidation_calculations(request)
+            pdf_response = render_pdf(request)
+            # pdf_response = salary_liquidation_calculations(request)
         for field in form:
             for error in field.errors:
                 messages.error(request, f"{field.label}: {error}")

@@ -1,9 +1,52 @@
 <li class="nav-item">
+    <a href="" class="nav-link with-sub {% if request.session.item == 'colaborador' %}active show-sub{% else %}{% endif %}">
+        <i class="fa fa-user"></i>
+        <span>Mis datos</span>
+    </a>
+    <ul class="nav-sub">
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'contratos' %}active{% endif %}">Contratos</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'remuneraciones' %}active{% endif %}">Remuneraciones</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'vacaciones' %}active{% endif %}">Vacaciones</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'permisos_administrativos' %}active{% endif %}">Permisos administrativos</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'ausentismos' %}active{% endif %}">Ausentismos</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'noticias' %}active{% endif %}">Noticias</a></li>
+    </ul>
+</li>
+<!-- nav-item -->
+
+<li class="nav-item">
+    <a href="" class="nav-link with-sub {% if request.session.item == 'solicitudes' %}active show-sub{% else %}{% endif %}">
+        <i class="fa fa-file-text"></i>
+        <span>Mis solicitudes</span>
+    </a>
+    <ul class="nav-sub">
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'en_proceso' %}active{% endif %}">En proceso</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'historial' %}active{% endif %}">Historial de mis solicitudes</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'solicitudes_disponibles' %}active{% endif %}">Solicitudes disponibles</a></li>
+    </ul>
+</li>
+<!-- nav-item -->
+
+<li class="nav-item">
+    <a href="" class="nav-link with-sub {% if request.session.item == 'solicitudes' %}active show-sub{% else %}{% endif %}">
+        <i class="fa fa-folder-open"></i>
+        <span>Documentos</span>
+    </a>
+    <ul class="nav-sub">
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'por_revisar' %}active{% endif %}">Por revisat</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'ver_documentos' %}active{% endif %}">ver_documentos</a></li>
+        <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_item == 'cert_antiguedad' %}active{% endif %}">Certificado de antiguedad</a></li>
+    </ul>
+</li>
+<!-- nav-item -->
+
+<li class="nav-item">
     <a href="" class="nav-link with-sub {% if request.session.item == 'eventos' %}active show-sub{% else %}{% endif %}">
-        <i class="icon ion-ios-gear-outline"></i>
+        <i class="fa fa-rss"></i>
         <span>Eventos</span>
     </a>
     <ul class="nav-sub">
         <li class="nav-item"><a href="{% url 'usuario_app:mark_in_out' %}" class="nav-link {% if request.session.sub_item == 'evento' %}active{% endif %}">Marcar Asistencia</a></li>
     </ul>
-</li><!-- nav-item -->
+</li>
+<!-- nav-item -->

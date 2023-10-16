@@ -24,10 +24,18 @@ class Concept(TimeStampedModel):
         ('N', 'NO'),
     )
 
+    SEARCH_FIELDS = (
+        ('0', ' --------- '),
+        ('ISAPRE', 'isapre'),
+        ('FONASA', 'fonasa'),
+        ('AFP', 'afp'),
+    )
+
     conc_id = models.AutoField("Key", primary_key=True)
     conc_name = models.CharField("Nombre", max_length=255)
     conc_clasificationconcept = models.IntegerField("Clasificación concepto", choices=CLASSIFICATION)
     conc_typeconcept = models.IntegerField("Tipo concepto", choices=TYPE_CLASSIFICATION)
+    conc_search_field = models.CharField("Campo de busqueda", null=True, blank=True, default='0', max_length=50, choices=SEARCH_FIELDS)
 
     conc_active = models.CharField(
         "Concepto activo", choices=OPTIONS, max_length=1, default="S")

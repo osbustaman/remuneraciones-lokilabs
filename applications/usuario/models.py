@@ -416,6 +416,7 @@ class ConceptUser(TimeStampedModel):
     cu_typeremuneration = models.IntegerField("Fórmula", choices=REMUNERATION_TYPE, null=True, blank=True)
     cu_formula = models.FloatField("Fórmula", null=True, blank=True)
     cu_value = models.FloatField("Valor", null=True, blank=True, default=0)
+    cu_search_field = models.CharField("Campo de busqueda", null=True, blank=True, default=0, max_length=50)
     cu_description = models.CharField(
         "Descripción", max_length=150, null=True, blank=True)
 

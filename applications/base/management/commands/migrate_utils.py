@@ -4,6 +4,7 @@ from app01.functions import load_data_base
 
 from applications.base.models import Cliente
 from applications.empresa.models import Afp, Banco, TipoContrato, CajasCompensacion, Salud
+from applications.remuneracion.models import Concept
 from applications.security.models import Rol
 
 class Command(BaseCommand):
@@ -235,7 +236,6 @@ class Command(BaseCommand):
             }
         ]
 
-
         listado_roles = [
             {
                 'rol_name': 'Super-Admin',
@@ -257,6 +257,57 @@ class Command(BaseCommand):
                 'rol_name': 'Colaborador',
                 'rol_nivel': 4,
                 'rol_client': 'Y',
+            }
+        ]
+        
+        listado_conceptos_default = [
+            {
+                'conc_name': 'Sueldo Base',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_search_field': ''
+            },
+            {
+                'conc_name': 'Gratificación Mensual',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_search_field': ''
+            },
+            {
+                'conc_name': 'Asignación de Movilización',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 2,
+                'conc_search_field': ''
+            },
+            {
+                'conc_name': 'Asignación de Colación',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 2,
+                'conc_search_field': ''
+            },
+            {
+                'conc_name': 'Asignación Familiar',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 2,
+                'conc_search_field': ''
+            },
+            {
+                'conc_name': 'Descuento salud ISAPRE',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_search_field': 'ISAPRE'
+            },
+            {
+                'conc_name': 'Descuento salud FONASA',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_search_field': 'FONASA'
+            },
+            {
+                'conc_name': 'Descuento AFP',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_search_field': 'AFP'
             }
         ]
         
@@ -329,5 +380,14 @@ class Command(BaseCommand):
                 r.rol_nivel = value['rol_nivel']
                 r.rol_client = value['rol_client']
                 r.save(using=nombre_bd)
+
+
+            for value in listado_conceptos_default:
+                c = Concept()
+                c.conc_name = value['conc_name']
+                c.conc_clasificationconcept = value['conc_clasificationconcept']
+                c.conc_typeconcept = value['conc_typeconcept']
+                c.conc_search_field = value['conc_search_field']
+                c.save(using=nombre_bd)
 
             print(f" ********** Finalizada la carga para {nombre_bd} **************** ")

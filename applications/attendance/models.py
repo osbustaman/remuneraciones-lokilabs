@@ -37,7 +37,7 @@ class MarkAttendance(TimeStampedModel):
     ma_photo = models.TextField("Foto clolaborador", null=True, blank=True)
     ma_typemark = models.IntegerField(
         "Tipo marca", choices=TYPE_MARK, null=True, blank=True)
-    ma_datemark = models.DateField("Fecha de marca")
+    ma_datemark = models.DateTimeField("Fecha de marca")
     ma_active = models.IntegerField(
         "Marca activa", choices=OPTIONS, null=True, blank=True, default=1)
 

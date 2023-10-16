@@ -247,13 +247,15 @@ class ConceptsForm(forms.ModelForm):
     conc_name = forms.CharField(label="Nombre Concepto", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
     conc_typeconcept = forms.ChoiceField(label="Tipo concepto", choices=Concept.TYPE_CLASSIFICATION,
-                                  widget=forms.Select(attrs=tags_input_general), required=True)
+                                widget=forms.Select(attrs=tags_input_general), required=True)
     conc_clasificationconcept = forms.ChoiceField(label="Clasificación concepto", choices=Concept.CLASSIFICATION,
-                                  widget=forms.Select(attrs=tags_input_general), required=True)
+                                widget=forms.Select(attrs=tags_input_general), required=True)
+    conc_search_field = forms.ChoiceField(label="Tipo de entidad", help_text="** Este campo solo se debe usar para el caso de los descuentos de salud y afp", choices=Concept.SEARCH_FIELDS,
+                                widget=forms.Select(attrs=tags_input_general), required=False)
 
 
     class Meta:
         model = Concept
         fields = (
-            "conc_name", "conc_typeconcept", "conc_clasificationconcept"
+            "conc_name", "conc_typeconcept", "conc_clasificationconcept", "conc_search_field"
         )

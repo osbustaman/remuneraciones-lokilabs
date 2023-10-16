@@ -10,11 +10,44 @@ from applications.security.decorators import verify_token
 from applications.usuario.models import ConceptUser
 
 @permission_classes([AllowAny])
+class ApiAddMountConceptUser(generics.UpdateAPIView):
+
+    serializer_class = ConceptUserSerializer
+
+    def update(self, request, *args, **kwargs):
+        response = self.get_object(request) 
+
+        response_data = {
+            "status": response.status_code,
+            "message": response.data
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
+    
+    def get_object(self, request):
+        try:
+            # Obtenemos los parámetros de la URL
+            user_id = int(self.kwargs['user_id'])
+            concept_id = int(self.kwargs['concept_id'])
+            cu_value = int(request.data['cu_value'])
+
+            # Filtramos el queryset por user y concept
+            obj = ConceptUser.objects.get(user__id=user_id, concept__conc_id=concept_id)
+            obj.cu_value = cu_value
+            obj.save()
+            return Response({'detail': 'actualizado con éxito'}, status=status.HTTP_201_CREATED)
+        
+        except serializers.ValidationError as e:
+            # Capturar la excepción de validación del serializer y devolver la respuesta de error correspondiente
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
+            return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@permission_classes([AllowAny])
 class ApiAddConcept(generics.CreateAPIView):
     
     serializer_class = AsociateConceptUserSerializer
-
-    #@verify_token
     def post(self, request, *args, **kwargs):
 
         try:

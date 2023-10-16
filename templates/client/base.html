@@ -105,12 +105,17 @@
                     <li class="nav-item">
                         <a href="#" class="nav-link">
                             <i class="icon ion-ios-home-outline"></i>
-                            <span>Dashboard</span>
+                            <span>Incio</span>
                         </a>
                     </li>
                     <!-- nav-item -->
-                    {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %} {% include "client/includes/items_rrhh.html" %} {% elif request.session.user_nivel == 3 %} {% include "client/includes/items_lider.html" %}
-                    {% elif request.session.user_nivel == 4 %} {% include "client/includes/items_colaborador.html" %} {% endif %}
+                    {% include "client/includes/items_colaborador.html" %} 
+                    {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %} 
+                        {% include "client/includes/items_rrhh.html" %} 
+                    {% elif request.session.user_nivel == 3 %} 
+                        {% include "client/includes/items_lider.html" %}
+                    
+                    {% endif %}
 
 
                 </ul>

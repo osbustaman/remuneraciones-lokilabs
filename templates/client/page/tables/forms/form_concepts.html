@@ -44,6 +44,15 @@
                             {{ form.conc_typeconcept }}
                         </div>
                     </div><!-- col-4 -->
+                    <div class="col-lg-4">
+                        <div class="form-group">
+                            <label class="form-control-label">{{ form.conc_search_field.label }} <span class="tx-danger">*</span></label>
+                            {{ form.conc_search_field }}
+                            {{ form.conc_search_field.help_text }}
+
+                        </div>
+                    </div><!-- col-4 -->
+                    
                 </div><!-- col-4 -->
                 <div class="form-layout-footer mg-t-30">
                     <button type="button" class="btn btn-info mg-r-5" onclick="save_data()">{{ action }}</button>
