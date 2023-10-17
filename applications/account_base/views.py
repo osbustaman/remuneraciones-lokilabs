@@ -36,7 +36,7 @@ def login_client(request):
                 request.session['user_nivel'] = 8
 
             #return HttpResponseRedirect(reverse('remun_app:panel'))
-            return redirect('remun_app:control_panel')
+            return redirect('usuario_app:init_page')
         else:
             data['error'] = 'Usuario o contraseña incorrectos.'
             return render(request, 'client/login.html', data)

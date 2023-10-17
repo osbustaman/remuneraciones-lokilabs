@@ -22,6 +22,10 @@ class menu_middleware_items(object):
 
 
             # ----
+            if '/mi-perfil' in request.path:
+                request.session['item'] = 'inicio'
+                request.session['sub_item'] = 'inicio'  
+                request.session['sub_sub_item'] = 'inicio' 
 
             if '/company/list/' in request.path:
                 request.session['item'] = 'configuracion'

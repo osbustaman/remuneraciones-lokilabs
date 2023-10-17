@@ -1,0 +1,68 @@
+{% extends 'client/base.html' %} {% load static_tags %} {% load static %} {% block title %} {{ action }} Empresa {% endblock %} {% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    
+    .btn-off {
+        display: none !important;
+    }
+</style>
+{% endblock %} 
+
+{% block title_page %}{{ action }} Empresa {% endblock %} 
+
+{% block buttons %}
+
+{% endblock %} 
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="perfil" data-toggle="tab" href="#t-perfil" role="tab" aria-controls="t-perfil"
+                aria-selected="true">Mis Datos</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="tab-datos-previsionles" data-toggle="tab" href="#datos-previsionles" role="tab" aria-controls="datos-previsionles"
+                aria-selected="false">Mis Datos Previsionales</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" id="tab-datos-familiares" data-toggle="tab" href="#datos-familiares" role="tab" aria-controls="datos-familiares"
+                aria-selected="false">Mi Familia</a>
+        </li>
+
+        
+    </ul>
+
+    <div class="tab-content pt-4" id="myTabContent">
+        <div class="tab-pane fade show active" id="t-perfil" role="tabpanel" aria-labelledby="perfil">
+            {% include "client/page/usuario/forms/inicio/mis_datos.html" %}
+        </div>
+
+        <div class="tab-pane fade" id="datos-previsionles" role="tabpanel" aria-labelledby="tab-datos-previsionles">
+            {% include "client/page/usuario/forms/inicio/mis_datos_previsionales.html" %}
+        </div>
+
+        <div class="tab-pane fade" id="datos-familiares" role="tabpanel" aria-labelledby="tab-datos-familiares">
+            {% include "client/page/usuario/forms/inicio/mis_datos_familiares.html" %}
+        </div>
+
+        
+    </div>
+</div>
+{% endblock %} 
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+{% endblock %} 
+
+{% block script_tag %}
+<script>
+</script>
+{% endblock %}

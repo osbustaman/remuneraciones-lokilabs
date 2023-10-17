@@ -19,6 +19,18 @@ from applications.usuario.models import Colaborador, ConceptUser, Contact, Famil
 # Create your views here.
 @login_required
 @existsCompany
+def init_page(request):
+
+    print("ID sesion: ", request.session['id'])
+
+    data = {
+        'list_objects': []
+    }
+    return render(request, 'client/page/usuario/init_page.html', data)
+
+
+@login_required
+@existsCompany
 def collaborator_file(request):
 
     # Realizar el join entre Colaborador, UsuarioEmpresa y User

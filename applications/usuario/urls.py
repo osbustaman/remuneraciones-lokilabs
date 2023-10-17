@@ -1,5 +1,5 @@
 from django.urls import path
-from applications.usuario.api.api import AfpDetailApiView
+from applications.usuario.api.api import AfpDetailApiView, ApiGetDataUserPage
 
 from applications.usuario.views import (
     add_forecast_data,
@@ -12,7 +12,8 @@ from applications.usuario.views import (
     , add_form_payment
     , add_family_responsibilities
     , edit_family_responsibilities
-    , family_responsibilities_delete
+    , family_responsibilities_delete,
+    init_page
 )
 from applications.usuario.views_collaborator import mark_in_out
 
@@ -20,6 +21,8 @@ from applications.usuario.views_collaborator import mark_in_out
 app_name = 'usuario_app'
 
 urlpatterns = [
+
+    path('mi-perfil', init_page, name='init_page'),
 
     path('collaborator/file/', collaborator_file, name='collaborator_file'),
     path('collaborator/file/add/', add_collaborator_file, name='add_collaborator_file'),
@@ -38,6 +41,7 @@ urlpatterns = [
 
     #API
     path('collaborator/api/search/data/afp/<pk>/', AfpDetailApiView.as_view(), name='AfpDetailApiView'),
+    path('mi-perfil/<pk>/', ApiGetDataUserPage.as_view(), name='mi_perfil'),
 
 
 

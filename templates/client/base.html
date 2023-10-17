@@ -42,6 +42,10 @@
         .select2-container {
             width: 100% !important;
         }
+        
+        .am-sideleft-menu>.nav-item>.nav-link.show-sub::after {
+            content: '';
+        }
     </style>
 </head>
 
@@ -103,7 +107,7 @@
             <div id="mainMenu" class="tab-pane active">
                 <ul class="nav am-sideleft-menu">
                     <li class="nav-item">
-                        <a href="#" class="nav-link">
+                        <a href="{% url 'usuario_app:init_page' %}" class="nav-link {% if request.session.item == 'inicio' %}active show-sub{% else %}{% endif %}">
                             <i class="icon ion-ios-home-outline"></i>
                             <span>Incio</span>
                         </a>
@@ -113,8 +117,7 @@
                     {% if request.session.user_nivel == 8 or request.session.user_nivel == 1 or request.session.user_nivel == 2 %} 
                         {% include "client/includes/items_rrhh.html" %} 
                     {% elif request.session.user_nivel == 3 %} 
-                        {% include "client/includes/items_lider.html" %}
-                    
+                        {% include "client/includes/items_lider.html" %} 
                     {% endif %}
 
 

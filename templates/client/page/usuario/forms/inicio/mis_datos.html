@@ -1,0 +1,241 @@
+{% load static_tags %} 
+{% load static %}
+
+
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+
+<div class="row">
+    <style>
+        .inputContainer {
+            position: relative;
+            height: 45px;
+            width: 90%;
+            margin-bottom: 17px;
+            margin-left: 12px;
+        }
+        
+        .form-control {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            height: 100%;
+            width: 100%;
+            border: transparent;
+            border-bottom: 1px solid #DADCE0;
+            font-size: 16px;
+            padding: 0 20px;
+            outline: none;
+            background: none;
+            z-index: 1;
+        }
+        /* Hide the placeholder texts (a) */
+        
+         ::placeholder {
+            color: transparent;
+        }
+        
+        label {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            padding: 0 4px;
+            background-color: white;
+            color: #DADCE0;
+            font-size: 16px;
+            transition: 0.5s;
+            z-index: 0;
+        }
+        
+        .form-control:focus+label {
+            top: -7px;
+            left: 3px;
+            z-index: 10;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgb(146, 145, 146);
+        }
+        
+        .form-control:focus {
+            border: transparent;
+            border-bottom: 1px solid rgb(146, 145, 146);
+        }
+        
+        .form-control:not(:placeholder-shown)+label {
+            top: -7px;
+            left: 3px;
+            z-index: 10;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .form-control:disabled,
+        .dataTables_filter input:disabled,
+        .form-control[readonly],
+        .dataTables_filter input[readonly] {
+            background-color: transparent;
+            opacity: 1;
+        }
+    </style>
+    <div class="col-xl-4">
+        <div class="card pd-20 pd-sm-40 form-layout form-layout-4">
+            <h6 class="card-body-title">Mis datos personales</h6>
+            <p class="mg-b-20 mg-sm-b-30"></p>
+
+            <!-- row -->
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" id="col_rut" disabled="disabled">
+                    <label for="" class="label">Rut</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" id="first_name" disabled="disabled">
+                    <label for="" class="label">Nombres</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-5 inputContainer">
+                    <input type="text" class="form-control" id="last_name_ap" disabled="disabled">
+                    <label for="" class="label">Apellido Paterno</label>
+                </div>
+                <div class="col-sm-5 inputContainer">
+                    <input type="text" class="form-control" id="last_name_am" disabled="disabled">
+                    <label for="" class="label">Apellido Materno</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" id="col_fechanacimiento" disabled="disabled">
+                    <label for="" class="label">Fecha de Nacimiento</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-5 inputContainer">
+                    <input type="text" class="form-control" id="col_sexo">
+                    <label for="" class="label">Sexo</label>
+                </div>
+                <div class="col-sm-5 inputContainer">
+                    <input type="text" class="form-control" id="col_estadocivil">
+                    <label for="" class="label">Estado Civil</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" id="con_phone_contact">
+                    <label for="" class="label">Teléfono</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" id="con_mail_contact_emp">
+                    <label for="" class="label">Correo Empresa</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" id="con_mail_contact_per">
+                    <label for="" class="label">Correo Personal</label>
+                </div>
+            </div>
+
+        </div>
+        <!-- card -->
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card pd-20 pd-sm-40 form-layout form-layout-4">
+            <h6 class="card-body-title">Mi dirección</h6>
+            <p class="mg-b-20 mg-sm-b-30"></p>
+
+            <!-- row -->
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <select name="" id="" class="form-control">
+                        <option value="">---</option>
+                        <option value="">www</option>
+                        <option value="">eee</option>
+                        <option value="">rrr</option>
+                        <option value="">ttt</option>
+                    </select>
+                    <label for="" class="label">Región</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <select name="" id="" class="form-control">
+                        <option value="">---</option>
+                        <option value="">www</option>
+                        <option value="">eee</option>
+                        <option value="">rrr</option>
+                        <option value="">ttt</option>
+                    </select>
+                    <label for="" class="label">Comuna</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control">
+                    <label for="" class="label">Dirección</label>
+                </div>
+            </div>
+
+        </div>
+        <!-- card -->
+    </div>
+
+    <div class="col-xl-4">
+        <div class="card pd-20 pd-sm-40 form-layout form-layout-4">
+            <h6 class="card-body-title">Mis datos para remuneraciones</h6>
+            <p class="mg-b-20 mg-sm-b-30"></p>
+
+            <!-- row -->
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" disabled="disabled">
+                    <label for="" class="label">Banco</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" disabled="disabled">
+                    <label for="" class="label">Forma de pago</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" disabled="disabled">
+                    <label for="" class="label">Tipo de cuenta</label>
+                </div>
+            </div>
+
+            <div class="row mg-t-20">
+                <div class="col-sm-10 inputContainer">
+                    <input type="text" class="form-control" disabled="disabled">
+                    <label for="" class="label">Número de cuenta</label>
+                </div>
+            </div>
+
+        </div>
+        <!-- card -->
+    </div>
+
+</div>
+
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+
+<script>
+
+</script>
