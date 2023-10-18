@@ -44,7 +44,11 @@ class ApiGetDataUserPage(generics.ListAPIView):
                 last_name = (object.last_name).split(" ")
 
                 object_colaborator = Colaborador.objects.get(user = object)
-                object_contact = Contact.objects.filter(user = object, con_contact_type = 2).first()
+                #object_contact = Contact.objects.filter(user = object, con_contact_type = 2).first()
+
+                object_contact = Contact.objects.filter(
+                    Q(user=object) & (Q(con_contact_type=1))
+                ).first()
 
                 object_contact_phone = Contact.objects.filter(
                     Q(user=object) & (Q(con_contact_type=3) | Q(con_contact_type=4))
