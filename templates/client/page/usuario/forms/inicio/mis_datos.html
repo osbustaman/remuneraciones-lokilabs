@@ -5,77 +5,7 @@
 <link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
 
 <div class="row">
-    <style>
-        .inputContainer {
-            position: relative;
-            height: 45px;
-            width: 90%;
-            margin-bottom: 17px;
-            margin-left: 12px;
-        }
-        
-        .form-control {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            height: 100%;
-            width: 100%;
-            border: transparent;
-            border-bottom: 1px solid #DADCE0;
-            font-size: 16px;
-            padding: 0 20px;
-            outline: none;
-            background: none;
-            z-index: 1;
-        }
-        /* Hide the placeholder texts (a) */
-        
-         ::placeholder {
-            color: transparent;
-        }
-        
-        label {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            padding: 0 4px;
-            background-color: white;
-            color: #DADCE0;
-            font-size: 16px;
-            transition: 0.5s;
-            z-index: 0;
-        }
-        
-        .form-control:focus+label {
-            top: -7px;
-            left: 3px;
-            z-index: 10;
-            font-size: 14px;
-            font-weight: 600;
-            color: rgb(146, 145, 146);
-        }
-        
-        .form-control:focus {
-            border: transparent;
-            border-bottom: 1px solid rgb(146, 145, 146);
-        }
-        
-        .form-control:not(:placeholder-shown)+label {
-            top: -7px;
-            left: 3px;
-            z-index: 10;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .form-control:disabled,
-        .dataTables_filter input:disabled,
-        .form-control[readonly],
-        .dataTables_filter input[readonly] {
-            background-color: transparent;
-            opacity: 1;
-        }
-    </style>
+
     <div class="col-xl-4">
         <div class="card pd-20 pd-sm-40 form-layout form-layout-4">
             <h6 class="card-body-title">Mis datos personales</h6>
@@ -99,13 +29,14 @@
             <div class="row mg-t-20">
                 <div class="col-sm-5 inputContainer">
                     <input type="text" class="form-control" id="last_name_ap" disabled="disabled">
-                    <label for="" class="label">Apellido Paterno</label>
+                    <label for="" class="label">Ap. Paterno</label>
                 </div>
                 <div class="col-sm-5 inputContainer">
                     <input type="text" class="form-control" id="last_name_am" disabled="disabled">
-                    <label for="" class="label">Apellido Materno</label>
+                    <label for="" class="label">Ap. Materno</label>
                 </div>
             </div>
+            
 
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
@@ -113,15 +44,19 @@
                     <label for="" class="label">Fecha de Nacimiento</label>
                 </div>
             </div>
-
+            
             <div class="row mg-t-20">
                 <div class="col-sm-5 inputContainer">
-                    <input type="text" class="form-control" id="col_sexo">
+                    <input type="text" class="form-control" id="col_sexo" disabled="disabled">
                     <label for="" class="label">Sexo</label>
                 </div>
                 <div class="col-sm-5 inputContainer">
-                    <input type="text" class="form-control" id="col_estadocivil">
-                    <label for="" class="label">Estado Civil</label>
+                    <select name="col_estadocivil" id="col_estadocivil" class="form-control">
+                        <option value="1">Solter@</option>
+                        <option value="2">Casad@</option>
+                        <option value="3">Divorsiad@</option>
+                        <option value="4">Viud@</option>
+                    </select>
                 </div>
             </div>
 
@@ -158,12 +93,7 @@
             <!-- row -->
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
-                    <select name="" id="" class="form-control">
-                        <option value="">---</option>
-                        <option value="">www</option>
-                        <option value="">eee</option>
-                        <option value="">rrr</option>
-                        <option value="">ttt</option>
+                    <select name="regiones" id="regiones" class="form-control">
                     </select>
                     <label for="" class="label">Región</label>
                 </div>
@@ -171,12 +101,7 @@
 
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
-                    <select name="" id="" class="form-control">
-                        <option value="">---</option>
-                        <option value="">www</option>
-                        <option value="">eee</option>
-                        <option value="">rrr</option>
-                        <option value="">ttt</option>
+                    <select name="comunas" id="comunas" class="form-control">
                     </select>
                     <label for="" class="label">Comuna</label>
                 </div>
@@ -184,7 +109,7 @@
 
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
-                    <input type="text" class="form-control">
+                    <input type="text" class="form-control" id="col_direccion">
                     <label for="" class="label">Dirección</label>
                 </div>
             </div>
@@ -202,28 +127,28 @@
 
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
-                    <input type="text" class="form-control" disabled="disabled">
+                    <input type="text" class="form-control" id="col_banco" disabled="disabled">
                     <label for="" class="label">Banco</label>
                 </div>
             </div>
 
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
-                    <input type="text" class="form-control" disabled="disabled">
+                    <input type="text" class="form-control" id="col_formapago" disabled="disabled">
                     <label for="" class="label">Forma de pago</label>
                 </div>
             </div>
 
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
-                    <input type="text" class="form-control" disabled="disabled">
+                    <input type="text" class="form-control" id="col_tipocuenta_name" disabled="disabled">
                     <label for="" class="label">Tipo de cuenta</label>
                 </div>
             </div>
 
             <div class="row mg-t-20">
                 <div class="col-sm-10 inputContainer">
-                    <input type="text" class="form-control" disabled="disabled">
+                    <input type="text" class="form-control" id="col_cuentabancaria" disabled="disabled">
                     <label for="" class="label">Número de cuenta</label>
                 </div>
             </div>
@@ -238,4 +163,60 @@
 
 <script>
 
+    $(document).ready(function(){
+        const endpoint = "{% url 'usuario_app:mi_perfil' request.session.id %}";
+
+        axios.get(endpoint)
+            .then(response => {
+                const { data } = response
+
+                $('#col_rut').val(data.username);
+                $('#first_name').val(data.first_name);
+                $('#last_name_ap').val(data.first_last_name);
+                $('#last_name_am').val(data.second_last_name);
+                $('#col_fechanacimiento').val(data.col_fechanacimiento);
+                $('#col_sexo').val(data.col_sexo);
+                $('#col_estadocivil').val(data.col_estadocivil);
+                $('#con_phone_contact').val(data.phone_user);
+                $('#con_mail_contact_emp').val(data.email_corporativo);
+                $('#con_mail_contact_per').val(data.email_personal);
+
+                const { data: { regiones_list_dict } } = response
+
+                if(regiones_list_dict){
+                    regiones_list_dict.forEach(element => {
+                    
+                        let is_selected = "";
+                        if(element.re_id === data.col_region){
+                            is_selected = "selected"
+                        }
+                        $('#regiones').append(`<option value="${element.re_id}" ${is_selected}>${element.re_nombre}</option>`);
+                    });
+                }
+
+                const { data: { comunas_dict_list } } = response
+
+                if(comunas_dict_list){
+                    comunas_dict_list.forEach(element => {
+                    
+                        let is_selected = "";
+                        if(element.com_id === data.col_comuna){
+                            is_selected = "selected"
+                        }
+                        $('#comunas').append(`<option value="${element.com_id}" ${is_selected}>${element.com_nombre}</option>`);
+                    });
+                }
+
+                $('#col_direccion').val(data.col_direccion);
+
+                $('#col_banco').val(data.col_banco);
+                $('#col_formapago').val(data.col_formapago_name);
+                $('#col_tipocuenta_name').val(data.col_tipocuenta_name);
+                $('#col_cuentabancaria').val(data.col_cuentabancaria);
+
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error.message);
+            });
+    });
 </script>
