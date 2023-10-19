@@ -244,18 +244,23 @@ class ConceptsForm(forms.ModelForm):
         'class': 'form-control',
     }
 
+    tags_input_select = {
+        'class': 'form-control select2-one',
+    }
+
     conc_name = forms.CharField(label="Nombre Concepto", widget=forms.TextInput(
         attrs=tags_input_general), required=True)
     conc_typeconcept = forms.ChoiceField(label="Tipo concepto", choices=Concept.TYPE_CLASSIFICATION,
-                                widget=forms.Select(attrs=tags_input_general), required=True)
+                                widget=forms.Select(attrs=tags_input_select), required=True)
     conc_clasificationconcept = forms.ChoiceField(label="Clasificación concepto", choices=Concept.CLASSIFICATION,
-                                widget=forms.Select(attrs=tags_input_general), required=True)
+                                widget=forms.Select(attrs=tags_input_select), required=True)
     conc_search_field = forms.ChoiceField(label="Tipo de entidad", help_text="** Este campo solo se debe usar para el caso de los descuentos de salud y afp", choices=Concept.SEARCH_FIELDS,
-                                widget=forms.Select(attrs=tags_input_general), required=False)
-
+                                widget=forms.Select(attrs=tags_input_select), required=False)
+    conc_remuneration_type = forms.ChoiceField(label="Tipo de remuneración", choices=Concept.REMUNERATION_TYPE,
+                                widget=forms.Select(attrs=tags_input_select), required=False)
 
     class Meta:
         model = Concept
         fields = (
-            "conc_name", "conc_typeconcept", "conc_clasificationconcept", "conc_search_field"
+            "conc_name", "conc_typeconcept", "conc_clasificationconcept", "conc_search_field", "conc_remuneration_type"
         )

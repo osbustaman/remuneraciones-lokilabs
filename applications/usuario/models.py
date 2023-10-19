@@ -197,6 +197,14 @@ class UsuarioEmpresa(TimeStampedModel):
         ('TCP', 'Trabajador de Casa Particular'),
     )
 
+    FAMILY_ALLOWANCE_SECTION = (
+        (0, '---------'),
+        (1, 'A'),
+        (2, 'B'),
+        (3, 'C'),
+        (4, 'D'),
+    )
+
     ESTATE_JOB = (
         (1, 'Vigente'),
         (2, 'Desvinculado')
@@ -257,6 +265,9 @@ class UsuarioEmpresa(TimeStampedModel):
         "Horas trabajadas", null=True, blank=True, default=45)
     ue_asignacionfamiliar = models.CharField(
         "Asignación familiar", choices=OPCIONES, max_length=1, null=True, blank=True, default="N")
+    
+    ue_family_allowance_section = models.IntegerField(
+        "Asignación familiar", choices=FAMILY_ALLOWANCE_SECTION, null=True, blank=True)
     ue_cargasfamiliares = models.IntegerField(
         "Cargas familiares", null=True, blank=True, default=0)
     ue_montoasignacionfamiliar = models.DecimalField(

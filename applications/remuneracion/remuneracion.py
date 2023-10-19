@@ -1,12 +1,19 @@
 import json
+import math
 import requests
 
 from datetime import datetime, timedelta
 from decouple import config
+
+from django.utils import timezone
+from django.db.models import F
+
+from applications.attendance.models import MarkAttendance
 from applications.base.models import TablaGeneral
 
 from applications.empresa.models import Afp, Salud
 from applications.remuneracion.indicadores import IndicatorEconomic
+from applications.usuario.models import ConceptUser
 
 class Remunerations():
 
@@ -76,7 +83,6 @@ class Remunerations():
             'concept': f'Impuesto a la renta (sobre: {salary_imponible_mount})'
         }
         
-
     @classmethod
     def translate_month(self, month, language = 'es_cl'):
         """
@@ -141,7 +147,6 @@ class Remunerations():
             'employer_contribution': int(employer_contribution),
             'concept': concept
         }
-
 
     @classmethod
     def calculate_afp_quote(self, afp_id, type_of_work, salary_imponible_mount):
@@ -218,7 +223,6 @@ class Remunerations():
             'health_discount_uf':health_discount_uf,
         }
     
-
     @classmethod
     def obtain_legal_bonus_cap(self, type_tope, base_salary, has_fratification = True):
         """
@@ -253,3 +257,103 @@ class Remunerations():
 
         else:
             return False
+        
+    @classmethod
+    def calculate_overtime_hour(self, hours, rent):
+        """
+        calculate_overtime_hour - Funcion para calcular el valor de la hora extra, y el valor de las hora extras
+        
+        :param user_id: id del usuario
+        :param hours(float): horas extras trabajadas
+        :param rent: Renta del colaborador
+        
+        :return: 
+            un diccionario con el valor de la hora extra y el valor total de las horas extras trabajadas
+        """
+
+        extra_hour_value = int(math.ceil(rent / 30 * 7 / 45 * 1.5))
+        total_value_extra_hour = int(math.ceil(extra_hour_value * hours))
+
+        return {
+            "extra_hour_value": extra_hour_value,
+            "total_value_extra_hour": total_value_extra_hour
+        }
+
+    @classmethod
+    def get_detail_of_hours_worked(self, user_id):
+        """
+        get_detail_of_hours_worked - Funcion que se encarga de obtener el detalle de las horas trabajadas
+        
+        :param user_id: id del usuario
+        
+        :return: 
+            un diccionario con la informacion de las horas trabajadas, horas de atraso, y horas de sobra
+        """
+
+        # Define el rango de fechas deseado
+        fecha_inicio = datetime(2023, 6, 20, tzinfo=timezone.utc)
+        fecha_fin = datetime(2023, 7, 20, tzinfo=timezone.utc)
+
+        # Filtra las marcas de asistencia dentro del rango de fechas
+        marcas_en_rango = MarkAttendance.objects.filter(
+            ma_datemark__gte=fecha_inicio,
+            ma_datemark__lt=fecha_fin,
+            ma_typeattendance__in=[1, 2],  # Filtra solo marcas de entrada y salida
+            user_id = user_id
+        ).order_by('ma_datemark')
+
+        response_data = {
+
+        }
+
+        return response_data
+    
+    
+    @classmethod
+    def generate_remunaration(self, user_id):
+
+        """
+        generate_remunaration - Funcion que se encarga de generar la remuneracion del colaborador
+        
+        :param user_id: id del usuario
+        
+        :return: 
+            un diccionario con toda la información de la remuneracion
+        """
+
+        object_concept_user = ConceptUser.objects.filter(user_id = user_id)
+
+        object_taxable_assets = object_concept_user.filter(concept__conc_clasificationconcept = 1, concept__conc_typeconcept = 1) # obtiene los haberes imponibles
+
+        taxable_assets = 0 # variable que almacena el total de haberes imponibles
+        for obj in object_taxable_assets:
+            taxable_assets += int(obj.cu_value)
+
+        object_monthly_salary = object_taxable_assets.filter(concept__conc_remuneration_type = 1)
+
+        monthly_salary = 0 # sueldo mensual
+        for obj in object_monthly_salary:
+            monthly_salary += int(obj.cu_value)
+
+        overtime_hours = self.calculate_overtime_hour(22, monthly_salary)
+
+        taxable_assets = taxable_assets + overtime_hours['total_value_extra_hour']
+
+
+        objects_non_taxable_income = object_concept_user.filter(concept__conc_clasificationconcept = 1, concept__conc_typeconcept = 2) # obtiene los haberes no imponibles
+
+        non_taxable_income = 0 # total haberes no imponibles
+        for obj in objects_non_taxable_income:
+            non_taxable_income += int(obj.cu_value)
+
+        total_gross_salary = taxable_assets + non_taxable_income
+
+        response_data = {
+            "success": True,
+            "status": 200,
+            "total_haberes_imponibles": taxable_assets,
+            "total_haberes_no_imponibles": non_taxable_income,
+            "total_bruto": total_gross_salary
+        }
+
+        return response_data

@@ -56,6 +56,9 @@ class FormsForecastData(forms.ModelForm):
                                                                         attrs=tags_input_date), required=False)
     caja_compensacion = forms.ModelChoiceField(label="Caja de compensacion", required=False,
                                                queryset=CajasCompensacion.objects.filter(cc_activo="S"), widget=forms.Select(attrs=tags_input_select2))
+    
+    ue_family_allowance_section = forms.ChoiceField(initial=0, label='Tramo asignación familiar', choices=UsuarioEmpresa.FAMILY_ALLOWANCE_SECTION,
+                                        widget=forms.Select(attrs=tags_input_select), required=True)
 
     def clean_caja_compensacion(self):
         data = self.data["caja_compensacion"]
@@ -110,7 +113,8 @@ class FormsForecastData(forms.ModelForm):
             'caja_compensacion',
             'ue_shape',
             'ue_apvamount',
-            'ue_paymentperioddate'
+            'ue_paymentperioddate',
+            'ue_family_allowance_section'
         ]
 
 

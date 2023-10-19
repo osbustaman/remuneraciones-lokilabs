@@ -32,6 +32,7 @@
                 <tr>
                     <th class="wd-15p">ID</th>
                     <th class="wd-15p">Nombre</th>
+                    <th class="wd-20p">Tipo de remuneración</th>
                     <th class="wd-20p">Clasificación Concepto</th>
                     <th class="wd-20p">Tipo Concepto</th>
                     <th class="wd-25p">Acción</th>
@@ -42,11 +43,17 @@
                 <tr>
                     <td>{{ obj.conc_id }}</td>
                     <td>{{ obj.conc_name }}</td>
+                    <td>{{ obj.get_conc_remuneration_type_display }}</td>
                     <td>{{ obj.get_conc_clasificationconcept_display }}</td>
                     <td>{{ obj.get_conc_typeconcept_display }}</td>
                     <td>
+                        {% if obj.conc_default == 'N'  %}
                         <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'conf_app:concepts_edit' obj.conc_id %}')">Editar</button>
                         <button type="button" class="btn btn-danger btn-sm" onclick="deleteObject('{% url 'conf_app:concepts_delete' obj.conc_id %}')">Eliminar</button>
+                        {% else %}
+                        <button type="button" class="btn btn-info btn-sm" disabled>Editar</button>
+                        <button type="button" class="btn btn-danger btn-sm" disabled>Eliminar</button>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}

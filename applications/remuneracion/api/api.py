@@ -6,6 +6,7 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 
 from applications.remuneracion.api.serializers import AsociateConceptUserSerializer, ConceptUserSerializer
+from applications.remuneracion.remuneracion import Remunerations
 from applications.security.decorators import verify_token
 from applications.usuario.models import ConceptUser
 
@@ -102,6 +103,28 @@ class ApiConceptUserDeleteView(generics.DestroyAPIView):
         except Exception as e:
             # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
             return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+@permission_classes([AllowAny])
+class ApiGenerateLiquidationUserDeleteView(generics.GenericAPIView):
+    queryset = ConceptUser.objects.all()
+    serializer_class = ConceptUserSerializer
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user_id = kwargs['user_id']
+            # response_data = Remunerations.generate_remunaration(user_id)
+            response_data = Remunerations.get_detail_of_hours_worked(user_id)
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except serializers.ValidationError as e:
+            # Capturar la excepción de validación del serializer y devolver la respuesta de error correspondiente
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
+            return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         
 
 

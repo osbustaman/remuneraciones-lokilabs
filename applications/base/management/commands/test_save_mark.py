@@ -35,12 +35,14 @@ class Command(BaseCommand):
             ma_typemark = 3
 
             # Obtén la fecha actual y retrocede tres meses
-            today = datetime.now() - timedelta(days=90)
+            today = datetime.now()
+            
+            past_days = today - timedelta(days=90)
             end_date = today + timedelta(days=30)
 
-            while today < end_date:
+            while past_days < end_date:
 
-                print(f' **** MARCAS DE ENTRADA Y SALIDA: {today.replace(hour=8, minute=30).strftime("%Y-%m-%d %H:%M")} == {today.replace(hour=17, minute=30).strftime("%Y-%m-%d %H:%M:%S")} **** ')
+                print(f' **** MARCAS DE ENTRADA Y SALIDA: {past_days.replace(hour=8, minute=30).strftime("%Y-%m-%d %H:%M")} == {past_days.replace(hour=17, minute=30).strftime("%Y-%m-%d %H:%M:%S")} **** ')
 
                 # _mark_data_1 = {
                 #     'user': user.id,
@@ -55,7 +57,7 @@ class Command(BaseCommand):
                 mark_data_1.ma_typeattendance = 1
                 mark_data_1.ma_latitude = latitud
                 mark_data_1.ma_longitude = longitud
-                mark_data_1.ma_datemark = today.replace(hour=8, minute=self.generate_random_integer()).strftime("%Y-%m-%d %H:%M")
+                mark_data_1.ma_datemark = past_days.replace(hour=8, minute=self.generate_random_integer()).strftime("%Y-%m-%d %H:%M")
                 mark_data_1.save(using=nombre_bd)
 
 
@@ -64,7 +66,7 @@ class Command(BaseCommand):
                 #     'ma_typeattendance': 1,
                 #     'ma_latitude': latitud,
                 #     'ma_longitude': longitud,
-                #     'ma_datemark': today.replace(hour=8, minute=30).strftime("%Y-%m-%d %H:%M:%S"),
+                #     'ma_datemark': past_days.replace(hour=8, minute=30).strftime("%Y-%m-%d %H:%M:%S"),
                 # }
 
                 mark_data_2 = MarkAttendance()
@@ -72,10 +74,10 @@ class Command(BaseCommand):
                 mark_data_2.ma_typeattendance = 1
                 mark_data_2.ma_latitude = latitud
                 mark_data_2.ma_longitude = longitud
-                mark_data_2.ma_datemark = today.replace(hour=17, minute=self.generate_random_integer()).strftime("%Y-%m-%d %H:%M")
+                mark_data_2.ma_datemark = past_days.replace(hour=17, minute=self.generate_random_integer()).strftime("%Y-%m-%d %H:%M")
                 mark_data_2.save(using=nombre_bd)
 
-                today += timedelta(days=1)
+                past_days += timedelta(days=1)
             
             # Verificar que las marcas de asistencia se hayan guardado correctamente
             # self.assertEqual(MarkAttendance.objects.filter(user=self.user).count(), 60)  # 30 días * 2 marcas por día

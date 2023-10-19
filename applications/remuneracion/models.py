@@ -31,12 +31,24 @@ class Concept(TimeStampedModel):
         ('AFP', 'afp'),
     )
 
+    REMUNERATION_TYPE = (
+        (0, ' --------- '),
+        (1, 'Sueldo'),
+        (2, 'Sobresueldo'),
+        (3, 'Variable'),
+        (4, 'Eventuales'),
+        (5, 'Gratificación'),
+        (6, 'Descuento')
+    )
+
     conc_id = models.AutoField("Key", primary_key=True)
     conc_name = models.CharField("Nombre", max_length=255)
     conc_clasificationconcept = models.IntegerField("Clasificación concepto", choices=CLASSIFICATION)
     conc_typeconcept = models.IntegerField("Tipo concepto", choices=TYPE_CLASSIFICATION)
+    conc_remuneration_type = models.IntegerField("Tipo de remuneración", choices=REMUNERATION_TYPE)
     conc_search_field = models.CharField("Campo de busqueda", null=True, blank=True, default='0', max_length=50, choices=SEARCH_FIELDS)
-
+    conc_default = models.CharField(
+        "Concepto por defecto", choices=OPTIONS, max_length=1, default="N")
     conc_active = models.CharField(
         "Concepto activo", choices=OPTIONS, max_length=1, default="S")
 

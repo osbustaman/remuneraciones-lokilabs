@@ -265,48 +265,103 @@ class Command(BaseCommand):
                 'conc_name': 'Sueldo Base',
                 'conc_clasificationconcept': 1,
                 'conc_typeconcept': 1,
+                'conc_remuneration_type': 1,
                 'conc_search_field': ''
-            },
-            {
+            }, {
+                'conc_name': 'Sobresueldo (Horas Extras)',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 2,
+                'conc_search_field': ''
+            }, {
+                'conc_name': 'Recargo por Domingo',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 3,
+                'conc_search_field': ''
+            }, {
+                'conc_name': 'Comisión',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 3,
+                'conc_search_field': ''
+            }, {
+                'conc_name': 'Tratos',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 3,
+                'conc_search_field': ''
+            }, {
+                'conc_name': 'Semana Corrida',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 3,
+                'conc_search_field': ''
+            }, {
+                'conc_name': 'Bonos',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 4,
+                'conc_search_field': ''
+            }, {
+                'conc_name': 'Participación',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 4,
+                'conc_search_field': ''
+            }, {
                 'conc_name': 'Gratificación Mensual',
                 'conc_clasificationconcept': 1,
                 'conc_typeconcept': 1,
+                'conc_remuneration_type': 5,
                 'conc_search_field': ''
-            },
-            {
+            }, {
+                'conc_name': 'Gratificación Anual',
+                'conc_clasificationconcept': 1,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 5,
+                'conc_search_field': ''
+            }, {
                 'conc_name': 'Asignación de Movilización',
                 'conc_clasificationconcept': 1,
                 'conc_typeconcept': 2,
+                'conc_remuneration_type': 0,
                 'conc_search_field': ''
-            },
-            {
+            }, {
                 'conc_name': 'Asignación de Colación',
                 'conc_clasificationconcept': 1,
                 'conc_typeconcept': 2,
+                'conc_remuneration_type': 0,
                 'conc_search_field': ''
-            },
-            {
+            }, {
                 'conc_name': 'Asignación Familiar',
                 'conc_clasificationconcept': 1,
                 'conc_typeconcept': 2,
+                'conc_remuneration_type': 0,
                 'conc_search_field': ''
-            },
-            {
-                'conc_name': 'Descuento salud ISAPRE',
-                'conc_clasificationconcept': 1,
+            }, {
+                'conc_name': 'Diferencia ISAPRE',
+                'conc_clasificationconcept': 2,
                 'conc_typeconcept': 1,
+                'conc_remuneration_type': 6,
                 'conc_search_field': 'ISAPRE'
-            },
-            {
-                'conc_name': 'Descuento salud FONASA',
-                'conc_clasificationconcept': 1,
+            }, {
+                'conc_name': 'Descuento Isapre',
+                'conc_clasificationconcept': 2,
                 'conc_typeconcept': 1,
+                'conc_remuneration_type': 6,
+                'conc_search_field': 'ISAPRE'
+            }, {
+                'conc_name': 'Descuento Fonasa',
+                'conc_clasificationconcept': 2,
+                'conc_typeconcept': 1,
+                'conc_remuneration_type': 6,
                 'conc_search_field': 'FONASA'
-            },
-            {
+            }, {
                 'conc_name': 'Descuento AFP',
-                'conc_clasificationconcept': 1,
+                'conc_clasificationconcept': 2,
                 'conc_typeconcept': 1,
+                'conc_remuneration_type': 6,
                 'conc_search_field': 'AFP'
             }
         ]
@@ -388,6 +443,8 @@ class Command(BaseCommand):
                 c.conc_clasificationconcept = value['conc_clasificationconcept']
                 c.conc_typeconcept = value['conc_typeconcept']
                 c.conc_search_field = value['conc_search_field']
+                c.conc_remuneration_type = value['conc_remuneration_type']
+                c.conc_default = 'S'
                 c.save(using=nombre_bd)
 
             print(f" ********** Finalizada la carga para {nombre_bd} **************** ")

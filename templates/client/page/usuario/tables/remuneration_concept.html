@@ -1,13 +1,14 @@
 <div class="row">
     <div class="col-md-6">
-        <table id="datatable-concepts" class="table display responsive nowrap" style="width: 100%;">
+        <table id="datatable-concepts" class="table responsive" style="width: 100%;">
             <thead>
                 <tr>
-                    <th class="wd-15p">ID</th>
-                    <th class="wd-15p">Nombre</th>
-                    <th class="wd-20p">Clasificación Concepto</th>
-                    <th class="wd-20p">Tipo Concepto</th>
-                    <th class="wd-25p">Acción</th>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Tipo de remuneración</th>
+                    <th>Clasificación Concepto</th>
+                    <th>Tipo Concepto</th>
+                    <th>Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -15,6 +16,7 @@
                 <tr id="add-concept-{{ obj.conc_id }}">
                     <td>{{ obj.conc_id }}</td>
                     <td>{{ obj.conc_name }}</td>
+                    <td>{{ obj.get_conc_remuneration_type_display }}</td>
                     <td>{{ obj.get_conc_clasificationconcept_display }}</td>
                     <td>{{ obj.get_conc_typeconcept_display }}</td>
                     <td>
@@ -31,12 +33,12 @@
     </div>
 
     <div class="col-md-6">
-        <table class="table table-bordered" id="second-table" style="width: 100%;">
+        <table class="table responsive table-bordered" id="second-table" style="width: 100%;">
             <thead class="bg-info">
                 <tr>
-                    <th class="wd-15p">Concepto</th>
-                    <th class="wd-25p">Monto</th>
-                    <th class="wd-25p">Acción</th>
+                    <th class="wd-10p">Concepto</th>
+                    <th class="wd-10p">Monto</th>
+                    <th class="wd-10p">Acción</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,9 +70,22 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-12 text-right">
+        <hr>
+        <button type="button" class="btn btn-primary btn-sm" style="cursor: pointer;" onclick="generate_liquidation()">
+            Generar Liquidación Sueldo <span class="fa fa-file-text"></span>
+        </button>
+    </div>
+</div>
+
 <script>
 
     {% include "client/includes/table_js.html" with id="datatable-concepts" is_limit=True %}
+
+    const generate_liquidation = () => {
+        $.alert("Hola mundo");
+    }
 
     const associate_concept = (id) => {
         let d = $("#datatable-concepts");
