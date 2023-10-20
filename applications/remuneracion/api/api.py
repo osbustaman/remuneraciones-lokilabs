@@ -113,8 +113,8 @@ class ApiGenerateLiquidationUserDeleteView(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         try:
             user_id = kwargs['user_id']
-            # response_data = Remunerations.generate_remunaration(user_id)
-            response_data = Remunerations.get_detail_of_hours_worked(user_id)
+            response_data = Remunerations.generate_remunaration(user_id)
+            # response_data = Remunerations.get_detail_of_hours_worked(user_id)
             return Response(response_data, status=status.HTTP_200_OK)
 
         except serializers.ValidationError as e:

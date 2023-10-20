@@ -13,7 +13,7 @@ from applications.base.models import TablaGeneral
 
 from applications.empresa.models import Afp, Salud
 from applications.remuneracion.indicadores import IndicatorEconomic
-from applications.usuario.models import ConceptUser
+from applications.usuario.models import ConceptUser, UsuarioEmpresa
 
 from pytz import utc, timezone as pytz_timezone
 
@@ -23,6 +23,11 @@ class Remunerations():
     TOPE_GRATIFICATION = 4.75
     CLOSE_DATE = 20
     TIEMPO_COLACION = 30
+    HORA_ENTRADA = "08:30"
+    HORA_SALIDA = "17:30"
+    RANGO_HORAS_ATRASO = 1.5
+    SE_REALIZAN_CARGOS_POR_ATRASOS = True
+    SE_AUTORIZO_HORAS_EXTRAS = True
 
 
     @classmethod
@@ -303,6 +308,9 @@ class Remunerations():
         # Obtiene el año actual
         current_year = datetime.now().year
 
+        # Obtiene el dia actual
+        current_day = datetime.now().day
+
         # Obtiene el número del mes actual
         current_month = current_date.month
 
@@ -326,18 +334,21 @@ class Remunerations():
 
         resultados = []
 
-        # Definir los horarios de entrada y salida
-        horario_entrada = datetime.strptime("08:30:00", "%H:%M:%S").time()
-        horario_salida = datetime.strptime("17:30:00", "%H:%M:%S").time()
-
         # Procesa las marcas de asistencia para calcular horas y minutos entre ellas
+        delay_sum = 0 # aqui se acomula el total de los atrasos
+        sum_overtime_hours = 0 # aqui se acomula el total de las horas extras
+        
         for i in range(0, len(marcas_en_rango), 2):
+
             marca_entrada = marcas_en_rango[i]
             marca_salida = marcas_en_rango[i + 1]
 
             # Convierte las fechas a UTC-3
             fecha_entrada_utc3 = marca_entrada.ma_datemark.astimezone(pytz_timezone("America/Santiago"))
             fecha_salida_utc3 = marca_salida.ma_datemark.astimezone(pytz_timezone("America/Santiago"))
+
+            horario_entrada = datetime.strptime(f"{fecha_entrada_utc3.year}-{fecha_entrada_utc3.month}-{fecha_entrada_utc3.day} {self.HORA_ENTRADA}", "%Y-%m-%d %H:%M").astimezone(pytz_timezone("America/Santiago"))
+            horario_salida = datetime.strptime(f"{fecha_entrada_utc3.year}-{fecha_entrada_utc3.month}-{fecha_entrada_utc3.day} {self.HORA_SALIDA}", "%Y-%m-%d %H:%M").astimezone(pytz_timezone("America/Santiago"))
 
             # Calcula la diferencia de tiempo entre la marca de entrada y salida
             tiempo_transcurrido = fecha_salida_utc3 - fecha_entrada_utc3
@@ -353,23 +364,55 @@ class Remunerations():
             horas_resultantes = minutos_restantes // 60
             minutos_resultantes = minutos_restantes % 60
 
+            
+            if fecha_entrada_utc3 >= horario_entrada:
+                atraso = max((fecha_entrada_utc3 - horario_entrada).seconds // 60, 0)
+            else:
+                atraso = 0
             # Calcular atraso y horas extras
-            atraso = max((fecha_entrada_utc3.time() - horario_entrada).seconds // 60, 0)
-            horas_extras = max((horario_salida - fecha_salida_utc3.time()).seconds // 60, 0)
+            
+            delay_sum += int(atraso)
 
+            if fecha_salida_utc3 > horario_salida:
+                overtime_hours = max((fecha_salida_utc3 - horario_salida).seconds // 60, 0)
+            else:
+                overtime_hours = 0
+
+            sum_overtime_hours += overtime_hours
+            
             resultado = {
                 "fecha_entrada": fecha_entrada_utc3.strftime("%Y-%m-%d %H:%M"),
                 "fecha_salida": fecha_salida_utc3.strftime("%Y-%m-%d %H:%M"),
                 "horas": horas_resultantes,
                 "minutos": minutos_resultantes,
                 "atraso": atraso,
-                "horas_extras": horas_extras,
+                "horas_extras": overtime_hours,
             }
 
             resultados.append(resultado)
 
-        return resultados
+        return {
+            "total_horas_atraso": round((delay_sum/60), 1),
+            "total_horas_extras": round((sum_overtime_hours/60)),
+            "detalle": resultados,
+        }
     
+    @classmethod
+    def calculate_delay_value(self, hours_delay, taxable_assets, ue_horassemanales):
+        """
+        calculate_delay_value - Funcion que se encarga calcular el valor total de las horas de atraso a descontar
+        
+        :param hours_delay: cantidad de horas de atrasos
+        :param taxable_assets: Es la suma de todos los habere imponibles, denominandoze como sueldo base
+        :param ue_horassemanales: horas semanales del colaborador
+        
+        :return: 
+            monto total de horas para descontar
+        """
+        hours_value = (taxable_assets/30*7/ue_horassemanales) * hours_delay
+
+        return hours_value
+
     @classmethod
     def generate_remunaration(self, user_id):
 
@@ -383,6 +426,7 @@ class Remunerations():
         """
 
         object_concept_user = ConceptUser.objects.filter(user_id = user_id)
+        object_usuario_empresa = UsuarioEmpresa.objects.filter(user_id = user_id).first()
 
         object_taxable_assets = object_concept_user.filter(concept__conc_clasificationconcept = 1, concept__conc_typeconcept = 1) # obtiene los haberes imponibles
 
@@ -396,9 +440,23 @@ class Remunerations():
         for obj in object_monthly_salary:
             monthly_salary += int(obj.cu_value)
 
-        overtime_hours = self.calculate_overtime_hour(22, monthly_salary)
+        response_hours = self.get_detail_of_hours_worked(user_id)
 
-        taxable_assets = taxable_assets + overtime_hours['total_value_extra_hour']
+        total_value_extra_hour = 0
+        if self.SE_AUTORIZO_HORAS_EXTRAS: # -- VARIABLE DE ENTORNO QUE SE DEBE CREAR PARA VERIFICAR SI TIENE HORA EXTRA AUTORIZADA
+            overtime_hours = self.calculate_overtime_hour(response_hours['total_horas_extras'], monthly_salary)
+
+            taxable_assets = taxable_assets + overtime_hours['total_value_extra_hour']
+            total_value_extra_hour = overtime_hours['total_value_extra_hour']
+
+        
+        # el cliente determina si quiere descontar los atrasos
+        if self.SE_REALIZAN_CARGOS_POR_ATRASOS:
+
+            # desde aqui se valida el rango minimo de horas permitidas de atraso para realizar descuentos por atrasos
+            if response_hours['total_horas_atraso'] > self.RANGO_HORAS_ATRASO:
+
+                delay_value = self.calculate_delay_value(response_hours['total_horas_atraso'], taxable_assets, object_usuario_empresa.ue_horassemanales)
 
 
         objects_non_taxable_income = object_concept_user.filter(concept__conc_clasificationconcept = 1, concept__conc_typeconcept = 2) # obtiene los haberes no imponibles
@@ -414,7 +472,8 @@ class Remunerations():
             "status": 200,
             "total_haberes_imponibles": taxable_assets,
             "total_haberes_no_imponibles": non_taxable_income,
-            "total_bruto": total_gross_salary
+            "total_bruto": total_gross_salary,
+            "total_valor_hora_extra": total_value_extra_hour,
         }
 
         return response_data
