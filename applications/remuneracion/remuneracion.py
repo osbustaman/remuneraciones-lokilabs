@@ -15,10 +15,15 @@ from applications.empresa.models import Afp, Salud
 from applications.remuneracion.indicadores import IndicatorEconomic
 from applications.usuario.models import ConceptUser
 
+from pytz import utc, timezone as pytz_timezone
+
 class Remunerations():
 
     MINIMUM_SALARY = 460000
     TOPE_GRATIFICATION = 4.75
+    CLOSE_DATE = 20
+    TIEMPO_COLACION = 30
+
 
     @classmethod
     def format_number(self, number):
@@ -290,24 +295,80 @@ class Remunerations():
             un diccionario con la informacion de las horas trabajadas, horas de atraso, y horas de sobra
         """
 
-        # Define el rango de fechas deseado
-        fecha_inicio = datetime(2023, 6, 20, tzinfo=timezone.utc)
-        fecha_fin = datetime(2023, 7, 20, tzinfo=timezone.utc)
+        minutos_a_restar = self.TIEMPO_COLACION
 
-        # Filtra las marcas de asistencia dentro del rango de fechas
+        # Obtiene la fecha y hora actual
+        current_date = datetime.now()
+
+        # Obtiene el año actual
+        current_year = datetime.now().year
+
+        # Obtiene el número del mes actual
+        current_month = current_date.month
+
+        # Calcula el número del mes anterior prev_month
+        if current_month == 1:
+            prev_month = 12
+        else:
+            prev_month = current_month - 1
+
+        # Define el rango de fechas deseado en UTC-3
+        fecha_inicio_utc3 = pytz_timezone("America/Santiago").localize(datetime(current_year, prev_month, (self.CLOSE_DATE+1), 0, 0, 0))
+        fecha_fin_utc3 = pytz_timezone("America/Santiago").localize(datetime(current_year, current_month, self.CLOSE_DATE, 23, 59, 59))
+
+        # Filtra las marcas de asistencia dentro del rango de fechas y convierte a UTC-3
         marcas_en_rango = MarkAttendance.objects.filter(
-            ma_datemark__gte=fecha_inicio,
-            ma_datemark__lt=fecha_fin,
-            ma_typeattendance__in=[1, 2],  # Filtra solo marcas de entrada y salida
+            ma_datemark__gte=fecha_inicio_utc3.astimezone(utc),
+            ma_datemark__lt=fecha_fin_utc3.astimezone(utc),
+            ma_typeattendance__in=[1, 2],
             user_id = user_id
         ).order_by('ma_datemark')
 
-        response_data = {
+        resultados = []
 
-        }
+        # Definir los horarios de entrada y salida
+        horario_entrada = datetime.strptime("08:30:00", "%H:%M:%S").time()
+        horario_salida = datetime.strptime("17:30:00", "%H:%M:%S").time()
 
-        return response_data
-    
+        # Procesa las marcas de asistencia para calcular horas y minutos entre ellas
+        for i in range(0, len(marcas_en_rango), 2):
+            marca_entrada = marcas_en_rango[i]
+            marca_salida = marcas_en_rango[i + 1]
+
+            # Convierte las fechas a UTC-3
+            fecha_entrada_utc3 = marca_entrada.ma_datemark.astimezone(pytz_timezone("America/Santiago"))
+            fecha_salida_utc3 = marca_salida.ma_datemark.astimezone(pytz_timezone("America/Santiago"))
+
+            # Calcula la diferencia de tiempo entre la marca de entrada y salida
+            tiempo_transcurrido = fecha_salida_utc3 - fecha_entrada_utc3
+
+            minutos_totales = tiempo_transcurrido.total_seconds() / 60
+
+            # Restar los minutos deseados
+            minutos_restantes = minutos_totales - minutos_a_restar
+
+            if minutos_restantes < 0:
+                minutos_restantes = 0
+
+            horas_resultantes = minutos_restantes // 60
+            minutos_resultantes = minutos_restantes % 60
+
+            # Calcular atraso y horas extras
+            atraso = max((fecha_entrada_utc3.time() - horario_entrada).seconds // 60, 0)
+            horas_extras = max((horario_salida - fecha_salida_utc3.time()).seconds // 60, 0)
+
+            resultado = {
+                "fecha_entrada": fecha_entrada_utc3.strftime("%Y-%m-%d %H:%M"),
+                "fecha_salida": fecha_salida_utc3.strftime("%Y-%m-%d %H:%M"),
+                "horas": horas_resultantes,
+                "minutos": minutos_resultantes,
+                "atraso": atraso,
+                "horas_extras": horas_extras,
+            }
+
+            resultados.append(resultado)
+
+        return resultados
     
     @classmethod
     def generate_remunaration(self, user_id):
