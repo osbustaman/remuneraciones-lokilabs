@@ -269,7 +269,21 @@ class Remunerations():
             return False
         
     @classmethod
-    def calculate_overtime_hour(self, hours, rent):
+    def ordinary_hour_value(self, hours, rent):
+        """
+        ordinary_hour_value - Funcion para calcular el valor de la hora oridinaria
+        
+        :param hours(float): horas extras trabajadas
+        :param rent: Renta del colaborador
+        
+        :return: 
+            el monto de la hora ordinaria
+        """
+        pass
+
+        
+    @classmethod
+    def calculate_overtime_hour(self, hours, rent, days_work=30, weekly_hours=45):
         """
         calculate_overtime_hour - Funcion para calcular el valor de la hora extra, y el valor de las hora extras
         
@@ -281,7 +295,9 @@ class Remunerations():
             un diccionario con el valor de la hora extra y el valor total de las horas extras trabajadas
         """
 
-        extra_hour_value = int(math.ceil(rent / 30 * 7 / 45 * 1.5))
+        #extra_hour_value = int(math.ceil(rent / days_work * 7 / weekly_hours * 1.5))
+        # total_value_extra_hour = int(math.ceil(extra_hour_value * hours))
+        extra_hour_value = int(rent / days_work * 7 / weekly_hours * 1.5)
         total_value_extra_hour = int(math.ceil(extra_hour_value * hours))
 
         return {
@@ -331,6 +347,8 @@ class Remunerations():
             ma_typeattendance__in=[1, 2],
             user_id = user_id
         ).order_by('ma_datemark')
+
+        days_worked = int((marcas_en_rango.count()) / 2)
 
         resultados = []
 
@@ -393,12 +411,13 @@ class Remunerations():
 
         return {
             "total_horas_atraso": round((delay_sum/60), 1),
-            "total_horas_extras": round((sum_overtime_hours/60)),
+            "total_horas_extras": round((sum_overtime_hours/60), 1),
+            "dias_trabajados": days_worked,
             "detalle": resultados,
         }
     
     @classmethod
-    def calculate_delay_value(self, hours_delay, taxable_assets, ue_horassemanales):
+    def calculate_delay_value(self, hours_delay, taxable_assets, days_work=30, weekly_hours=45):
         """
         calculate_delay_value - Funcion que se encarga calcular el valor total de las horas de atraso a descontar
         
@@ -409,9 +428,9 @@ class Remunerations():
         :return: 
             monto total de horas para descontar
         """
-        hours_value = (taxable_assets/30*7/ue_horassemanales) * hours_delay
+        hours_value = (taxable_assets/days_work*7/weekly_hours) * hours_delay
 
-        return hours_value
+        return int(math.ceil(hours_value))
 
     @classmethod
     def generate_remunaration(self, user_id):
@@ -433,6 +452,7 @@ class Remunerations():
         taxable_assets = 0 # variable que almacena el total de haberes imponibles
         for obj in object_taxable_assets:
             taxable_assets += int(obj.cu_value)
+        taxable_assets2 = taxable_assets
 
         object_monthly_salary = object_taxable_assets.filter(concept__conc_remuneration_type = 1)
 
@@ -444,7 +464,7 @@ class Remunerations():
 
         total_value_extra_hour = 0
         if self.SE_AUTORIZO_HORAS_EXTRAS: # -- VARIABLE DE ENTORNO QUE SE DEBE CREAR PARA VERIFICAR SI TIENE HORA EXTRA AUTORIZADA
-            overtime_hours = self.calculate_overtime_hour(response_hours['total_horas_extras'], monthly_salary)
+            overtime_hours = self.calculate_overtime_hour(response_hours['total_horas_extras'], taxable_assets) # ***
 
             taxable_assets = taxable_assets + overtime_hours['total_value_extra_hour']
             total_value_extra_hour = overtime_hours['total_value_extra_hour']
@@ -456,7 +476,8 @@ class Remunerations():
             # desde aqui se valida el rango minimo de horas permitidas de atraso para realizar descuentos por atrasos
             if response_hours['total_horas_atraso'] > self.RANGO_HORAS_ATRASO:
 
-                delay_value = self.calculate_delay_value(response_hours['total_horas_atraso'], taxable_assets, object_usuario_empresa.ue_horassemanales)
+                delay_value = self.calculate_delay_value(response_hours['total_horas_atraso'], taxable_assets2)  # ******
+                taxable_assets -= delay_value
 
 
         objects_non_taxable_income = object_concept_user.filter(concept__conc_clasificationconcept = 1, concept__conc_typeconcept = 2) # obtiene los haberes no imponibles
@@ -473,6 +494,7 @@ class Remunerations():
             "total_haberes_imponibles": taxable_assets,
             "total_haberes_no_imponibles": non_taxable_income,
             "total_bruto": total_gross_salary,
+            "valor_hora_ordinaria": total_gross_salary,
             "total_valor_hora_extra": total_value_extra_hour,
         }
 
