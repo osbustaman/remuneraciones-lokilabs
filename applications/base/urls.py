@@ -1,6 +1,7 @@
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
+from applications.base.api.api import ClientesListApiView, NamesClientesListApiView
 from applications.base.views import (
     controlPanel
     , list_clients
@@ -25,6 +26,10 @@ urlpatterns = [
     path('add/user/admin/<int:client_id>/', add_admin, name='add_admin'),
     path('delete/user/admin/<int:client_id>/<int:user_id>/',
          delete_admin, name='delete_admin'),
+
+    # apis
+    path('get-all-clients', ClientesListApiView.as_view(), name='get_all_clients'),
+    path('get-all-names-clients', NamesClientesListApiView.as_view(), name='get_all_names_clients'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
