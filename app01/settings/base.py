@@ -29,6 +29,19 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+	"http://localhost:5173"
+]
+
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
 
 
 # Application definition
@@ -76,6 +89,8 @@ MIDDLEWARE = [
     'app01.middleware.middleware_menu.menu_middleware_items',
     'app01.middleware.middleware_sessions.middleware_sessions',
     'app01.middleware.middleware_menu_company.middleware_menu_company',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 REST_FRAMEWORK = {
@@ -167,8 +182,6 @@ JWT_AUTH = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# CORS_ORIGIN_ALLOW_ALL = True
 
 if sys.platform.startswith('win'):
     WKHTMLTOPDF_BIN_PATH = 'C:\\Program Files\\wkhtmltopdf'

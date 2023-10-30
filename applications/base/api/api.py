@@ -46,7 +46,7 @@ class ClientesListApiView(generics.ListAPIView):
 @permission_classes([AllowAny])
 class NamesClientesListApiView(generics.ListAPIView):
     # Here you get the list of all registred tipo_producto
-    serializer_class = ClienteSerializers
+    queryset = Cliente.objects.all()
 
     @swagger_auto_schema(
         manual_parameters=[header_param],
@@ -55,12 +55,14 @@ class NamesClientesListApiView(generics.ListAPIView):
     )
     def list(self, request, *args, **kwargs):
         try:
-            get_all_clientes = Cliente.objects.filter(deleted='N')
+            #get_all_clientes = Cliente.objects.filter(deleted='N')
+            get_all_clientes = self.queryset.filter(deleted='N')
+            
             
             list_data = []
             for value in get_all_clientes:
                 list_data.append({
-                    f"{value.nombre_cliente.lower()}": value.nombre_cliente.upper()
+                    f"{value.nombre_cliente.lower()}": value.nombre_cliente.lower()
                 })
 
             return Response(list_data, status=status.HTTP_200_OK)

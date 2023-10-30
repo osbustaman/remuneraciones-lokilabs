@@ -12,3 +12,7 @@ def statics_tag(file):
 @register.simple_tag
 def statics_tag_amanda(file):
     return '%s%s%s' % (settings.STATIC_URL , 'amanda/' , file)
+
+@register.simple_tag
+def statics_tag_maps(file):
+    return '%s%s%s' % (settings.STATIC_URL , 'maps/' , file)
