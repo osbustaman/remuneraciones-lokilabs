@@ -9,7 +9,7 @@ env
 *.jpg
 *.png
 *.json
-*.pdf
+# *.pdf
 *.xlsx
 *.xlsb
 *.xls
@@ -41,7 +41,6 @@ env
 
 static/amanda
 static/gentella
-
 
 **/amanda/*.html
 **/gentella/*.html
