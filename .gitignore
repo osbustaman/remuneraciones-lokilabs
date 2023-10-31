@@ -43,6 +43,8 @@ static/amanda
 static/gentella
 static/maps
 
+**/staticfiles/*
+
 **/amanda/*.html
 **/gentella/*.html
 
