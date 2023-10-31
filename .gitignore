@@ -41,6 +41,7 @@ env
 
 static/amanda
 static/gentella
+static/maps
 
 **/amanda/*.html
 **/gentella/*.html
