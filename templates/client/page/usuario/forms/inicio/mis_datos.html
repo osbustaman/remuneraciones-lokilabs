@@ -219,6 +219,25 @@
                 $('#col_tipocuenta_name').val(data.col_tipocuenta_name);
                 $('#col_cuentabancaria').val(data.col_cuentabancaria);
 
+                const { data: { objects_family_dict_list } } = response
+
+                if(objects_family_dict_list){
+                    objects_family_dict_list.forEach(element => {
+                        var newRow = `
+                            <tr>
+                                <td>${ element.fr_id }</td>
+                                <td>${ element.fr_firstname }</td>
+                                <td>${ element.fr_lastname }</td>
+                                <td>${ element.fr_rut }</td>
+                                <td>${ element.fr_fechanacimiento }</td>
+                                <td>${ element.fr_sexo }</td>
+                                <td>${ element.fr_relationship }</td>
+                            </tr>`;
+                        $('#datatable-family tbody').append(newRow);
+
+                    });
+                }
+
             })
             .catch(error => {
                 console.error('Error en la solicitud:', error.message);

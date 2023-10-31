@@ -13,7 +13,7 @@ from applications.usuario.api.serializer import AfpSerializer
 
 from django.contrib.auth.models import User
 
-from applications.usuario.models import Colaborador, Contact
+from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities
 
 @permission_classes([AllowAny])
 class AfpDetailApiView(generics.RetrieveAPIView):
@@ -44,7 +44,6 @@ class ApiGetDataUserPage(generics.ListAPIView):
                 last_name = (object.last_name).split(" ")
 
                 object_colaborator = Colaborador.objects.get(user = object)
-                #object_contact = Contact.objects.filter(user = object, con_contact_type = 2).first()
 
                 object_contact = Contact.objects.filter(
                     Q(user=object) & (Q(con_contact_type=1))
@@ -59,6 +58,20 @@ class ApiGetDataUserPage(generics.ListAPIView):
 
                 object_comunas = Comuna.objects.filter(region = object_colaborator.region)
                 object_comunas_dict_list = list(object_comunas.values())
+
+                objects_family_dict_list = FamilyResponsibilities.objects.filter(user = object)
+
+                family_dict_list = []
+                for value in objects_family_dict_list:
+                    family_dict_list.append({
+                        "fr_id": value.fr_id,
+                        "fr_firstname": value.fr_firstname,
+                        "fr_lastname": value.fr_lastname,
+                        "fr_rut": value.fr_rut,
+                        "fr_fechanacimiento": value.fr_fechanacimiento,
+                        "fr_sexo": value.get_fr_sexo_display(),
+                        "fr_relationship": value.get_fr_relationship_display()
+                    })
 
                 data = {
                     "username": object.username,
@@ -81,9 +94,7 @@ class ApiGetDataUserPage(generics.ListAPIView):
                     "col_cuentabancaria": object_colaborator.col_cuentabancaria,
                     "regiones_list_dict": regiones_dict_list,
                     "comunas_dict_list": object_comunas_dict_list,
-
-
-                    
+                    "objects_family_dict_list": family_dict_list,
                 }
                 return Response(data, status=status.HTTP_200_OK)
             else:

@@ -92,7 +92,7 @@ class ConfigVariableRemunerations(TimeStampedModel):
     cvr_valueone = models.CharField("Valor uno", max_length=255, null=True, blank=True)
     cvr_valuetwo = models.CharField("Valor dos", max_length=255, null=True, blank=True)
 
-    cvr_active = models.IntegerField(
+    cvr_vartype = models.IntegerField(
         "Tipo de variable", choices=TYPE_VARIABLE, default=0)
 
     cvr_active = models.CharField(
