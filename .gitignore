@@ -43,7 +43,10 @@ static/amanda
 static/gentella
 static/maps
 
-**/staticfiles/*
+staticfiles/rest_framework
+staticfiles/drf-yasg
+staticfiles/admin
+staticfiles/maps
 
 **/amanda/*.html
 **/gentella/*.html
