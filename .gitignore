@@ -7,7 +7,7 @@ __pycache__
 env
 *.pyc
 *.jpg
-#*.png
+*.png
 *.json
 *.pdf
 *.xlsx
@@ -41,12 +41,12 @@ env
 
 static/amanda
 static/gentella
-# static/maps
+static/maps
 
 staticfiles/rest_framework
 staticfiles/drf-yasg
 staticfiles/admin
-# staticfiles/maps
+staticfiles/maps
 
 **/amanda/*.html
 **/gentella/*.html
