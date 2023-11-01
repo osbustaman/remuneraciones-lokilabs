@@ -9,58 +9,6 @@
 
     <title>Sección: {% block title %} {% endblock %}</title>
 
-    <script>
-
-        /** @type {HTMLElement}*/
-        var posElt;
-        /** @type {HTMLElement} */
-        var posLinkElt;
-    
-        window.addEventListener('load', function(){
-            posElt = document.getElementById('Pos');
-            posLinkElt = document.querySelector('#PosLink > a');
-    
-            // if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(geoposOK, geoposKO);
-            // }
-            // else {
-            // }
-        });
-    
-        /** @param {GeolocationPosition} pos */
-        function geoposOK(pos) {
-            //Obtenemos latitud y longitud
-            var lat = pos.coords.latitude;
-            var long = pos.coords.longitude;
-            //Mostramos la posición
-            posElt.textContent = `${lat}, ${long}`;
-            //generamos enlace a la posición
-            posLinkElt.href = `https://maps.google.com/?q=${lat},${long}`;
-            posLinkElt.textContent = 'Mostrar tu posición en un mapa';
-        }
-    
-        /** @param {GeolocationPositionError} err */
-        function geoposKO(err) {
-            console.warn(err.message);
-            let msg;
-            switch(err.code) {
-                case err.PERMISSION_DENIED:
-                    msg = "No nos has dado permiso para obtener tu posición";
-                    break;
-                case err.POSITION_UNAVAILABLE:
-                    msg = "Tu posición actual no está disponible";
-                    break;
-                    case err.TIMEOUT:
-                        msg = "No se ha podido obtener tu posición en un tiempo prudencial";
-                        break;
-                    default:
-                        msg = "Error desconocido";
-                        break;
-            }
-            posElt.textContent = msg;
-        }    
-    </script>
-
     <!-- vendor css -->
     <link href="{% statics_tag_amanda 'lib/font-awesome/css/font-awesome.css' %}" rel="stylesheet">
     <link href="{% statics_tag_amanda 'lib/Ionicons/css/ionicons.css' %}" rel="stylesheet">
@@ -400,6 +348,69 @@
     <script src="{% statics_tag_amanda 'js/js.cookie.js' %}"></script>
 
     {% block script_tag %} {% endblock %}
+
+    <script>
+        /** @type {HTMLElement}*/
+        let latitude;
+        /** @type {HTMLElement} */
+        let longitude;
+    
+        window.addEventListener('load', function(){
+            navigator.geolocation.getCurrentPosition(geoposOK, geoposKO);
+        });
+    
+        /** @param {GeolocationPosition} pos */
+        function geoposOK(pos) {
+            //Obtenemos latitud y longitud
+            latitude = pos.coords.latitude;
+            longitude = pos.coords.longitude;
+    
+            const crate_json = {
+                "startLatitude": latitude,
+                "startLongitude":longitude
+            }
+    
+            $("#lat_lng").text(`${crate_json['startLatitude']}, ${crate_json['startLongitude']}`)
+    
+            const accessToken = "pk.eyJ1Ijoib3NidXN0YW1hbiIsImEiOiJjbGpyamw4Y2IwZHNjM2VrY256bjF4a3J3In0.BREjlIuXom4d7eS_riSSNQ";
+            // Inicializar el mapa
+            var map = L.map('map').setView([crate_json['startLatitude'], crate_json['startLongitude']], 11);
+    
+            // Agregar el mapa base (utilizando Mapbox)
+            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=' + accessToken, {
+                maxZoom: 25,
+                id: 'mapbox/streets-v11',
+                tileSize: 512,
+                zoomOffset: -1
+            }).addTo(map);
+    
+            L.marker([crate_json['startLatitude'], crate_json['startLongitude']]).addTo(map)
+                    .bindPopup(location.name)
+                    .openPopup();
+        }
+    
+        /** @param {GeolocationPositionError} err */
+        function geoposKO(err) {
+            console.warn(err.message);
+            let msg;
+            switch(err.code) {
+                case err.PERMISSION_DENIED:
+                    msg = "No nos has dado permiso para obtener tu posición";
+                    break;
+                case err.POSITION_UNAVAILABLE:
+                    msg = "Tu posición actual no está disponible";
+                    break;
+                    case err.TIMEOUT:
+                        msg = "No se ha podido obtener tu posición en un tiempo prudencial";
+                        break;
+                    default:
+                        msg = "Error desconocido";
+                        break;
+            }
+            posElt.textContent = msg;
+        }
+        
+    </script>    
 
 </body>
 
