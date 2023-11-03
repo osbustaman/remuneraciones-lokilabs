@@ -17,12 +17,33 @@ class IndicatorEconomic():
         data_utm = requests.get(utm) 
         data_utm_json = data_utm.json()
 
-        x_value = {}
-        for key, value in data_utm_json.items():
-            for dicc in value:
-                x_value = dicc
+        if 'CodigoError' in data_utm_json:
+            if data_utm_json["CodigoError"] == 81:
+                return data_utm_json
+        else:
+            x_value = {}
+            for key, value in data_utm_json.items():
+                for dicc in value:
+                    x_value = dicc
+            return dict(x_value)
 
-        return dict(x_value)
+    
+    @classmethod
+    def get_utm_year_month(self, year, month, format = 'json'):
+
+        utm = f'{self.url_base}recursos_api/utm/{year}/{month}?apikey={self.api_key}&formato=json'
+        data_utm = requests.get(utm) 
+        data_utm_json = data_utm.json()
+
+        if 'CodigoError' in data_utm_json:
+            if data_utm_json["CodigoError"] == 81:
+                return data_utm_json
+        else:
+            x_value = {}
+            for key, value in data_utm_json.items():
+                for dicc in value:
+                    x_value = dicc
+            return dict(x_value)
 
 
     @classmethod

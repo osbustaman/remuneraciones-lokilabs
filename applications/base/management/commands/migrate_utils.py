@@ -183,58 +183,6 @@ class Command(BaseCommand):
                 'sa_tipo': 'I'
             }
         ]
-        
-        listado_prevision = [
-            {
-                'afp_codigoprevired': '33',
-                'afp_nombre': 'Capital',
-                'afp_tasatrabajadordependiente': 11.44,
-                'afp_sis': 1.55,
-                'afp_tasatrabajadorindependiente': 12.99
-            },
-            {
-                'afp_codigoprevired': '03',
-                'afp_nombre': 'Cuprum',
-                'afp_tasatrabajadordependiente': 11.44,
-                'afp_sis': 1.55,
-                'afp_tasatrabajadorindependiente': 12.99
-            },
-            {
-                'afp_codigoprevired': '05',
-                'afp_nombre': 'Habitat',
-                'afp_tasatrabajadordependiente': 11.27,
-                'afp_sis': 1.55,
-                'afp_tasatrabajadorindependiente': 12.82
-            },
-            {
-                'afp_codigoprevired': '29',
-                'afp_nombre': 'PlanVital',
-                'afp_tasatrabajadordependiente': 11.16,
-                'afp_sis': 1.55,
-                'afp_tasatrabajadorindependiente': 12.71
-            },
-            {
-                'afp_codigoprevired': '08',
-                'afp_nombre': 'ProVida',
-                'afp_tasatrabajadordependiente': 11.45,
-                'afp_sis': 1.55,
-                'afp_tasatrabajadorindependiente': 13.00
-            },
-            {
-                'afp_codigoprevired': '34',
-                'afp_nombre': 'Modelo',
-                'afp_tasatrabajadordependiente': 10.58,
-                'afp_sis': 1.55,
-                'afp_tasatrabajadorindependiente': 12.13
-            },
-            {
-                'afp_codigoprevired': '35',
-                'afp_nombre': 'Uno',
-                'afp_tasatrabajadordependiente': 10.69,
-                'afp_sis': 1.55,
-                'afp_tasatrabajadorindependiente': 12.24
-            }
-        ]
 
         listado_roles = [
             {
@@ -414,20 +362,6 @@ class Command(BaseCommand):
                 else:
                     sa_codigo = value['sa_codigo']
                     print(f"la entidad de salud {sa_codigo} ya existe")
-
-            for value in listado_prevision:
-                a = Afp.objects.using(nombre_bd).filter(afp_codigoprevired=value['afp_codigoprevired'])
-                if not a.exists():
-                    afp = Afp()
-                    afp.afp_codigoprevired = value['afp_codigoprevired']
-                    afp.afp_nombre = value['afp_nombre']
-                    afp.afp_tasatrabajadordependiente = value['afp_tasatrabajadordependiente']
-                    afp.afp_sis = value['afp_sis']
-                    afp.afp_tasatrabajadorindependiente = value['afp_tasatrabajadorindependiente']
-                    afp.save(using=nombre_bd)
-                else:
-                    afp_codigoprevired = value['afp_codigoprevired']
-                    print(f"la entidad de AFP {afp_codigoprevired} ya existe")
 
             for value in listado_roles:
                 r = Rol()

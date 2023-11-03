@@ -383,7 +383,7 @@ class Afp(models.Model):
     )
     
     afp_id = models.AutoField("Key", primary_key=True)
-    afp_codigoprevired = models.CharField("Código previred", max_length=100)
+    afp_codigoprevired = models.CharField("Código previred", max_length=100, null=False, blank=True)
     afp_nombre = models.CharField("Nombre", max_length=100)
     afp_tasatrabajadordependiente = models.FloatField(
         "Tasa traba. dependiente", default=0)
