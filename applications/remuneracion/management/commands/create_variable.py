@@ -1,4 +1,5 @@
 # -*- encoding: utf-8 -*-
+import calendar
 import json
 import requests
 import datetime
@@ -8,8 +9,12 @@ from applications.base.models import Cliente, TablaGeneral
 from applications.empresa.models import Afp
 from applications.remuneracion.indicadores import IndicatorEconomic
 
+from deepdiff import DeepDiff
+
 from django.core.management.base import BaseCommand
 from lxml import html
+
+from applications.remuneracion.models import MonthlyPreviredData
 
 class Command(BaseCommand):
 
@@ -26,6 +31,38 @@ class Command(BaseCommand):
     def de_string_float_porcentaje(self, texto_numero):
         numero = float(texto_numero.replace(",",".")[:-1])
         return numero
+    
+    def translate_month(self, month, language = 'es_cl'):
+        """
+        translate_month - Funcion obtiene el mes en español
+
+        :param month: mes a consultar
+        :param language: lenguaje a traducir, por defecto es en español chileno
+        :return: 
+            translation retorna el mes consultado
+        """
+
+        idioms = {
+            'es_cl': {
+                'january': 'enero',
+                'february': 'febrero',
+                'march': 'marzo',
+                'april': 'abril',
+                'may': 'mayo',
+                'june': 'junio',
+                'july': 'julio',
+                'august': 'agosto',
+                'september': 'septiembre',
+                'october': 'octubre',
+                'november': 'noviembre',
+                'december': 'diciembre',
+            }
+        }
+
+        month_lower = month.lower()
+        translation = idioms.get(language, {}).get(month_lower, month)
+
+        return translation
 
 
     def handle(self, *args, **kwargs):
@@ -511,18 +548,42 @@ class Command(BaseCommand):
                     "cvr_dict": False,
                 })
 
-            print(list_variables)
+            cadena_list_variables = json.dumps(list_variables)
+
+            month = calendar.month_name[fecha_actual.month]
+            month_translate = self.translate_month(month)
+            dpm_name = f"{month_translate}-{year}"
+
+            last_object = MonthlyPreviredData.objects.using(nombre_bd).filter(dpm_name=f"{month_translate}-{year}", dpm_dict=cadena_list_variables).last()
+            
+            if not last_object or last_object.dpm_dict != cadena_list_variables:
+                # Crear un nuevo objeto si no existe o si los datos son diferentes
+                object_monthly_previred_data = MonthlyPreviredData(
+                    dpm_name=dpm_name,
+                    dpm_month=fecha_actual.month,
+                    dpm_year=year,
+                    dpm_day=fecha_actual.day,
+                    dpm_dict=cadena_list_variables,
+                )
+                object_monthly_previred_data.save(using=nombre_bd)
+                if not last_object:
+                    print("Objeto creado porque no existe.")
+                else:
+                    print("Objeto creado porque los datos son diferentes.")
+            else:
+                print("Los datos son iguales, no se guarda.")
+
         
     
 
     
 
         """MINIMUM_SALARY = 460000
-        TOPE_GRATIFICATION = 4.75
-        CLOSE_DATE = 20
-        TIEMPO_COLACION = 30
-        HORA_ENTRADA = "08:30"
-        HORA_SALIDA = "17:30"
-        RANGO_HORAS_ATRASO = 1.5
-        SE_REALIZAN_CARGOS_POR_ATRASOS = True
-        SE_AUTORIZO_HORAS_EXTRAS = True"""
+        - TOPE_GRATIFICATION = 4.75
+        - CLOSE_DATE = 20
+        - TIEMPO_COLACION = 30
+        - HORA_ENTRADA = "08:30"
+        - HORA_SALIDA = "17:30"
+        - RANGO_HORAS_ATRASO = 1.5
+        - SE_REALIZAN_CARGOS_POR_ATRASOS = True
+        - SE_AUTORIZO_HORAS_EXTRAS = True"""

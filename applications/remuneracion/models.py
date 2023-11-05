@@ -3,6 +3,35 @@ from model_utils.models import TimeStampedModel
 
 # Create your models here.
 
+class MonthlyPreviredData(TimeStampedModel):
+
+    OPTIONS = (
+        ('S', 'SI'),
+        ('N', 'NO'),
+    )
+
+    dpm_id = models.AutoField("Key", primary_key=True)
+    dpm_name = models.CharField("Nombre", max_length=255)
+    dpm_month = models.IntegerField("mes")
+    dpm_year = models.IntegerField("año")
+    dpm_day = models.IntegerField("dia")
+    dpm_dict = models.TextField("Diccionario de remuneraciones mensuales", null=True, blank=True)
+    dpm_active = models.CharField(
+        "activo", choices=OPTIONS, max_length=1, default="S")
+    
+    def __int__(self):
+        return self.dpm_id
+
+    def __str__(self):
+        return f"{self.dpm_id} - {self.dpm_name}"
+
+    def save(self, *args, **kwargs):
+        super(MonthlyPreviredData, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'remu_monthly_previred_data'
+        ordering = ['dpm_id']
+
 
 class Concept(TimeStampedModel):
     CLASSIFICATION = (
