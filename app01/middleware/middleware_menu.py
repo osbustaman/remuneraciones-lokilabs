@@ -113,5 +113,10 @@ class menu_middleware_items(object):
                 request.session['sub_item'] = 'calculator' 
                 request.session['sub_sub_item'] = 'calculator'
             
+            if '/indicadores-previsionales' in request.path:
+                request.session['item'] = 'remuneraciones'
+                request.session['sub_item'] = 'previred_forecast_indicators' 
+                request.session['sub_sub_item'] = 'previred_forecast_indicators'
+            
         except:
             pass

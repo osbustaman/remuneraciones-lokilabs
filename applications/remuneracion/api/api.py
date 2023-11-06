@@ -5,7 +5,8 @@ from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 
-from applications.remuneracion.api.serializers import AsociateConceptUserSerializer, ConceptUserSerializer
+from applications.remuneracion.api.serializers import AsociateConceptUserSerializer, ConceptUserSerializer, MonthlyPreviredDataSerializer
+from applications.remuneracion.models import MonthlyPreviredData
 from applications.remuneracion.remuneracion import Remunerations
 from applications.security.decorators import verify_token
 from applications.usuario.models import ConceptUser
@@ -125,7 +126,17 @@ class ApiGenerateLiquidationUserDeleteView(generics.GenericAPIView):
             # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
             return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        
+@permission_classes([AllowAny])
+class ApiGetMonthlyPreviredData(generics.ListAPIView):
+    queryset = MonthlyPreviredData.objects.all()
+    serializer_class = MonthlyPreviredDataSerializer
+
+    def get(self, request, *args, **kwargs):
+
+        last_data = self.queryset.last()
+
+
+        return super().get(request, *args, **kwargs)
 
 
 

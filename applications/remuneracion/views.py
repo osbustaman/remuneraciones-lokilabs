@@ -37,6 +37,15 @@ def control_panel(request):
     return render(request, 'client/page/company/dashboard.html', data)
 
 
+@login_required
+def previred_forecast_indicators(request):
+
+    data = {
+
+    }
+    return render(request, 'client/page/remunerations/page/previred_forecast_indicators.html', data)
+
+
 def download_pdf(request, pdf_filename):
     pdf_file_path = os.path.join(settings.BASE_DIR, 'templates', 'pdf', pdf_filename)
     if os.path.exists(pdf_file_path):
