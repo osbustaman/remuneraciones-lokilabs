@@ -1,3 +1,3 @@
 crontab -e
 
-30 8 * * * source /var/www/html/remuneraciones-lokilabs/env/bin/activate && python /var/www/html/remuneraciones-lokilabs/manage.py create_variable all_bases
+30 8 * * * source /var/www/html/remuneraciones-lokilabs/env/bin/activate && python /var/www/html/remuneraciones-lokilabs/manage.py create_variable
