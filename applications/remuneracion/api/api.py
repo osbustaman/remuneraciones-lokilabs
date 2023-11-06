@@ -134,6 +134,7 @@ class ApiGetMonthlyPreviredData(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
 
         last_data = self.queryset.last()
+        
 
 
         return super().get(request, *args, **kwargs)
