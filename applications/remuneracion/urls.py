@@ -3,7 +3,7 @@ from django.conf.urls.static import static
 from django.urls import path
 from applications.remuneracion.api.api import ApiAddConcept, ApiConceptUserDeleteView, ApiAddMountConceptUser, ApiGenerateLiquidationUserDeleteView, ApiGetMonthlyPreviredData
 
-from applications.remuneracion.views import calculate_salaries, control_panel, render_pdf, download_pdf, previred_forecast_indicators
+from applications.remuneracion.views import calculate_salaries, control_panel, forecast_indicators, render_pdf, download_pdf, previred_forecast_indicators
 
 app_name = 'remun_app'
 
@@ -14,6 +14,7 @@ urlpatterns = [
     path('render-pdf/', render_pdf, name='render_pdf'),
     path('simulation-liquidation-salary/<str:pdf_filename>', download_pdf, name='download_pdf'),
     path('indicadores-previsionales', previred_forecast_indicators, name='previred_forecast_indicators'),
+    path('variables-remuneraciones', forecast_indicators, name='forecast_indicators'),
 
     #API
     path('add-concept', ApiAddConcept.as_view(), name='add_concept'),

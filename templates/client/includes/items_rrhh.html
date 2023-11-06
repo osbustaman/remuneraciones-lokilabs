@@ -44,7 +44,7 @@
                 <li class="nav-item"><a href="{% url 'remun_app:previred_forecast_indicators' %}" class="nav-link {% if request.session.sub_item == 'previred_forecast_indicators' %}active{% endif %}">Indicadores Previsionales</a></li>
             </ul>
         </li>
-        <li class="nav-item"><a href="#" class="nav-link">Variables de Remuneraciones</a></li>
+        <li class="nav-item"><a href="{% url 'remun_app:forecast_indicators' %}" class="nav-link {% if request.session.sub_item == 'remuneration_variables' %}active{% endif %}">Variables de Remuneraciones</a></li>
     </ul>
 
 

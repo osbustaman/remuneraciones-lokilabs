@@ -118,5 +118,10 @@ class menu_middleware_items(object):
                 request.session['sub_item'] = 'previred_forecast_indicators' 
                 request.session['sub_sub_item'] = 'previred_forecast_indicators'
             
+            if '/variables-remuneraciones' in request.path:
+                request.session['item'] = 'remuneraciones'
+                request.session['sub_item'] = 'remuneration_variables' 
+                request.session['sub_sub_item'] = 'remuneration_variables'
+
         except:
             pass

@@ -14,17 +14,10 @@ from django.shortcuts import redirect, get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 from applications.empresa.models import Empresa
 
-
-
 from applications.remuneracion.forms import SalaryCalculatorForm
 from applications.remuneracion.indicadores import IndicatorEconomic
 from applications.remuneracion.remuneracion import Remunerations
 from applications.usuario.models import Colaborador, UsuarioEmpresa
-
-
-
-
-
 
 # Create your views here.
 
@@ -35,6 +28,15 @@ def control_panel(request):
 
     }
     return render(request, 'client/page/company/dashboard.html', data)
+
+
+@login_required
+def forecast_indicators(request):
+
+    data = {
+
+    }
+    return render(request, 'client/page/remunerations/page/forecast_indicators.html', data)
 
 
 @login_required
