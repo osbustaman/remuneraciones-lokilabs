@@ -80,7 +80,7 @@ class Command(BaseCommand):
         valor_uf = float(uf_presente_mes['Valor'].replace('.', '').replace(',', '.'))
 
         utm_presente_mes = IndicatorEconomic.get_utm()
-        if utm_presente_mes["CodigoError"] == 81:
+        if "CodigoError" in utm_presente_mes and (utm_presente_mes["CodigoError"] == 81):
             utm_presente_mes = IndicatorEconomic.get_utm_year_month(year, (month - 1))
 
         valor_utm = float(utm_presente_mes['Valor'].replace('.', '').replace(',', '.'))
@@ -97,6 +97,7 @@ class Command(BaseCommand):
 
             list_variables.append({
                 "cvr_name": "Valores UF, UTM y UTA",
+                "cvr_short_name": "uf_utm_uta",
                 "cvr_value": [
                     {
                         "name": f"Valor UF",
@@ -125,6 +126,7 @@ class Command(BaseCommand):
 
             list_variables.append({
                 "cvr_name": "Renta topes imponibles",
+                "cvr_short_name": "previson_topes_imponibles",
                 "cvr_value": [
                     {
                         "name": f"Para afiliados a una AFP ({tope_afiliados_afp} UF)",
@@ -178,6 +180,7 @@ class Command(BaseCommand):
 
                 list_variables.append({
                     "cvr_name": "Rentas mínimas imponibles",
+                    "cvr_short_name": "rentas_minimas_imponibles",
                     "cvr_value": list_data_rentas_minimas_imponibles,
                     "cvr_vartype": 1,
                     "cvr_dict": False,
@@ -195,6 +198,7 @@ class Command(BaseCommand):
 
             list_variables.append({
                 "cvr_name": "Ahorro previsional voluntario (APV)",
+                "cvr_short_name": "tope_apv",
                 "cvr_value": [
                     {
                         "name": f"Tope Mensual ({ahorro_previsional_mensual} UF)",
@@ -214,6 +218,7 @@ class Command(BaseCommand):
 
             list_variables.append({
                 "cvr_name": "Deposito convenido",
+                "cvr_short_name": "tope_deposito_convenio",
                 "cvr_value": [{
                     "name": f"Tope anual ({deposito_convenido} UF)",
                     "value": int(round((deposito_convenido * valor_uf), 0)),
@@ -265,6 +270,7 @@ class Command(BaseCommand):
 
             list_variables.append({
                 "cvr_name": "Seguro de cesantía",
+                "cvr_short_name": "seguro_sesantia",
                 "cvr_value": dict_seguro_sesantia,
                 "cvr_vartype": 1,
                 "cvr_dict": False,
@@ -326,6 +332,7 @@ class Command(BaseCommand):
                 
                 list_variables.append({
                     "cvr_name": "Tasa cotización obligatoria AFP",
+                    "cvr_short_name": "tasa_cotización_obligatoria_afp",
                     "cvr_value": list_data_afp,
                     "cvr_vartype": 1,
                     "cvr_dict": False,
@@ -388,11 +395,12 @@ class Command(BaseCommand):
                             "hasta": hasta
                         },
                     })
-
                     contador+=1
+                    
 
                 list_variables.append({
                     "cvr_name": "asignación familiar",
+                    "cvr_short_name": "asignacion_familiar",
                     "cvr_value": list_data_asignacion_familiar,
                     "cvr_vartype": 1,
                     "cvr_dict": False,
@@ -444,6 +452,7 @@ class Command(BaseCommand):
 
                 list_variables.append({
                     "cvr_name": "cotizacion trabajos pesados",
+                    "cvr_short_name": "cotizacion_trabajos_pesados",
                     "cvr_value": list_data_cotizacion_trabajos_pesados,
                     "cvr_vartype": 1,
                     "cvr_dict": False,
@@ -470,6 +479,7 @@ class Command(BaseCommand):
 
                 list_variables.append({
                     "cvr_name": f"distribucion 7% salud empleadores afiliado ccaf",
+                    "cvr_short_name": "distribucion_salud_empleadores_afiliado_ccaf",
                     "cvr_value": [
                         {
                             "ccaf": int(xpath_valor_1.split(" ")[0]),
@@ -543,6 +553,7 @@ class Command(BaseCommand):
 
             list_variables.append({
                     "cvr_name": f"Impuesto Único de Segunda Categoría",
+                    "cvr_short_name": "impuesto_unico_segunda_categoría",
                     "cvr_value": tramo_impuesto_unico_segunda_categoria,
                     "cvr_vartype": 1,
                     "cvr_dict": False,

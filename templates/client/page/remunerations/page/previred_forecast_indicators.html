@@ -1,41 +1,255 @@
-{% extends 'client/base.html' %}
+    {% extends 'client/base.html' %}
 
-{% load static_tags %}
-{% load static %}
+    {% load static_tags %}
+    {% load static %}
 
-{% block title %} Indicadores Previsionales {% endblock %}
+    {% block title %} Indicadores Previsionales {% endblock %}
 
-{% block static_up %}
-<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
-{% endblock %}
+    {% block static_up %}
+    <link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+    {% endblock %}
 
-{% block title_page %} Indicadores Previsionales {% endblock %}
-{% block buttons %}
+    {% block title_page %} Indicadores Previsionales {% endblock %}
+    {% block buttons %}
 
-{% endblock %}
+    {% endblock %}
 
-{% block content_page %}
-<div class="card pd-20 pd-sm-40">
-    <div class="table-wrapper">
-        
+    {% block content_page %}
+    <div class="card pd-20 pd-sm-40">
+        <div class="table-wrapper">
+            
+            <div></div>
+            <div class="alert alert-success alert-bordered pd-y-20" role="alert">
 
+                <div class="d-flex align-items-center justify-content-start">
+                    <i class="icon ion-ios-checkmark alert-icon tx-52 mg-r-20 tx-success"></i>
+                    <div>
+                    <h5 class="mg-b-2 tx-success">Fecha: <span id="fecha"></span></h5>
+                    <p class="mg-b-0 tx-gray">Datos actualizados al día de hoy.</p>
+                    </div>
+                </div><!-- d-flex -->
+                </div><!-- alert -->
+            <div id="accordion" class="accordion" role="tablist" aria-multiselectable="true">
 
-        
+            </div>
 
-
-
-
-
+        </div>
     </div>
-</div>
-{% endblock %}
+    {% endblock %}
 
-{% block static_down %}
-<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
-{% endblock %}
+    {% block static_down %}
+    <script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+    {% endblock %}
 
-{% block script_tag %}
-<script>
-    
-</script>
-{% endblock %}
+    {% block script_tag %}
+    <script>
+        const endpoint = "{% url 'remun_app:get_monthly_previred_data' %}";
+
+        axios.get(endpoint)
+            .then(response => {
+                const { data: { dpm_dict } } = response
+                const { data: { dpm_name } } = response
+                let newAccordion = "";
+                let count = 1;
+
+                $("#fecha").html(dpm_name.toUpperCase());
+
+
+                dpm_dict.forEach(element => {
+                    
+                    let ariaExpanded = "false";
+                    let classShow = "";
+                    let transition = "collapsed transition";
+                    if(count == 1){
+                        ariaExpanded = "true";
+                        classShow = " show";
+                        transition = "tx-gray-800 transition";
+                    }
+
+                    let thead = "";
+                    let tbody = "";
+                    let countInterno = 1;
+
+                    element.cvr_value.forEach(valor => {
+
+                        if(element.cvr_short_name === 'seguro_sesantia'){
+                            let financiamiento_trabajador = valor.financiamiento.trabajador == '-' ? "0": valor.financiamiento.trabajador;
+                            tbody+= `
+                                <tr>
+                                    <td>${valor.contrato}</td>
+                                    <td>${valor.financiamiento.empleador}%</td>
+                                    <td>${financiamiento_trabajador}%</td>
+                                </tr>
+                                `;
+                        }else if(element.cvr_short_name === 'cotizacion_trabajos_pesados'){
+                            let puestoTrabajo = `${valor.puesto_trabajo} ${valor.porcentaje_puesto_trabajo}`;
+                            tbody+= `
+                                <tr>
+                                    <td>${puestoTrabajo}</td>
+                                    <td>${valor.financiamiento.empleador}%</td>
+                                    <td>${valor.financiamiento.trabajador}%</td>
+                                </tr>
+                                `;
+                        }else if(element.cvr_short_name === 'asignacion_familiar'){
+
+                            let tramo = `Renta > $ ${valor.requisitos.desde} <= $ ${valor.requisitos.hasta}`;
+                            if(valor.requisitos.desde == 0){
+                                tramo = `Renta < ó = $ ${valor.requisitos.hasta}`;
+                            }
+
+                            if(countInterno === element.cvr_value.length){
+                                tramo = `Renta > $ ${valor.requisitos.hasta}`;
+                            }
+
+                            tbody+= `
+                                <tr>
+                                    <td>${valor.tramo}</td>
+                                    <td>$${valor.monto}</td>
+                                    <td>${tramo}</td>
+                                </tr>
+                                `;
+                                
+                            countInterno++;
+
+                        }else if(element.cvr_short_name === 'tasa_cotización_obligatoria_afp'){
+                            tbody+= `
+                                <tr>
+                                    <td>${valor.afp}</td>
+                                    <td>${valor.trabajador_dependiente.tasa_afp}%</td>
+                                    <td>${valor.trabajador_dependiente.tasa_sis}%</td>
+                                    <td>${valor.trabajador_independiente.tasa_afp}%</td>
+                                </tr>
+                                `;
+                        }else if(element.cvr_short_name === 'impuesto_unico_segunda_categoría'){
+                            tbody+= `
+                                <tr>
+                                    <td>${valor.nombre_tramo}</td>
+                                    <td>${valor.porcentaje}%</td>
+                                    <td>$ ${valor.desde}</td>
+                                    <td>$ ${valor.hasta}</td>
+                                    <td>$ ${valor.cantidad_rebajar}</td>
+                                </tr>
+                                `;
+                        }else if(element.cvr_short_name === 'distribucion_salud_empleadores_afiliado_ccaf'){
+                            tbody+= `
+                                <tr>
+                                    <td>${valor.ccaf} % R.I.</td>
+                                    <td>${valor.fonasa} % R.I.</td>
+                                </tr>
+                                `;
+
+                        }else{
+                            tbody+= `
+                                <tr>
+                                    <td>${valor.name}</td>
+                                    <td>$ ${valor.value}</td>
+                                </tr>
+                                `;
+                        }
+                    });
+
+                    if(element.cvr_short_name === 'seguro_sesantia'){
+                        thead+= `
+                                <tr>
+                                    <td>Puesto de Trabajo</td>
+                                    <td>financiamiento Empleador</td>
+                                    <td>financiamiento Trabajador</td>
+                                </tr>
+                                `;
+                    }else if(element.cvr_short_name === 'cotizacion_trabajos_pesados'){
+                        thead+= `
+                                <tr>
+                                    <td>Tipo Contrato</td>
+                                    <td>financiamiento Empleador</td>
+                                    <td>financiamiento Trabajador</td>
+                                </tr>
+                                `;
+                    }else if(element.cvr_short_name === 'asignacion_familiar'){
+                        thead+= `
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">Asignación Familiar</td>
+                                </tr>
+                                <tr>
+                                    <td>Tramo</td>
+                                    <td>Monto</td>
+                                    <td>Requisito de renta</td>
+                                </tr>
+                                `;
+                    }else if(element.cvr_short_name === 'distribucion_salud_empleadores_afiliado_ccaf'){
+                        thead+= `
+                                <tr>
+                                    <td colspan="2">${element.cvr_name}</td>
+                                </tr>
+                                <tr>
+                                    <td>CCAF</td>
+                                    <td>FONASA</td>
+                                </tr>
+                                `;
+                    }else if(element.cvr_short_name === 'impuesto_unico_segunda_categoría'){
+                        thead+= `
+                                <tr>
+                                    <td>Tramo</td>
+                                    <td>Factor</td>
+                                    <td>Desde</td>
+                                    <td>Hasta</td>
+                                    <td>Cantidad a rebajar</td>
+                                </tr>
+                                `;
+                    }else if(element.cvr_short_name === 'tasa_cotización_obligatoria_afp'){
+                        thead+= `
+                                <tr>
+                                    <td></td>
+                                    <td colspan="3"></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td colspan="2">Trabajador Dependiente</td>
+                                    <td>Trabajador Independiente</td>
+                                </tr>
+                                <tr>
+                                    <td>AFP</td>
+                                    <td>Tasa AFP</td>
+                                    <td>Tasa SIS</td>
+                                    <td>Tasa AFP</td>
+                                </tr>
+                                `;
+                    }else{
+
+                    }
+
+
+                    newAccordion += `
+                            <div class="card">
+                                <div class="card-header" role="tab" id="heading_${element.cvr_short_name}">
+                                    <h6 class="mg-b-0">
+                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_${element.cvr_short_name}" aria-expanded="${ariaExpanded}" aria-controls="collapse_${element.cvr_short_name}" class="${transition}">
+                                            ${element.cvr_name}
+                                        </a>
+                                    </h6>
+                                </div><!-- card-header -->
+
+                                <div id="collapse_${element.cvr_short_name}" class="collapse${classShow}" role="tabpanel" aria-labelledby="heading_${element.cvr_short_name}">
+                                    <div class="card-body">
+                                        <table class="table table-bordered">
+                                            <thead class="bg-info">
+                                                ${thead}
+                                            </thead>
+                                            <tbody>
+                                                ${tbody}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    count ++;
+                });
+
+                $('#accordion').html(newAccordion);
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error.message);
+            });
+    </script>
+    {% endblock %}

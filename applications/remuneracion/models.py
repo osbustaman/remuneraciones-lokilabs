@@ -12,6 +12,7 @@ class MonthlyPreviredData(TimeStampedModel):
 
     dpm_id = models.AutoField("Key", primary_key=True)
     dpm_name = models.CharField("Nombre", max_length=255)
+    dpm_shot_name = models.CharField("Nombre Corto", max_length=50, null=True, blank=True)
     dpm_month = models.IntegerField("mes")
     dpm_year = models.IntegerField("año")
     dpm_day = models.IntegerField("dia")

@@ -42,7 +42,6 @@
             <a href="#" class="nav-link with-sub ">Variables Previsionales</a>
             <ul class="nav-sub" {% if request.session.sub_sub_item in 'previred_forecast_indicators' %}style="display: block;"{% endif %}>
                 <li class="nav-item"><a href="{% url 'remun_app:previred_forecast_indicators' %}" class="nav-link {% if request.session.sub_item == 'previred_forecast_indicators' %}active{% endif %}">Indicadores Previsionales</a></li>
-                <li class="nav-item"><a href="#" class="nav-link ">Tramos Imp. a la Renta</a></li>
             </ul>
         </li>
         <li class="nav-item"><a href="#" class="nav-link">Variables de Remuneraciones</a></li>

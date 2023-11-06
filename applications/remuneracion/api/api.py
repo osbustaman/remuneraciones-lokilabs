@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.response import Response
 from rest_framework import generics, status
 from rest_framework import serializers
@@ -132,13 +134,22 @@ class ApiGetMonthlyPreviredData(generics.ListAPIView):
     serializer_class = MonthlyPreviredDataSerializer
 
     def get(self, request, *args, **kwargs):
-
-        last_data = self.queryset.last()
+        try:
+            last_data = self.queryset.last()
+            response_data = {
+                "dpm_name": last_data.dpm_name,
+                "dpm_dict": json.loads(last_data.dpm_dict),
+            }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
         
-
-
-        return super().get(request, *args, **kwargs)
-
+        except serializers.ValidationError as e:
+            # Capturar la excepción de validación del serializer y devolver la respuesta de error correspondiente
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+        
+        except Exception as e:
+            # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
+            return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
