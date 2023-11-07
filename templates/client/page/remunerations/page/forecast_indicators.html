@@ -15,13 +15,45 @@
 {% endblock %}
 
 {% block content_page %}
-<div class="card pd-20 pd-sm-40">
-    <div class="table-wrapper">
-        
-        
 
+    <div class="col-xl-6 mg-t-25 mg-xl-t-0">
+        <div class="card pd-20 pd-sm-40 form-layout form-layout-5">
+        <h6 class="tx-gray-800 tx-uppercase tx-bold tx-14 mg-b-10">Right Label Alignment</h6>
+        <p class="mg-b-30 tx-gray-600">A basic form where labels are aligned in right.</p>
+        <div class="row row-xs">
+            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Tope Gratificación:</label>
+            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                <input type="text" class="form-control" placeholder="Tope Gratificación">
+            </div>
+        </div><!-- row -->
+        <div class="row row-xs mg-t-20">
+            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Lastname:</label>
+            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+            <input type="text" class="form-control" placeholder="Enter lastname">
+            </div>
+        </div>
+        <div class="row row-xs mg-t-20">
+            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Email:</label>
+            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+            <input type="text" class="form-control" placeholder="Enter email address">
+            </div>
+        </div>
+        <div class="row row-xs mg-t-20">
+            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Address:</label>
+            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+            <textarea rows="2" class="form-control" placeholder="Enter your address"></textarea>
+            </div>
+        </div><!-- row -->
+        <div class="row row-xs mg-t-30">
+            <div class="col-sm-8 mg-l-auto">
+            <div class="form-layout-footer">
+                <button class="btn btn-info mg-r-5">Submit Form</button>
+                <button class="btn btn-secondary">Cancel</button>
+            </div><!-- form-layout-footer -->
+            </div><!-- col-8 -->
+        </div>
+        </div><!-- card -->
     </div>
-</div>
 {% endblock %}
 
 {% block static_down %}
