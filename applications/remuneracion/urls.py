@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
-from applications.remuneracion.api.api import ApiAddConcept, ApiConceptUserDeleteView, ApiAddMountConceptUser, ApiGenerateLiquidationUserDeleteView, ApiGetMonthlyPreviredData
+from applications.remuneracion.api.api import ApiAddConcept, ApiConceptUserDeleteView, ApiAddMountConceptUser, ApiGenerateLiquidationUserDeleteView, ApiGetMonthlyPreviredData, ApiGetSystemVariables, ApiSaveSystemVariables
 
 from applications.remuneracion.views import calculate_salaries, control_panel, forecast_indicators, render_pdf, download_pdf, previred_forecast_indicators
 
@@ -23,5 +23,7 @@ urlpatterns = [
     path('generate-liquidation/<int:user_id>', ApiGenerateLiquidationUserDeleteView.as_view(), name='generate_liquidation'),
 
     path('api-get-indicadores-previsionales', ApiGetMonthlyPreviredData.as_view(), name='get_monthly_previred_data'),
+    path('api-create-variables-sistema', ApiSaveSystemVariables.as_view(), name='get_save_system_variables'),
+    path('api-get-variables-sistema', ApiGetSystemVariables.as_view(), name='get_system_variables'),
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

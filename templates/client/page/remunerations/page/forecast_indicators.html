@@ -17,42 +17,71 @@
 {% block content_page %}
 
     <div class="col-xl-6 mg-t-25 mg-xl-t-0">
-        <div class="card pd-20 pd-sm-40 form-layout form-layout-5">
-        <h6 class="tx-gray-800 tx-uppercase tx-bold tx-14 mg-b-10">Right Label Alignment</h6>
-        <p class="mg-b-30 tx-gray-600">A basic form where labels are aligned in right.</p>
-        <div class="row row-xs">
-            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Tope Gratificación:</label>
-            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-                <input type="text" class="form-control" placeholder="Tope Gratificación">
-            </div>
-        </div><!-- row -->
-        <div class="row row-xs mg-t-20">
-            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Lastname:</label>
-            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-            <input type="text" class="form-control" placeholder="Enter lastname">
-            </div>
-        </div>
-        <div class="row row-xs mg-t-20">
-            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Email:</label>
-            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-            <input type="text" class="form-control" placeholder="Enter email address">
-            </div>
-        </div>
-        <div class="row row-xs mg-t-20">
-            <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Address:</label>
-            <div class="col-sm-8 mg-t-10 mg-sm-t-0">
-            <textarea rows="2" class="form-control" placeholder="Enter your address"></textarea>
-            </div>
-        </div><!-- row -->
-        <div class="row row-xs mg-t-30">
-            <div class="col-sm-8 mg-l-auto">
-            <div class="form-layout-footer">
-                <button class="btn btn-info mg-r-5">Submit Form</button>
-                <button class="btn btn-secondary">Cancel</button>
-            </div><!-- form-layout-footer -->
-            </div><!-- col-8 -->
-        </div>
-        </div><!-- card -->
+
+        <form action="" id="form" method="post">
+            <div class="card pd-20 pd-sm-40 form-layout form-layout-5">
+                <h6 class="tx-gray-800 tx-uppercase tx-bold tx-14 mg-b-10">Variables del Sistema</h6>
+                <p class="mg-b-30 tx-gray-600">Aquí van los parámetros propios que usa el cliente</p>
+                
+                <div class="row row-xs">
+                    <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Tope gratificación:</label>
+                    <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                        <input type="text" id="tope_gratificacion" class="form-control" placeholder="Tope Gratificación">
+                    </div>
+                </div><!-- row -->
+                
+                <div class="row row-xs mg-t-20">
+                    <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Día cierre de mes:</label>
+                    <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                        <input type="number" id="cierre_mes" class="form-control" placeholder="Cierre de Mes">
+                    </div>
+                </div>
+                
+                <div class="row row-xs mg-t-20">
+                    <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Tiempo colación:</label>
+                    <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                        <input type="number" id="tiempo_colacion" class="form-control" placeholder="solo en minutos ej: 60">
+                    </div>
+                </div>
+                
+                <div class="row row-xs mg-t-20">
+                    <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Entrada/Salida:</label>
+                    <div class="col-sm-4 mg-t-5 mg-sm-t-0">
+                        <input type="time" id="hora_entrada" class="form-control" placeholder="">
+                    </div>
+                    <div class="col-sm-4 mg-t-5 mg-sm-t-0">
+                        <input type="time" id="hora_salida" class="form-control" placeholder="">
+                    </div>
+                </div><!-- row -->
+
+                <div class="row row-xs mg-t-20">
+                    <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Cargo por atrasos:</label>
+                    <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                        <select name="cargo_atrasos" class="form-control select2" id="cargo_atrasos">
+                            <option value="">[Seleccion]</option>
+                            <option value="S">SI</option>
+                            <option value="N">NO</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row row-xs mg-t-20">
+                    <label class="col-sm-4 form-control-label"><span class="tx-danger">*</span> Rango Atrasos:</label>
+                    <div class="col-sm-8 mg-t-10 mg-sm-t-0">
+                        <input type="number" id="rango_atrasos" class="form-control" placeholder="solo en minutos ej: 60">
+                    </div>
+                </div>
+
+                <div class="row row-xs mg-t-30">
+                    <div class="col-sm-8 mg-l-auto">
+                        <div class="form-layout-footer">
+                            <button type="submit" class="btn btn-info mg-r-5">Guardar Parámetros</button>
+                        </div><!-- form-layout-footer -->
+                    </div><!-- col-8 -->
+                </div>
+                
+            </div><!-- card -->
+        </form>
     </div>
 {% endblock %}
 
@@ -62,6 +91,63 @@
 
 {% block script_tag %}
 <script>
+
+const formulario = document.getElementById('form');
+
+const endpoint = "{% url 'remun_app:get_system_variables' %}";
+
+axios.get(endpoint)
+    .then(response => {
+        response.data.forEach(element => {
+            for (const key in element) {
+                if (element.hasOwnProperty(key)) {
+                    const value = element[key];
+                    // Obtén el campo de entrada por su ID y establece el valor
+                    const inputField = document.getElementById(key);
+                    if (inputField) {
+                        inputField.value = value;
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => {
+        $.alert({
+                title: 'Error!',
+                content: 'Error en la solicitud: ' + error.message,
+            });
+    });
+
+formulario.addEventListener('submit', function (event){
+    event.preventDefault();
+
+    datos_post = {
+        tope_gratificacion: formulario.elements.tope_gratificacion.value,
+        cierre_mes: formulario.elements.cierre_mes.value,
+        tiempo_colacion: formulario.elements.tiempo_colacion.value,
+        hora_entrada: formulario.elements.hora_entrada.value,
+        hora_salida: formulario.elements.hora_salida.value,
+        cargo_atrasos: formulario.elements.cargo_atrasos.value,
+        rango_atrasos: formulario.elements.rango_atrasos.value,
+    }
+
+    // Realiza la solicitud POST utilizando Axios
+    axios.post("{% url 'remun_app:get_save_system_variables' %}", datos_post)
+        .then(function (response) {
+            // Maneja la respuesta exitosa del servidor
+            $.alert({
+                title: 'Éxito!',
+                content: 'Parámetros actualizados con éxito',
+            });
+        })
+        .catch(function (error) {
+            // Maneja cualquier error que ocurra durante la solicitud
+            $.alert({
+                title: 'Error!',
+                content: 'Error en la solicitud POST: ' + error.message,
+            });
+        });
+});
 
 </script>
 {% endblock %}
