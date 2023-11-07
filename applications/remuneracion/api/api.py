@@ -76,7 +76,6 @@ class ApiAddConcept(generics.CreateAPIView):
             # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
             return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 @permission_classes([AllowAny])
 class ApiConceptUserDeleteView(generics.DestroyAPIView):
     queryset = ConceptUser.objects.all()
@@ -110,7 +109,6 @@ class ApiConceptUserDeleteView(generics.DestroyAPIView):
             # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
             return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-
 @permission_classes([AllowAny])
 class ApiGenerateLiquidationUserDeleteView(generics.GenericAPIView):
     queryset = ConceptUser.objects.all()
@@ -130,7 +128,7 @@ class ApiGenerateLiquidationUserDeleteView(generics.GenericAPIView):
         except Exception as e:
             # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
             return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        
 @permission_classes([AllowAny])
 class ApiGetMonthlyPreviredData(generics.ListAPIView):
     queryset = MonthlyPreviredData.objects.all()
@@ -154,7 +152,6 @@ class ApiGetMonthlyPreviredData(generics.ListAPIView):
             # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
             return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-
 @permission_classes([AllowAny])
 class ApiGetSystemVariables(generics.ListAPIView):
     def get(self, request, *args, **kwargs):
@@ -183,7 +180,6 @@ class ApiGetSystemVariables(generics.ListAPIView):
             # Capturar cualquier otra excepción y devolver una respuesta de error genérica, además de registrar el error en el log
             return Response({'detail': 'Ha ocurrido un error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-
 @permission_classes([AllowAny])
 class ApiSaveSystemVariables(generics.CreateAPIView):
     def post(self, request, *args, **kwargs):
