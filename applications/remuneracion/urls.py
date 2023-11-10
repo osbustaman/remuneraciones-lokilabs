@@ -15,6 +15,7 @@ urlpatterns = [
     path('simulation-liquidation-salary/<str:pdf_filename>', download_pdf, name='download_pdf'),
     path('indicadores-previsionales', previred_forecast_indicators, name='previred_forecast_indicators'),
     path('variables-remuneraciones', forecast_indicators, name='forecast_indicators'),
+    
 
     #API
     path('add-concept', ApiAddConcept.as_view(), name='add_concept'),
@@ -25,5 +26,6 @@ urlpatterns = [
     path('api-get-indicadores-previsionales', ApiGetMonthlyPreviredData.as_view(), name='get_monthly_previred_data'),
     path('api-create-variables-sistema', ApiSaveSystemVariables.as_view(), name='get_save_system_variables'),
     path('api-get-variables-sistema', ApiGetSystemVariables.as_view(), name='get_system_variables'),
+
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

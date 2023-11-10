@@ -3,7 +3,7 @@
 {% load static_tags %}
 {% load static %}
 
-{% block title %} Asistencia {% endblock %}
+{% block title %}Marcar Asistencia {% endblock %}
 
 {% block static_up %}
 <link href="{% statics_tag_maps 'leaflet/leaflet.css' %}" rel="stylesheet">
@@ -12,14 +12,14 @@
 
 {% endblock %}
 
-{% block title_page %} - {% endblock %}
+{% block title_page %}Marcar Asistencia {% endblock %}
 {% block buttons %}
 
 {% endblock %}
 
 {% block content_page %}
-<div class="card pd-20 pd-sm-40">
-    <div class="table-wrapper">
+<div class="col-xl-5 mg-t-25 mg-xl-t-0">
+    <div class="card pd-20 pd-sm-40 form-layout form-layout-5">
         <div class="col-lg-4 mg-t-15 mg-sm-t-20 mg-lg-t-0">
             <div class="card">
             <div id="map2">
@@ -36,12 +36,8 @@
             </div><!-- pd-20 -->
             </div><!-- card -->
         </div>
-
     </div>
 </div>
-
-
-
 {% endblock %}
 
 {% block static_down %}

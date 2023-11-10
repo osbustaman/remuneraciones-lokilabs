@@ -46,18 +46,15 @@
         <span>Control Asistencia</span>
     </a>
     <ul class="nav-sub">
-        <li class="nav-item"><a href="{% url 'usuario_app:mark_in_out' %}" class="nav-link {% if request.session.sub_item == 'evento' %}active{% endif %}">Marcar Asistencia</a></li>
+        <li class="nav-item"><a href="{% url 'attendance_app:mark_in_out' %}" class="nav-link {% if request.session.sub_item == 'evento' %}active{% endif %}">Marcar Asistencia</a></li>
         <li class="nav-item">
             <a href="#" class="nav-link with-sub {% if request.session.sub_item == 'tablas' %}active{% endif %}">Colaboradores</a>
-            <ul class="nav-sub" {% if request.session.sub_sub_item in '' %}style="display: block;"{% endif %}>
-                <li class="nav-item"><a href="#" class="nav-link {% if request.session.sub_sub_item == 'countries' %}active{% endif %}">Tabla Resumen</a></li>
+            <ul class="nav-sub" {% if request.session.sub_sub_item in 'collaborators_working_day' %}style="display: block;"{% endif %}>
+                <li class="nav-item"><a href="{% url 'attendance_app:collaborators_working_day' %}" class="nav-link {% if request.session.sub_sub_item == 'collaborators_working_day' %}active{% endif %}">Tabla Resumen</a></li>
                 
             </ul>
         </li>
-    
-    
-    
-    
+        <li class="nav-item"><a href="{% url 'attendance_app:work_day_report' %}" class="nav-link {% if request.session.sub_item == 'work_day_report' %}active{% endif %}">Reportes</a></li>
     </ul>
 </li>
 <!-- nav-item -->

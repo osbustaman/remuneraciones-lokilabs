@@ -173,8 +173,8 @@ def edit_collaborator_file(request, id, col_id):
             formFormsPayments = FormsPayments()
             formFormsForecastData = FormsForecastData()
 
-    list_contact = Contact.objects.filter(con_actiove="S")
-    list_familyResponsibilities = FamilyResponsibilities.objects.filter(fr_activo=1)
+    list_contact = Contact.objects.filter(user=user, con_actiove="S")
+    list_familyResponsibilities = FamilyResponsibilities.objects.filter(user=user, fr_activo=1)
 
     opciones_working_day = TablaGeneral.objects.filter(tg_nombretabla="tb_working_day").annotate(display_name=Concat(
                 F('tg_id'), Value(' - '), F('tg_short_description'), output_field=CharField())).values_list('display_name', flat=True)  # flat=True para obtener una lista plana

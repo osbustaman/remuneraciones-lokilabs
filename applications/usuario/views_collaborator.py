@@ -15,13 +15,3 @@ from django.db.models.functions import Concat
 
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
 
-# Create your views here.
-@login_required
-@existsCompany
-def mark_in_out(request):
-
-
-    data = {
-
-    }
-    return render(request, 'client/page/usuario/forms/from_mark_in_out.html', data)

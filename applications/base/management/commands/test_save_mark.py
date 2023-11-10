@@ -27,7 +27,7 @@ class Command(BaseCommand):
         for base in lista:
             nombre_bd = base.nombre_bd
 
-            user = User.objects.using(nombre_bd).get(username='13998686-5')
+            user = User.objects.using(nombre_bd).get(username='17452821-7')
             latitud = '-33.43476615714285'
             longitud = '-70.68733879999999'
             ma_place = 'oficina principal'

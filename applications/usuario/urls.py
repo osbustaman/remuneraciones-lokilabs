@@ -15,7 +15,6 @@ from applications.usuario.views import (
     , family_responsibilities_delete,
     init_page
 )
-from applications.usuario.views_collaborator import mark_in_out
 
 
 app_name = 'usuario_app'
@@ -46,6 +45,5 @@ urlpatterns = [
 
 
 
-    # module of in and out
-    path('module-in-out/', mark_in_out, name='mark_in_out'),
+
 ]

@@ -1,0 +1,114 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} Listado Colaboradores {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title_page %} Listado Colaboradores {% endblock %}
+{% block buttons %}
+
+{% endblock %}
+
+{% block content_page %}
+
+<style>
+    button{
+        cursor: pointer;
+    }
+
+    .input-group-addon {
+        color: #FFF;
+        background-color: #007bff;
+        border: 0;
+    }
+</style>
+
+<div class="col-lg-12">
+    <div class="card pd-20">
+        <div class="table-responsive pd-20">
+            <p class="mg-b-10">Filtrar por fecha</p>
+            <div class="input-group wd-250">
+                <span class="input-group-addon"><i class="icon ion-calendar tx-16 lh-0 op-6"></i></span>
+                <input type="text" class="form-control fc-datepicker" placeholder="MM/DD/YYYY">
+                <button type="button" class="input-group-addon btn btn-info btn-sm" onclick="">Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-lg-12 mg-t-15 mg-sm-t-20">
+    <div class="card">
+        <div class="card-header bg-transparent pd-20">
+            <h6 class="card-title tx-uppercase tx-12 mg-b-0">Listado de colaboradores</h6>
+        </div><!-- card-header -->
+        <div class="table-responsive">
+            <table class="table table-white mg-b-0 tx-12">
+                <tbody>
+                    <tr class="ard-title tx-uppercase tx-12 mg-b-0">
+                        <td class="pd-l-20 tx-center">
+                            <strong>Empleado</strong>
+                        </td>
+                        <td>
+                            <strong>Ausencias</strong>
+                        </td>
+                        <td class="tx-12">
+                            <strong>Horas esperadas</strong>
+                        </td>
+                        <td>
+                            <strong>Horas registradas</strong>
+                        </td>
+                        <td>
+                            <strong>Balance</strong>
+                        </td>
+                        <td>
+                            <strong>Acciones</strong>
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td class="pd-l-20 tx-center">
+                            <img src="http://themepixels.me/demo/amanda/img/img1.jpg" class="wd-36 rounded-circle" alt="Image">
+                        </td>
+                        <td>
+                            <a href="" class="tx-inverse tx-14 tx-medium d-block">Mark K. Peters</a>
+                            <span class="tx-11 d-block">TRANSID: 1234567890</span>
+                        </td>
+                        <td class="tx-12">
+                            <span class="square-8 bg-success mg-r-5 rounded-circle"></span> Email verified
+                        </td>
+                        <td>Just Now</td>
+                        <td>Just Now</td>
+                        <td>
+                            <button type="button" class="btn btn-info btn-sm" onclick="">Ver <span class="fa fa-search"></span></button>
+                        </td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div><!-- table-responsive -->
+        <div class="card-footer tx-12 pd-y-15 bg-transparent bd-t bd-gray-200">
+            <a href=""><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
+        </div><!-- card-footer -->
+    </div><!-- card -->
+</div>
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block script_tag %}
+<script>
+$('.fc-datepicker').datepicker({
+    showOtherMonths: true,
+    selectOtherMonths: true,
+});
+</script>
+{% endblock %}

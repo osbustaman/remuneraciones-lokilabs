@@ -57,7 +57,8 @@ urlpatterns = [
     path('', include('applications.usuario.urls')),
     path('', include('applications.security.urls')),
 
-    path('api/attendance/', include('applications.attendance.urls')),
+    #path('api/attendance/', include('applications.attendance.urls')),
+    path('', include('applications.attendance.urls')),
 
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

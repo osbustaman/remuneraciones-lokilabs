@@ -97,7 +97,7 @@ class menu_middleware_items(object):
                 request.session['sub_item'] = 'colaboradores' 
                 request.session['sub_sub_item'] = 'search-user'
 
-            if '/module-in-out/' in request.path:
+            if '/marcar-jornada-laboral' in request.path:
                 request.session['item'] = 'eventos'
                 request.session['sub_item'] = 'evento' 
                 request.session['sub_sub_item'] = 'evento'
@@ -116,6 +116,16 @@ class menu_middleware_items(object):
                 request.session['item'] = 'remuneraciones'
                 request.session['sub_item'] = 'remuneration_variables' 
                 request.session['sub_sub_item'] = 'remuneration_variables'
+
+            if '/jornada-colaboradores' in request.path:
+                request.session['item'] = 'eventos'
+                request.session['sub_item'] = 'collaborators_working_day' 
+                request.session['sub_sub_item'] = 'collaborators_working_day'
+
+            if '/reportes-asistencia' in request.path:
+                request.session['item'] = 'eventos'
+                request.session['sub_item'] = 'work_day_report' 
+                request.session['sub_sub_item'] = 'work_day_report'
 
         except:
             pass

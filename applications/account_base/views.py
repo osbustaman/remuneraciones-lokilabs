@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from applications.account_base.forms import LoginForm
-from applications.usuario.models import Colaborador
+from applications.usuario.models import Colaborador, UsuarioEmpresa
 
 # Create your views here.
 
@@ -34,6 +34,14 @@ def login_client(request):
                 request.session['user_nivel'] = objectColaborator.col_tipousuario.rol_nivel
             except:
                 request.session['user_nivel'] = 8
+
+            try:
+                objectColaborator = UsuarioEmpresa.objects.get(user=user)
+                request.session['la_empresa'] = objectColaborator.empresa.emp_id
+                request.session['razon_social'] = objectColaborator.empresa.emp_namecompany
+                request.session['emp_namecompany'] = objectColaborator.empresa.emp_namecompany
+            except:
+                pass
 
             #return HttpResponseRedirect(reverse('remun_app:panel'))
             return redirect('usuario_app:init_page')
