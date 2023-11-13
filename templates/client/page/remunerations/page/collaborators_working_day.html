@@ -30,13 +30,13 @@
 
 <div class="col-lg-12">
     <div class="card pd-20">
-        <div class="table-responsive pd-20">
-            <p class="mg-b-10">Filtrar por fecha</p>
-            <div class="input-group wd-250">
-                <span class="input-group-addon"><i class="icon ion-calendar tx-16 lh-0 op-6"></i></span>
-                <input type="text" class="form-control fc-datepicker" placeholder="MM/DD/YYYY">
-                <button type="button" class="input-group-addon btn btn-info btn-sm" onclick="">Buscar</button>
-            </div>
+        <div class="col-lg-4 mg-t-20 mg-lg-t-0">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="Buscar por...">
+                <span class="input-group-btn">
+                    <button class="btn bd bg-white tx-gray-600" type="button"><i class="fa fa-search"></i></button>
+                </span>
+            </div><!-- input-group -->
         </div>
     </div>
 </div>
@@ -45,18 +45,23 @@
     <div class="card">
         <div class="card-header bg-transparent pd-20">
             <h6 class="card-title tx-uppercase tx-12 mg-b-0">Listado de colaboradores</h6>
-        </div><!-- card-header -->
-        <div class="table-responsive">
             <table class="table table-white mg-b-0 tx-12">
-                <tbody>
+
+            </table>
+
+
+        </div><!-- card-header -->
+        <div class="table-responsive div-scroll-475">
+            <table class="table table-white mg-b-0 tx-12" id="data_user">
+                <thead>
                     <tr class="ard-title tx-uppercase tx-12 mg-b-0">
                         <td class="pd-l-20 tx-center">
                             <strong>Empleado</strong>
                         </td>
                         <td>
-                            <strong>Ausencias</strong>
+                            
                         </td>
-                        <td class="tx-12">
+                        <td class="tx-12 txt-left">
                             <strong>Horas esperadas</strong>
                         </td>
                         <td>
@@ -70,31 +75,14 @@
                         </td>
                     </tr>
 
+                </thead>
+                <tbody id="table_data">
 
-
-                    <tr>
-                        <td class="pd-l-20 tx-center">
-                            <img src="http://themepixels.me/demo/amanda/img/img1.jpg" class="wd-36 rounded-circle" alt="Image">
-                        </td>
-                        <td>
-                            <a href="" class="tx-inverse tx-14 tx-medium d-block">Mark K. Peters</a>
-                            <span class="tx-11 d-block">TRANSID: 1234567890</span>
-                        </td>
-                        <td class="tx-12">
-                            <span class="square-8 bg-success mg-r-5 rounded-circle"></span> Email verified
-                        </td>
-                        <td>Just Now</td>
-                        <td>Just Now</td>
-                        <td>
-                            <button type="button" class="btn btn-info btn-sm" onclick="">Ver <span class="fa fa-search"></span></button>
-                        </td>
-                    </tr>
-                    
                 </tbody>
             </table>
         </div><!-- table-responsive -->
         <div class="card-footer tx-12 pd-y-15 bg-transparent bd-t bd-gray-200">
-            <a href=""><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
+            <a href=""><i class="fa fa-angle-down mg-r-5"></i></a>
         </div><!-- card-footer -->
     </div><!-- card -->
 </div>
@@ -110,5 +98,73 @@ $('.fc-datepicker').datepicker({
     showOtherMonths: true,
     selectOtherMonths: true,
 });
+
+const searchResults = document.getElementById('table_data');
+const searchInput = document.getElementById('searchInput');
+const dataTable = document.getElementById('data_user').getElementsByTagName('tbody')[0];
+const handleSearch = () => {
+    const query = searchInput.value.trim().toLowerCase();
+    // Filtra las filas de la tabla basándose en la consulta
+    Array.from(dataTable.rows).forEach(row => {
+        const nombre = row.cells[1].textContent.toLowerCase();
+        const visible = nombre.includes(query);
+        row.style.display = visible ? '' : 'none';
+    });
+}
+
+// Función de debounce para evitar llamadas innecesarias mientras el usuario escribe
+const debounce = (func, wait) => {
+    let timeout;
+    return function () {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+
+const endpoint = "{% url 'attendance_app:ListUsersWorkDay' request.session.la_empresa %}";
+
+axios.get(endpoint)
+    .then(response => {
+        const { data } = response
+
+        let link_to = "{% url 'attendance_app:work_day_report' '__id__' %}";
+        const tbody = data.map(result => 
+            `<tr>
+                <td class="pd-l-20 tx-center">
+                    <img src="http://themepixels.me/demo/amanda/img/img1.jpg" class="wd-36 rounded-circle" alt="Image">
+                </td>
+                <td>
+                    <a href="#" onclick="redirectToUrl('${link_to.replace("__id__", result.user_id)}')" class="tx-inverse tx-14 tx-medium d-block">${result.first_name} ${result.last_name}</a>
+                    <span class="tx-11 d-block">CARGO: ${result.cargo}</span>
+                </td>
+                <td>00</td>
+                <td>00</td>
+                <td>00</td>
+                <td>
+                    <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('${link_to.replace("__id__", result.user_id)}')">
+                        Ver <span class="fa fa-search"></span>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+        
+        searchResults.innerHTML = tbody;
+        
+    })
+    .catch(error => {
+        console.error('Error en la solicitud:', error.message);
+    });
+
+
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+
+
+    searchInput.addEventListener('input', debounce(handleSearch, 300));
 </script>
 {% endblock %}

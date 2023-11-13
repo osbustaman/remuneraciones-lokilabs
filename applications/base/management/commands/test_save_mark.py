@@ -27,7 +27,7 @@ class Command(BaseCommand):
         for base in lista:
             nombre_bd = base.nombre_bd
 
-            user = User.objects.using(nombre_bd).get(username='17452821-7')
+            user = User.objects.using(nombre_bd).get(username='13998686-5')
             latitud = '-33.43476615714285'
             longitud = '-70.68733879999999'
             ma_place = 'oficina principal'
@@ -41,7 +41,8 @@ class Command(BaseCommand):
             
             past_days = today - timedelta(days=30)
             #end_date = today + timedelta(days=30)
-            end_date = today + timedelta(days=10)
+            #end_date = today + timedelta(days=10)
+            end_date = today
 
             while past_days < end_date:
 
@@ -74,7 +75,7 @@ class Command(BaseCommand):
 
                 mark_data_2 = MarkAttendance()
                 mark_data_2.user = user
-                mark_data_2.ma_typeattendance = 1
+                mark_data_2.ma_typeattendance = 2
                 mark_data_2.ma_latitude = latitud
                 mark_data_2.ma_longitude = longitud
                 mark_data_2.ma_datemark = past_days.replace(hour=17, minute=self.generate_random_integer()).strftime("%Y-%m-%d %H:%M")

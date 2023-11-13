@@ -124,8 +124,8 @@ class menu_middleware_items(object):
 
             if '/reportes-asistencia' in request.path:
                 request.session['item'] = 'eventos'
-                request.session['sub_item'] = 'work_day_report' 
-                request.session['sub_sub_item'] = 'work_day_report'
+                request.session['sub_item'] = 'collaborators_working_day' 
+                request.session['sub_sub_item'] = 'collaborators_working_day'
 
         except:
             pass

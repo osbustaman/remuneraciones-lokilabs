@@ -46,6 +46,15 @@
         .am-sideleft-menu>.nav-item>.nav-link.show-sub::after {
             content: '';
         }
+
+        .div-scroll-475{
+            height: 5em;
+            line-height: 1em;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            width: 100%;
+            min-height: 475px;
+        }
     </style>
 </head>
 
@@ -66,7 +75,7 @@
             <!-- notification.html -->
             <div class="dropdown dropdown-profile">
                 <a href="" class="nav-link nav-link-profile" data-toggle="dropdown">
-                    <img src="img/img3.jpg" class="wd-32 rounded-circle" alt="">
+                    <img src="http://themepixels.me/demo/amanda/img/img3.jpg" class="wd-32 rounded-circle" alt="">
                     <span class="logged-name"><span class="hidden-xs-down">{{ request.session.first_name|title }} {{ request.session.last_name|title }}</span> <i class="fa fa-angle-down mg-l-3"></i></span>
                 </a>
                 <div class="dropdown-menu wd-200">
@@ -205,7 +214,7 @@
                 <div class="list-group list-group-chat">
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
-                            <img src="img/img6.jpg" class="wd-32 rounded-circle" alt="">
+                            <img src="http://themepixels.me/demo/amanda/img/img6.jpg" class="wd-32 rounded-circle" alt="">
                             <div class="mg-l-10">
                                 <h6>Russell M. Evans</h6>
                                 <span>Tuesday, 10:33am</span>
@@ -217,7 +226,7 @@
                     <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
-                            <img src="img/img7.jpg" class="wd-32 rounded-circle" alt="">
+                            <img src="http://themepixels.me/demo/amanda/img/img7.jpg" class="wd-32 rounded-circle" alt="">
                             <div class="mg-l-10">
                                 <h6>James F. Sears</h6>
                                 <span>Monday, 4:21pm</span>
@@ -230,7 +239,7 @@
                     <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
-                            <img src="img/img8.jpg" class="wd-32 rounded-circle" alt="">
+                            <img src="http://themepixels.me/demo/amanda/img/img8.jpg" class="wd-32 rounded-circle" alt="">
                             <div class="mg-l-10">
                                 <h6>Sharon R. Rowe</h6>
                                 <span>Sunday, 7:45pm</span>
@@ -243,7 +252,7 @@
                     <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
-                            <img src="img/img9.jpg" class="wd-32 rounded-circle" alt="">
+                            <img src="http://themepixels.me/demo/amanda/img/img9.jpg" class="wd-32 rounded-circle" alt="">
                             <div class="mg-l-10">
                                 <h6>Ruby M. Martin</h6>
                                 <span>Sunday, 7:45pm</span>
@@ -256,7 +265,7 @@
                     <!-- list-group-item -->
                     <a href="#" class="list-group-item">
                         <div class="d-flex align-items-center">
-                            <img src="img/img10.jpg" class="wd-32 rounded-circle" alt="">
+                            <img src="http://themepixels.me/demo/amanda/img/img10.jpg" class="wd-32 rounded-circle" alt="">
                             <div class="mg-l-10">
                                 <h6>Joslyn C. Mayo</h6>
                                 <span>Sunday, 7:45pm</span>
@@ -407,7 +416,7 @@
                         msg = "Error desconocido";
                         break;
             }
-            posElt.textContent = msg;
+            //posElt.textContent = msg;
         }
         
     </script>    

@@ -6,7 +6,7 @@ from applications.security.decorators import existsCompany
 # Create your views here.
 
 @login_required
-def work_day_report(request):
+def work_day_report(request, user_id):
 
     data = {
 

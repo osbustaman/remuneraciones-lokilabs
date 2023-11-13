@@ -7,10 +7,3 @@ class AfpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Afp
         fields = ('__all__')
-
-# Afp serializer
-class AfpSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Afp
-        fields = ('__all__')
-    

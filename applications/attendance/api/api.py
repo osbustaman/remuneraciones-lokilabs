@@ -1,26 +1,28 @@
-from requests import Response
-from applications.attendance.api.serializers import MarkAttendanceSerializer
+import pytz
+
+from applications.attendance.api.serializers import MarkAttendanceSerializer, UsuarioEmpresaSerializer
 from applications.attendance.models import MarkAttendance
+from applications.base.models import TablaGeneral
+from applications.usuario.models import Colaborador, UsuarioEmpresa
 
-from datetime import datetime
-from django.db.models import F, Count, F, Value, CharField
-from django.db.models.functions import Concat
-from django.utils import timezone
-
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-
-from geopy.distance import geodesic
-from geopy.geocoders import Nominatim
-
-from itertools import chain
-
-from rest_framework import status
-from rest_framework import generics, status
+from datetime import datetime, timedelta
+from decouple import config
 
 from django.contrib.auth.models import User
+from django.db.models import F, Count, Q, Value, CharField,  Min, Max
+from django.db.models.functions import Concat, TruncDate
+from django.utils import timezone
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
+from itertools import chain
 
-from applications.usuario.models import Colaborador, UsuarioEmpresa
+from requests import Response
+from rest_framework import generics, status
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 # Define el objeto Parameter para el encabezado Authorization
 header_param = openapi.Parameter(
@@ -53,6 +55,57 @@ class MarkInAndOutUserAPIView(generics.ListAPIView):
             return Response(data, status=status.HTTP_200_OK)
         else:
             return Response({"message": "Not Found - 404"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@permission_classes([AllowAny])
+class GetUsersWorkDay(generics.ListAPIView):
+    serializer_class = UsuarioEmpresaSerializer
+    queryset = UsuarioEmpresa.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        objectListEmpresas = self.queryset.filter(empresa__emp_id=self.kwargs['pk'])
+        if objectListEmpresas:
+            
+            list_empresas = []
+            for value in objectListEmpresas:
+
+                list_empresas.append({
+                    "user_id": value.user.id,
+                    "first_name": value.user.first_name.title(),
+                    "last_name": value.user.last_name.title(),
+                    "cargo": value.cargo.car_nombre.title()
+                })
+
+            return Response(list_empresas, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Not Found - 404"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@permission_classes([AllowAny])
+class ListUsersWorkDay(generics.ListAPIView):
+    serializer_class = UsuarioEmpresaSerializer
+    queryset = UsuarioEmpresa.objects.all()
+
+    location_timezone = pytz.timezone('America/Santiago')
+
+    def get(self, request, *args, **kwargs):
+        objectListEmpresas = self.queryset.filter(empresa__emp_id=self.kwargs['pk'])
+        if objectListEmpresas:
+            list_empresas = []
+            for value in objectListEmpresas:
+                
+                
+                list_empresas.append({
+                    "user_id": value.user.id,
+                    "first_name": value.user.first_name.title(),
+                    "last_name": value.user.last_name.title(),
+                    "cargo": value.cargo.car_nombre.title(),
+                })
+
+            return Response(list_empresas, status=status.HTTP_200_OK)
+        else:
+            return Response({"message": "Not Found - 404"}, status=status.HTTP_404_NOT_FOUND)
+
 
 class MarkInAndOutAPIView(generics.CreateAPIView):
     serializer_class = MarkAttendanceSerializer

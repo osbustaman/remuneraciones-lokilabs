@@ -187,6 +187,11 @@ class DatosLaboralesForm(forms.ModelForm):
         'class': 'form-control select2-show-search',
     }
 
+    tags_input_select_multiple = {
+        'class': 'form-control select2-show-search',
+        'multiple': 'multiple'
+    }
+
     tags_input_date = {
         "class": "form-control fc-datepicker",
         "placeholder": "DD-MM-YYYY",
@@ -213,12 +218,17 @@ class DatosLaboralesForm(forms.ModelForm):
                                          widget=forms.Select(attrs=tags_input_select), required=True)
     ue_estate = forms.ChoiceField(initial=0, label='Estado', choices=UsuarioEmpresa.ESTATE_JOB,
                                   widget=forms.Select(attrs=tags_input_select2), required=True)
-    working_day = forms.ModelChoiceField(label="Jornada de trabajo", required=False,
-                                   queryset=TablaGeneral.objects.filter(tg_nombretabla="tb_working_day"), widget=forms.Select(attrs=tags_input_select2))
     ue_workersector = forms.ChoiceField(initial=2, label='Sector del trabajador', choices=UsuarioEmpresa.WORKER_SECTOR,
                                         widget=forms.Select(attrs=tags_input_select), required=True)
     ue_horassemanales = forms.CharField(label="Jornada de trabajo",
                                 widget=forms.TextInput(attrs=tags_input_general), required=True)
+    
+    ue_horassemanales = forms.CharField(label="Jornada de trabajo",
+                                widget=forms.TextInput(attrs=tags_input_general), required=True)
+    
+    ue_agreedworkdays = forms.MultipleChoiceField(label="Días de trabajo pactados", choices=UsuarioEmpresa.ALL_DAYS,
+                                                widget=forms.SelectMultiple(attrs=tags_input_select_multiple), required=True)
+
 
     class Meta:
         model = UsuarioEmpresa
@@ -232,9 +242,9 @@ class DatosLaboralesForm(forms.ModelForm):
             'ue_tipocontrato',
             'ue_tipotrabajdor',
             'ue_estate',
-            'working_day',
             'ue_workersector',
-            'ue_horassemanales'
+            'ue_horassemanales',
+            'ue_agreedworkdays'
         ]
 
 

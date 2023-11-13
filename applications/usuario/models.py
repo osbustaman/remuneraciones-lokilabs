@@ -236,9 +236,19 @@ class UsuarioEmpresa(TimeStampedModel):
         (2, 'Privado'),
     )
 
+    ALL_DAYS = (
+        ('Lunes', 'Lunes'),
+        ('Martes', 'Martes'),
+        ('Miércoles', 'Miércoles'),
+        ('Jueves', 'Jueves'),
+        ('Viernes', 'Viernes'),
+        ('Sábado', 'Sábado'),
+        ('Domingo', 'Domingo'),
+    )
+
     ue_id = models.AutoField("Key", primary_key=True)
     user = models.ForeignKey(User, verbose_name="Usuario",
-                             db_column="ue_usuario", on_delete=models.PROTECT)
+                            db_column="ue_usuario", on_delete=models.PROTECT)
     empresa = models.ForeignKey(
         Empresa, verbose_name="Empresa", db_column="ue_empresa", on_delete=models.PROTECT)
     cargo = models.ForeignKey(
@@ -263,6 +273,8 @@ class UsuarioEmpresa(TimeStampedModel):
         "Fecha primer contrato", null=True, blank=True)
     ue_horassemanales = models.IntegerField(
         "Horas trabajadas", null=True, blank=True, default=45)
+    ue_agreedworkdays = models.CharField(
+        "Dias de trabajo pactados", null=True, blank=True, max_length=255)
     ue_asignacionfamiliar = models.CharField(
         "Asignación familiar", choices=OPCIONES, max_length=1, null=True, blank=True, default="N")
     
@@ -352,7 +364,7 @@ class UsuarioEmpresa(TimeStampedModel):
     ue_fechatermino = models.DateField(
         "Fecha de termino relacion laboral", null=True, blank=True, default=None)
     ue_cuasal = models.ForeignKey(TablaGeneral, verbose_name="TablaGeneral",
-                                  db_column="ue_causal", on_delete=models.PROTECT, null=True, blank=True)
+                                db_column="ue_causal", on_delete=models.PROTECT, null=True, blank=True)
     ue_fundamento = models.TextField("Fundamento", null=True, blank=True)
     ue_tiponoticacion = models.CharField(
         "Tipo de notificacion", choices=NOTIFICACION, max_length=1, null=True, blank=True)

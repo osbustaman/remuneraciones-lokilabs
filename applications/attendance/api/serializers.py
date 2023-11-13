@@ -7,6 +7,8 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.models import User
 
+from applications.usuario.models import UsuarioEmpresa
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     pass
 
@@ -20,3 +22,9 @@ class MarkAttendanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = MarkAttendance
         fields = '__all__'
+
+# Usuario Empresa
+class UsuarioEmpresaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UsuarioEmpresa
+        fields = ('__all__')
