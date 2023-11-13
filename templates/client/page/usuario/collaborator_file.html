@@ -3,90 +3,170 @@
 {% load static_tags %}
 {% load static %}
 
-{% block title %} {{ action }} Empresa {% endblock %}
+{% block title %} Listado Colaboradores {% endblock %}
 
 {% block static_up %}
-<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
 <link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
-<style>
-    .btn-primary-color {
-        color: #fff !important;
-    }
-    .btn-off{
-        display: none !important;
-    }
-</style>
 {% endblock %}
 
-{% block title_page %}{{ action }} Empresa {% endblock %}
+{% block title_page %} Listado Colaboradores {% endblock %}
 {% block buttons %}
 
-
-<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'usuario_app:add_collaborator_file' %}')">Agregar Colaborador <i
-        class="icon ion-plus-circled"></i></button>
 {% endblock %}
 
 {% block content_page %}
-<div class="card pd-20 pd-sm-40">
-    <div class="table-wrapper">
-        <table id="table-user" class="table display responsive nowrap">
-            <thead>
-                <tr>
-                    <th class="wd-15p">Rut</th>
-                    <th class="wd-20p">Nombre</th>
-                    <th class="wd-20p">Cargo</th>
-                    <th class="wd-20p">Centro Costo</th>
-                    <th class="wd-25p">Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for obj in list_objects %} 
-                <tr>
-                    <td>{{ obj.col_rut }}</td>
-                    <td>{{ obj.full_name|title }}</td>
-                    <td>{{ obj.cargo_nombre|title }}</td>
-                    <td>{{ obj.centro_costo_nombre|title }}</td>
-                    <td>
-                        <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('{% url 'usuario_app:edit_collaborator_file' obj.user.id obj.col_id %}')">Editar</button>
-                    </td>
-                </tr>
-                {% endfor %}
-                
-            </tbody>
-        </table>
 
+<style>
+    button{
+        cursor: pointer;
+    }
+
+    .input-group-addon {
+        color: #FFF;
+        background-color: #007bff;
+        border: 0;
+    }
+</style>
+
+<div class="col-lg-12">
+    <div class="card pd-20">
+        <div class="col-lg-4 mg-t-20 mg-lg-t-0">
+            <div class="input-group">
+                <input type="text" class="form-control" id="searchInput" placeholder="Buscar por...">
+                <span class="input-group-btn">
+                    <button class="btn bd bg-white tx-gray-600" type="button"><i class="fa fa-search"></i></button>
+                </span>
+            </div><!-- input-group -->
+        </div>
     </div>
 </div>
 
+<div class="col-lg-12 mg-t-15 mg-sm-t-20">
+    <div class="card">
+        <div class="card-header bg-transparent pd-20">
+            <h6 class="card-title tx-uppercase tx-12 mg-b-0">Listado de colaboradores</h6>
+            <table class="table table-white mg-b-0 tx-12">
+
+            </table>
+
+
+        </div><!-- card-header -->
+        <div class="table-responsive div-scroll-475">
+            <table class="table table-white mg-b-0 tx-12" id="data_user">
+                <thead>
+                    <tr class="ard-title tx-uppercase tx-12 mg-b-0">
+                        <td class="pd-l-20 tx-center">
+                            <strong>Empleado</strong>
+                        </td>
+                        <td>
+                            
+                        </td>
+                        <td class="tx-12 txt-left">
+                            <strong>Horas esperadas</strong>
+                        </td>
+                        <td>
+                            <strong>Horas registradas</strong>
+                        </td>
+                        <td>
+                            <strong>Balance</strong>
+                        </td>
+                        <td>
+                            <strong>Acciones</strong>
+                        </td>
+                    </tr>
+
+                </thead>
+                <tbody id="table_data">
+
+                </tbody>
+            </table>
+        </div><!-- table-responsive -->
+        <div class="card-footer tx-12 pd-y-15 bg-transparent bd-t bd-gray-200">
+            <a href=""><i class="fa fa-angle-down mg-r-5"></i></a>
+        </div><!-- card-footer -->
+    </div><!-- card -->
+</div>
 {% endblock %}
 
 {% block static_down %}
-<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
-<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
 <script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
-
 {% endblock %}
 
 {% block script_tag %}
 <script>
-const redirectToUrl = (url) => {
-    location.href = url;
-}
+$('.fc-datepicker').datepicker({
+    showOtherMonths: true,
+    selectOtherMonths: true,
+});
 
-const deleteObject = (url) => {
-    $.confirm({
-        title: 'Confirmación',
-        content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
-        buttons: {
-            confirmar: function () {
-                location.href = url;
-            },
-            cancelar: function () {
-                $.alert('Operación cancelada');
-            },
-        }
+const searchResults = document.getElementById('table_data');
+const searchInput = document.getElementById('searchInput');
+const dataTable = document.getElementById('data_user').getElementsByTagName('tbody')[0];
+const handleSearch = () => {
+    const query = searchInput.value.trim().toLowerCase();
+    // Filtra las filas de la tabla basándose en la consulta
+    Array.from(dataTable.rows).forEach(row => {
+        const nombre = row.cells[1].textContent.toLowerCase();
+        const visible = nombre.includes(query);
+        row.style.display = visible ? '' : 'none';
     });
 }
-{% include "client/includes/table_js.html" with id="table-user" %}
+
+// Función de debounce para evitar llamadas innecesarias mientras el usuario escribe
+const debounce = (func, wait) => {
+    let timeout;
+    return function () {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            func.apply(context, args);
+        }, wait);
+    };
+}
+
+const endpoint = "{% url 'usuario_app:ListColaborate' request.session.la_empresa %}";
+
+axios.get(endpoint)
+    .then(response => {
+        const { data } = response
+        
+
+        //let link_to = "usuario_app:edit_collaborator_file' '__userid__' '__colid__'";
+        let link_to = "{% url 'attendance_app:work_day_report' '__id__' %}";
+        const tbody = data.map(result => 
+            `<tr>
+                <td class="pd-l-20 tx-center">
+                    <img src="http://themepixels.me/demo/amanda/img/img1.jpg" class="wd-36 rounded-circle" alt="Image">
+                </td>
+                <td>
+                    <a href="#" onclick="redirectToUrl('${link_to.replace("__id__", result.user_id)}')" class="tx-inverse tx-14 tx-medium d-block">${result.full_name}</a>
+                    <span class="tx-11 d-block">CARGO: ${result.cargo}</span>
+                </td>
+                <td>00</td>
+                <td>00</td>
+                <td>00</td>
+                <td>
+                    <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('${link_to.replace("__id__", result.user_id)}')">
+                        Ver <span class="fa fa-search"></span>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+        
+        searchResults.innerHTML = tbody;
+        
+    })
+    .catch(error => {
+        console.error('Error en la solicitud:', error.message);
+    });
+
+
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+
+
+    searchInput.addEventListener('input', debounce(handleSearch, 300));
 </script>
 {% endblock %}

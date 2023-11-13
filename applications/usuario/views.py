@@ -35,6 +35,8 @@ def collaborator_file(request):
 
     # Realizar el join entre Colaborador, UsuarioEmpresa y User
     try:
+        print(f"EMP: {request.session['la_empresa']}")
+
         list_objects = Colaborador.objects.filter(
             user__usuarioempresa__empresa_id=request.session['la_empresa']
         ).annotate(

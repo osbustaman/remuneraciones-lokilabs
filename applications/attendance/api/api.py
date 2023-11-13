@@ -42,6 +42,7 @@ error_401_response = openapi.Response(
     ),
 )
 
+@permission_classes([AllowAny])
 class MarkInAndOutUserAPIView(generics.ListAPIView):
     serializer_class = MarkAttendanceSerializer
     queryset = MarkAttendance.objects.all()

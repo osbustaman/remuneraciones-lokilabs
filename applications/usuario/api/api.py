@@ -31,6 +31,42 @@ class AfpDetailApiView(generics.RetrieveAPIView):
         except IndexError as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
         
+@permission_classes([AllowAny])
+class ListColaborate(generics.ListAPIView):
+    queryset = None
+
+    def get(self, request, *args, **kwargs):
+        try:
+            list_objects = Colaborador.objects.filter(
+                user__usuarioempresa__empresa_id=self.kwargs['pk']
+            ).annotate(
+                id_user=F('user__id'),
+                rut=F('user__colaborador__col_rut'),
+                full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
+                cargo_nombre=F('user__usuarioempresa__cargo__car_nombre'),
+                centro_costo_nombre=F('user__usuarioempresa__centrocosto__cencost_nombre'),
+            )
+
+            list_user = []
+            for value in list_objects:
+                list_user.append({
+                    "user_id": value.id_user,
+                    "full_name": value.full_name.title(),
+                    "cargo": value.cargo_nombre.title(),
+                    "rut": value.rut,
+                })
+
+            print(list_user)
+
+            return Response(list_user, status=status.HTTP_200_OK)
+
+            try:
+                pass
+            except:
+                raise IndexError("La AFP no existe")
+        except IndexError as e:
+            return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
+        
 
 @permission_classes([AllowAny])
 class ApiGetDataUserPage(generics.ListAPIView):
