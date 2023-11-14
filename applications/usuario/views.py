@@ -33,26 +33,11 @@ def init_page(request):
 @existsCompany
 def collaborator_file(request):
 
-    # Realizar el join entre Colaborador, UsuarioEmpresa y User
-    try:
-        print(f"EMP: {request.session['la_empresa']}")
+    print(f"EMP: {request.session['la_empresa']}")
+    
+    data = {}
+    return render(request, 'client/page/usuario/collaborator_file.html', data)
 
-        list_objects = Colaborador.objects.filter(
-            user__usuarioempresa__empresa_id=request.session['la_empresa']
-        ).annotate(
-            full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
-            cargo_nombre=F('user__usuarioempresa__cargo__car_nombre'),
-            centro_costo_nombre=F('user__usuarioempresa__centrocosto__cencost_nombre')
-        )
-        
-        data = {
-            'list_objects': list_objects
-        }
-        return render(request, 'client/page/usuario/collaborator_file.html', data)
-    except KeyError:
-        return redirect('usuario_app:add_collaborator_file')
-    except Exception as ex:
-        return redirect('security_app:error404')
 
 
 @login_required
@@ -109,7 +94,7 @@ def add_collaborator_file(request):
 
 
 @login_required
-def edit_collaborator_file(request, id, col_id):
+def edit_collaborator_file_old(request, id, col_id):
     """
     :params: id, es el id del usuario
     :params: col_id, es el id del usuario
@@ -206,6 +191,13 @@ def edit_collaborator_file(request, id, col_id):
     }
     return render(request, 'client/page/usuario/add_collaborator_file.html', data)
 
+@login_required
+def edit_collaborator_file(request, id, col_id):
+
+    data = {
+
+    }
+    return render(request, 'client/page/usuario/add_collaborator_file.html', data)
 
 @login_required
 def add_contact(request, user_id, col_id):

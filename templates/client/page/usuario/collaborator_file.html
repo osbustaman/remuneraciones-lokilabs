@@ -62,13 +62,13 @@
                             
                         </td>
                         <td class="tx-12 txt-left">
-                            <strong>Horas esperadas</strong>
+                            <strong>Rut</strong>
                         </td>
                         <td>
-                            <strong>Horas registradas</strong>
+                            <strong>Cargo</strong>
                         </td>
                         <td>
-                            <strong>Balance</strong>
+                            <strong>Centro de Costo</strong>
                         </td>
                         <td>
                             <strong>Acciones</strong>
@@ -107,7 +107,11 @@ const handleSearch = () => {
     // Filtra las filas de la tabla basándose en la consulta
     Array.from(dataTable.rows).forEach(row => {
         const nombre = row.cells[1].textContent.toLowerCase();
-        const visible = nombre.includes(query);
+        const rut = row.cells[2].textContent.toLowerCase();
+
+        const visible = nombre.includes(query) || rut.includes(query);
+
+        // Muestra la fila si coincide con la búsqueda por nombre o por RUT
         row.style.display = visible ? '' : 'none';
     });
 }
@@ -130,10 +134,8 @@ const endpoint = "{% url 'usuario_app:ListColaborate' request.session.la_empresa
 axios.get(endpoint)
     .then(response => {
         const { data } = response
-        
 
-        //let link_to = "usuario_app:edit_collaborator_file' '__userid__' '__colid__'";
-        let link_to = "{% url 'attendance_app:work_day_report' '__id__' %}";
+        let link_to = "{% url 'usuario_app:edit_collaborator_file' '__userid__' '__colid__' %}" ;
         const tbody = data.map(result => 
             `<tr>
                 <td class="pd-l-20 tx-center">
@@ -143,11 +145,11 @@ axios.get(endpoint)
                     <a href="#" onclick="redirectToUrl('${link_to.replace("__id__", result.user_id)}')" class="tx-inverse tx-14 tx-medium d-block">${result.full_name}</a>
                     <span class="tx-11 d-block">CARGO: ${result.cargo}</span>
                 </td>
-                <td>00</td>
-                <td>00</td>
-                <td>00</td>
+                <td>${result.rut}</td>
+                <td>${result.cargo}</td>
+                <td>${result.centro_costo_nombre}</td>
                 <td>
-                    <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('${link_to.replace("__id__", result.user_id)}')">
+                    <button type="button" class="btn btn-info btn-sm" onclick="redirectToUrl('${link_to.replace("__userid__", result.user_id).replace("__colid__", result.id_col)}')">
                         Ver <span class="fa fa-search"></span>
                     </button>
                 </td>

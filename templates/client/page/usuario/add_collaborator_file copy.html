@@ -1,0 +1,231 @@
+{% extends 'client/base.html' %}
+
+{% load static_tags %}
+{% load static %}
+
+{% block title %} {{ action }} Colaborador {% endblock %}
+
+{% block static_up %}
+<link href="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.css' %}" rel="stylesheet">
+<link href="{% statics_tag_amanda 'lib/select2/css/select2.min.css' %}" rel="stylesheet">
+<style>
+    .btn-primary-color {
+        color: #fff !important;
+    }
+    .btn-off{
+        display: none !important;
+    }
+</style>
+{% endblock %}
+
+{% block title_page %} {{ action }} Colaborador: {{ colaborador.col_rut }} - {{ colaborador.user.last_name|title }} {{ colaborador.user.first_name|title }} {% endblock %}
+{% block buttons %}
+{% if action|lower == 'editar' %}
+<button type="button" id="btn-contact-tab" class="btn btn-orange btn-off" onclick="redirectToUrl('{% url 'usuario_app:add_contact' id col_id %}')">Agregar Contacto <i
+    class="icon ion-plus-circled"></i></button>
+    
+<button type="button" id="btn-cf-tab" class="btn btn-orange btn-off" onclick="redirectToUrl('{% url 'usuario_app:add_family_responsibilities' id col_id %}')">Agregar Carga Familiar <i
+        class="icon ion-plus-circled"></i></button>
+{% endif %}
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'usuario_app:collaborator_file' %}')">Volver <i
+    class="icon ion-arrow-left-a"></i></button>
+{% endblock %}
+
+{% block content_page %}
+<div class="card pd-20 pd-sm-40">
+    <div class="table-wrapper">
+
+        <ul class="nav nav-tabs bar_tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="dp-tab" data-toggle="tab" href="#dp" role="tab" aria-controls="dp"
+                    aria-selected="true" onclick="onOrOffButtons(this)">Datos Personales --</a>
+            </li>
+
+            {% if action|lower == 'editar' %}
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Contactos</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" id="dl-tab" data-toggle="tab" href="#dl" role="tab" aria-controls="dl"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Datos Laborales --</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" id="dpa-tab" data-toggle="tab" href="#dpa" role="tab" aria-controls="dpa"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Datos de Pago --</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="d-prev-tab" data-toggle="tab" href="#d-prev" role="tab" aria-controls="d-prev"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Datos Previsionales --</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="cf-tab" data-toggle="tab" href="#cf" role="tab" aria-controls="cf"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Cargas Familiares --</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="cr-tab" data-toggle="tab" href="#cr" role="tab" aria-controls="cr"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Concepto Remuneraciones</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="doc-tab" data-toggle="tab" href="#doc" role="tab" aria-controls="doc"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Documentos --</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="horario-tab" data-toggle="tab" href="#horario" role="tab" aria-controls="horario"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Horario --</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="vacation-tab" data-toggle="tab" href="#vacation" role="tab" aria-controls="vacation"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Vacaciones y Ausencias --</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="settlement-tab" data-toggle="tab" href="#settlement" role="tab" aria-controls="settlement"
+                    aria-selected="false" onclick="onOrOffButtons(this)">Finiquito --</a>
+            </li>
+            {% endif %}
+        </ul>
+
+        <div class="tab-content pt-4" id="myTabContent">
+            <div class="tab-pane fade show active" id="dp" role="tabpanel" aria-labelledby="dp-tab">
+                {% include "client/page/usuario/forms/forms_add_collaborator_file.html" %}
+            </div>
+            {% if action|lower == 'editar' %}
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                {% include "client/page/usuario/tables/contactos.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="dl" role="tabpanel" aria-labelledby="dl-tab">
+                {% include "client/page/usuario/forms/forms_add_personal_information.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="dpa" role="tabpanel" aria-labelledby="dpa-tab">
+                {% include "client/page/usuario/forms/forms_payments.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="d-prev" role="tabpanel" aria-labelledby="d-prev-tab">
+                {% include "client/page/usuario/forms/forms_forecast_data.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="cf" role="tabpanel" aria-labelledby="cf-tab">
+                {% include "client/page/usuario/tables/family_responsibilities.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="cr" role="tabpanel" aria-labelledby="cr-tab">
+                {% include "client/page/usuario/tables/remuneration_concept.html" %}
+            </div>
+
+            <div class="tab-pane fade" id="doc" role="tabpanel" aria-labelledby="doc-tab">
+                7
+            </div>
+
+            <div class="tab-pane fade" id="horario" role="tabpanel" aria-labelledby="horario-tab">
+                8
+            </div>
+
+            <div class="tab-pane fade" id="vacation" role="tabpanel" aria-labelledby="vacation-tab">
+                9
+            </div>
+
+            <div class="tab-pane fade" id="settlement" role="tabpanel" aria-labelledby="settlement-tab">
+                10
+            </div>
+            {% endif %}
+        </div>
+        
+    </div>
+</div>
+
+{% endblock %}
+
+{% block static_down %}
+<script src="{% statics_tag_amanda 'lib/datatables/jquery.dataTables.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/datatables-responsive/dataTables.responsive.js' %}"></script>
+<script src="{% statics_tag_amanda 'lib/select2/js/select2.min.js' %}"></script>
+{% endblock %}
+
+{% block script_tag %}
+<script>
+    setTimeout(function() {
+        $(".alert-danger, .alert-success").css("display", "none");
+    },5000);
+    const onOrOffButtons = (self) => {
+        const camposRequeridos = [
+            { tab: "dp-tab", buton: "btn-dp-tab" },
+            { tab: "contact-tab", buton: "btn-contact-tab" },
+            { tab: "dl-tab", buton: "btn-dl-tab" },
+            { tab: "dpa-tab", buton: "btn-dpa-tab" },
+            { tab: "d-prev-tab", buton: "btn-d-prev-tab" },
+            { tab: "cf-tab", buton: "btn-cf-tab" },
+            { tab: "doc-tab", buton: "btn-doc-tab" },
+            { tab: "horario-tab", buton: "btn-horario-tab" },
+            { tab: "cf-tab", buton: "btn-cf-tab" },
+        ];
+
+        const existeElemento = camposRequeridos.find(elemento => elemento.tab === self.id);
+        if (existeElemento) {
+            const elementos = camposRequeridos.filter(function(campo) {
+                return campo.buton !== existeElemento.buton;
+            });
+            elementos.forEach(function(campo) {
+                $("#" + campo.buton).addClass("btn-off");
+            });
+            $("#" + existeElemento.buton).removeClass("btn-off");
+        } else {
+            console.log("El elemento " + self.id + " no existe en el array.");
+        }
+    }
+    
+    const redirectToUrl = (url) => {
+        location.href = url;
+    }
+
+    const redirectToUrlLink = (url) => {
+        window.open(url, '_blank');
+    };
+
+    const deleteObject = (url) => {
+        $.confirm({
+            title: 'Confirmación',
+            content: 'Esta eguro de eliminar el dato?, para eliminar haga clic confirmar, de lo contrario cancelar',
+            buttons: {
+                confirmar: function () {
+                    location.href = url;
+                },
+                cancelar: function () {
+                    $.alert('Operación cancelada');
+                },
+            }
+        });
+    }
+
+    $('.fc-datepicker').datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        dateFormat: 'dd-mm-yy',
+    });
+
+    $('.select2-show-search').select2({
+        minimumResultsForSearch: ''
+    });
+
+    $('.select2-one').select2({
+        minimumResultsForSearch: Infinity
+    });
+
+    const cargarInput = (inputOrigenId, inputDestinoId, inputDestinoId2) => {
+        const inputOrigen = document.getElementById(inputOrigenId);
+        const inputDestino = document.getElementById(inputDestinoId);
+        const inputDestino2 = document.getElementById(inputDestinoId2);
+        
+        inputOrigen.addEventListener('blur', function() {
+            inputDestino.value = inputOrigen.value;
+            inputDestino2.value = inputOrigen.value;
+        });
+    }
+
+    cargarInput('id_col_rut', 'id_password', 'id_username');
+
+</script>
+{% endblock %}
