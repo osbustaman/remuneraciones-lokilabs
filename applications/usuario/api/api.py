@@ -1,19 +1,77 @@
 
+from applications.empresa.models import Afp
+from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities
+from applications.usuario.api.serializer import AfpSerializer, PersonalDataSerializer
+
+from django.contrib.auth.models import User
 from django.db.models import F, Value, CharField, Q
 from django.db.models.functions import Concat
 
 from rest_framework.response import Response
-from rest_framework import generics, status
+from rest_framework import generics, status, serializers
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from applications.base.models import Comuna, Region
 
-from applications.empresa.models import Afp
-from applications.usuario.api.serializer import AfpSerializer
+@permission_classes([AllowAny])
+class ApiGetPersonalData(generics.GenericAPIView):
 
-from django.contrib.auth.models import User
+    queryset = Colaborador.objects.all()
+    serializer_class = PersonalDataSerializer
 
-from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities
+    def get(self, request, *args, **kwargs):
+        try:
+            id_user = int(kwargs['pk'])
+
+            data_objects = Colaborador.objects.filter(
+                user_id=id_user
+            ).annotate(
+                id_user=F('user__id'),
+                rut=F('user__colaborador__col_rut'),
+                extranjero=F('user__colaborador__col_extranjero'),
+                nacionalidad=F('user__colaborador__col_nacionalidad'),
+                sexo=F('user__colaborador__col_sexo'),
+                fechanacimiento=F('user__colaborador__col_fechanacimiento'),
+                estadocivil=F('user__colaborador__col_estadocivil'),
+                direccion=F('user__colaborador__col_direccion'),
+                estudios=F('user__colaborador__col_estudios'),
+                estadoestudios=F('user__colaborador__col_estadoestudios'),
+                titulo=F('user__colaborador__col_titulo'),
+                licenciaconducir=F('user__colaborador__col_licenciaconducir'),
+                tipolicencia=F('user__colaborador__col_tipolicencia'),
+                tipousuario=F('user__colaborador__col_tipousuario')
+            )
+
+            if not data_objects.exists():
+                return Response({"error": "Usuario no existe"}, status=status.HTTP_404_NOT_FOUND)
+
+            # Serializar los datos obtenidos
+            serializer = self.serializer_class(data=data_objects, many=True)
+            serializer.is_valid()  # Validar los datos
+            serialized_data = serializer.data  # Obtener los datos serializados
+
+            serialized_data["pais"] = data_objects[0].pais_id
+            serialized_data["region"] = data_objects[0].region_id
+            serialized_data["comuna"] = data_objects[0].comuna_id
+
+            response_data = {
+                "pk": id_user,
+                "data": serialized_data
+            }
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except TypeError:
+            response_data = {
+                "error": "El registro del colaborador esta incompleto"
+            }
+            return Response(response_data, status=status.HTTP_404_NOT_FOUND)
+        
+        except serializers.ValidationError as e:
+            return Response(e.detail, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 @permission_classes([AllowAny])
 class AfpDetailApiView(generics.RetrieveAPIView):

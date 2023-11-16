@@ -193,9 +193,9 @@ def edit_collaborator_file_old(request, id, col_id):
 
 @login_required
 def edit_collaborator_file(request, id, col_id):
-
     data = {
-
+        "user_id": id,
+        "col_id": col_id
     }
     return render(request, 'client/page/usuario/add_collaborator_file.html', data)
 

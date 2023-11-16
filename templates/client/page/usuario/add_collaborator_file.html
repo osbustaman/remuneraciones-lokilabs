@@ -68,15 +68,163 @@ s
 
         <div class="col-lg-9">
             <div class="card">
-                <div class="card-header bg-transparent pd-20">
-                    <h6 class="card-title tx-uppercase tx-12 mg-b-0">User Transaction History</h6>
-                </div><!-- card-header -->
-                <div class="table-responsive">
+                <div class="card pd-10 pd-sm-20 form-layout form-layout-5">
 
-                </div><!-- table-responsive -->
-                <div class="card-footer tx-12 pd-y-15 bg-transparent bd-t bd-gray-200">
-                    <a href=""><i class="fa fa-angle-down mg-r-5"></i>View All Transaction History</a>
-                </div><!-- card-footer -->
+                    <form action="" id="form" method="post">
+                        <div class="row row-xs">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Rut:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="rut">
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Apellidos:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="apellidos">
+                            </div>
+                        </div>
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Nombres:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="nombres">
+                            </div>
+                        </div>
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Email:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="email">
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Dirección:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="direccion">
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> País:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="pais" class="form-control form-control-sm">
+                                    <option value="[Seleccione]"></option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Región:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="region" class="form-control form-control-sm">
+                                    <option value="[Seleccione]"></option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Comuna:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="comuna" class="form-control form-control-sm">
+                                    <option value="[Seleccione]"></option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Sexo:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="sexo" class="form-control form-control-sm">
+                                    <option value="">[Seleccione]</option>
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Estado Civil:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="estado_civil" class="form-control form-control-sm">
+                                    <option value="">[Seleccione]</option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Es Extranjero?:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="extranjero" class="form-control form-control-sm">
+                                    <option value="">[Seleccione]</option>
+                                    <option value="S">Si</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Nacionalidad:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="nacionalidad">
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Fecha Nacimiento:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" name="fechanacimiento" class="form-control fc-datepicker form-control-sm" placeholder="YYYY-MM-DD" required id="fechanacimiento">
+                            </div>
+                        </div><!-- row -->
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Tipo Estudios:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="tipo_estudios" class="form-control form-control-sm">
+                                    <option value="">[Seleccione]</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Estado Estudios:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="estado_estudios" class="form-control form-control-sm">
+                                    <option value="">[Seleccione]</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Título:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="titulo">
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Licencia Conducir:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="licencia_conducir" class="form-control form-control-sm">
+                                    <option value="">[Seleccione]</option>
+                                    <option value="S">Si</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Clase Licencia:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <input type="text" class="form-control form-control-sm" id="clase_licencia">
+                            </div>
+                        </div><!-- row -->
+
+                        <div class="row row-xs mg-t-20">
+                            <label class="col-sm-2 form-control-label"><span class="tx-danger">*</span> Rol:</label>
+                            <div class="col-sm-4 mg-t-10 mg-sm-t-0">
+                                <select id="rol" class="form-control form-control-sm">
+                                    <option value="">[Seleccione]</option>
+                                    <option value="S">Si</option>
+                                    <option value="N">No</option>
+                                </select>
+                            </div>
+                        </div><!-- row -->
+                    </form>
+                    <div class="row row-xs mg-t-30">
+                        <div class="col-sm-10 mg-l-auto">
+                            <div class="form-layout-footer">
+                                <button class="btn btn-info mg-r-5">Guardar</button>
+                            </div><!-- form-layout-footer -->
+                        </div><!-- col-8 -->
+                    </div>
+                </div>
             </div><!-- card -->
         </div><!-- col-8 -->
 
@@ -96,7 +244,24 @@ s
 
 {% block script_tag %}
 <script>
-    
+
+$('.fc-datepicker').datepicker({
+    showOtherMonths: true,
+    selectOtherMonths: true,
+    dateFormat: 'yy-mm-dd',
+});
+
+const datos_personales = document.getElementById('datos_personales');
+
+const formulario = document.getElementById('form');
+const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
+
+// Agregar un listener para el evento 'click'
+datos_personales.addEventListener('click', function() {
+    // Acciones a realizar cuando se hace clic en el div
+    console.log('Se hizo clic en el div');
+    // Puedes agregar aquí la lógica que deseas ejecutar al hacer clic en el div
+});
 
 </script>
 {% endblock %}

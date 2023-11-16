@@ -12,7 +12,7 @@ class Pais(TimeStampedModel):
         return self.pa_id
 
     def __str__(self):
-        return "{n}".format(n=self.pa_nombre.title())
+        return f"{self.pa_id}"
 
     def save(self, *args, **kwargs):
         # print "save cto"
@@ -36,7 +36,7 @@ class Region(TimeStampedModel):
         return self.re_id
 
     def __str__(self):
-        return "{n}".format(n=self.re_nombre.title())
+        return f"{self.re_id}"
 
     def save(self, *args, **kwargs):
         # print "save cto"
@@ -58,7 +58,7 @@ class Comuna(TimeStampedModel):
         return self.com_id
 
     def __str__(self):
-        return "{n}".format(n=self.com_nombre.title())
+        return f"{self.com_id}"
 
     def save(self, *args, **kwargs):
         # print "save cto"
