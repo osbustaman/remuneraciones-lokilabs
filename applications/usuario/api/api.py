@@ -17,6 +17,9 @@ from applications.base.models import Comuna, Pais, Region
 
 @permission_classes([AllowAny])
 class ApiLoadPageColaborator(generics.ListAPIView):
+    """
+    
+    """
 
     def get(self, request, *args, **kwargs):
 
@@ -44,7 +47,7 @@ class ApiLoadPageColaborator(generics.ListAPIView):
             "opciones_dict": opciones_dict,
             "estados_estudios_dict": estados_estudios_dict,
             "tipo_estudios_dict": tipo_estudios_dict,
-            "dicc_object_rol": dicc_object_rol
+            "object_rol_dict": dicc_object_rol
         }
 
         return Response(response_data, status=status.HTTP_200_OK)

@@ -70,7 +70,7 @@ s
             <div class="card">
                 <div class="card pd-10 pd-sm-20 form-layout form-layout-5">
 
-                    <form action="" id="form" method="post">
+                    <div id="div_datos_personales">
                         <div class="row row-xs">
                             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Rut:</label>
                             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
@@ -105,7 +105,7 @@ s
                             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> País:</label>
                             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
                                 <select id="pais" class="form-control form-control-sm">
-                                    <option value="[Seleccione]"></option>
+                                    <option value="">[Seleccione]</option>
                                 </select>
                             </div>
                         </div><!-- row -->
@@ -113,7 +113,7 @@ s
                             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Región:</label>
                             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
                                 <select id="region" class="form-control form-control-sm">
-                                    <option value="[Seleccione]"></option>
+                                    <option value="">[Seleccione]</option>
                                 </select>
                             </div>
                         </div><!-- row -->
@@ -121,7 +121,7 @@ s
                             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Comuna:</label>
                             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
                                 <select id="comuna" class="form-control form-control-sm">
-                                    <option value="[Seleccione]"></option>
+                                    <option value="">[Seleccione]</option>
                                 </select>
                             </div>
                         </div><!-- row -->
@@ -152,7 +152,7 @@ s
                         <div class="row row-xs mg-t-20">
                             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Nacionalidad:</label>
                             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                <input type="text" class="form-control form-control-sm" id="nacionalidad">
+                                <input type="text" class="form-control form-control-sm" id="nacionalidad" value="Chileno">
                             </div>
                         </div><!-- row -->
                         <div class="row row-xs mg-t-20">
@@ -208,14 +208,17 @@ s
                                 </select>
                             </div>
                         </div><!-- row -->
-                    </form>
-                    <div class="row row-xs mg-t-30">
-                        <div class="col-sm-10 mg-l-auto">
-                            <div class="form-layout-footer">
-                                <button class="btn btn-info mg-r-5">Guardar</button>
-                            </div><!-- form-layout-footer -->
-                        </div><!-- col-8 -->
+                        
+                        <div class="row row-xs mg-t-30">
+                            <div class="col-sm-10 mg-l-auto">
+                                <div class="form-layout-footer">
+                                    <button class="btn btn-info mg-r-5">Guardar</button>
+                                </div><!-- form-layout-footer -->
+                            </div><!-- col-8 -->
+                        </div>
                     </div>
+
+                    <div id="datos_laborales">adadasd</div>
                 </div>
             </div><!-- card -->
         </div><!-- col-8 -->
@@ -244,110 +247,103 @@ $('.fc-datepicker').datepicker({
 });
 
 const datos_personales = document.getElementById('datos_personales');
+const datos_laborales = document.getElementById('datos_laborales');
 const formulario = document.getElementById('form');
 
+datos_personales.style.display = 'none';
+datos_laborales.style.display = 'none';
 
 const load_page = "{% url 'usuario_app:ApiLoadPageColaborator' %}";
 
+const handleResponse = async (response) => {
+    try {
+        let {
+            data: { sexo_dict, estado_civil_dict, opciones_dict, tipo_estudios_dict, estados_estudios_dict, object_rol_dict, paises, regiones }
+        } = response;
+
+        const selectSexo = document.getElementById('sexo');
+        const selectEstadoCivil = document.getElementById('estado_civil');
+        const selectExtranjero = document.getElementById('extranjero');
+        const selectLicenciaConducir = document.getElementById('licencia_conducir');
+        const selectTipoEstudiosDict = document.getElementById('tipo_estudios');
+        const selectEstadosEstudiosDict = document.getElementById('estado_estudios');
+        const selectObjectRolDict = document.getElementById('rol');
+        const selectPaises = document.getElementById('pais');
+        const selectRegiones = document.getElementById('region');
+
+        const createOptions = (obj, selectElement) => {
+            const options = Object.entries(obj).map(([value, label]) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.text = label;
+                return option;
+            });
+
+            options.forEach(option => {
+                selectElement.appendChild(option);
+            });
+        };
+
+        const opcionesRegiones = Object.entries(regiones).map(value => {
+            const option = document.createElement('option');
+            option.value = value[1].re_id;
+            option.text = value[1].re_nombre;
+            return option;
+        });
+
+        opcionesRegiones.forEach(option => {
+            selectRegiones.appendChild(option);
+        });
+
+        const opcionesPaises = Object.entries(paises).map(value => {
+            const option = document.createElement('option');
+            option.value = value[1].pa_id;
+            option.text = value[1].pa_nombre;
+            return option;
+        });
+
+        opcionesPaises.forEach(option => {
+            selectPaises.appendChild(option);
+        });
+
+        createOptions(object_rol_dict, selectObjectRolDict);
+        createOptions(sexo_dict, selectSexo);
+        createOptions(estado_civil_dict, selectEstadoCivil);
+        createOptions(opciones_dict, selectExtranjero);
+        createOptions(opciones_dict, selectLicenciaConducir);
+        createOptions(tipo_estudios_dict, selectTipoEstudiosDict);
+        createOptions(estados_estudios_dict, selectEstadosEstudiosDict);
+
+    } catch (error) {
+        console.error('Error en la solicitud:', error.message);
+    }
+};
+
+
 axios.get(load_page)
-        .then(response => {
-            console.log(response)
-
-            let { data: { sexo_dict } } = response;
-            let { data: { estado_civil_dict } } = response;
-            let { data: { opciones_dict } } = response;
-            let { data: { tipo_estudios_dict } } = response;
-            
-            console.log(tipo_estudios_dict)
-
-            const selectSexo = document.getElementById('sexo'); // Obtener el elemento select por su ID
-
-            // Iterar sobre el objeto generos y crear opciones para cada elemento
-            const opciones = Object.entries(sexo_dict).map(([value, label]) => {
-                const option = document.createElement('option'); // Crear un elemento opción
-                option.value = value; // Establecer el valor de la opción
-                option.text = label; // Establecer el texto visible de la opción
-                return option; // Devolver la opción creada
-            });
-
-            // Agregar las opciones al elemento select
-            opciones.forEach(option => {
-                selectSexo.appendChild(option); // Agregar la opción al select
-            });
+    .then(response => handleResponse(response))
+    .catch(error => {
+        console.error('Error en la solicitud:', error.message);
+    });
 
 
-            const selectEstadoCivil = document.getElementById('estado_civil'); // Obtener el elemento select por su ID
+    datos_personales.addEventListener('click', async () => {
+    try {
+        const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
+        const response = await axios.get(endpoint);
 
-            // Iterar sobre el objeto generos y crear opciones para cada elemento
-            const opcionesEstadoCivil = Object.entries(estado_civil_dict).map(([value, label]) => {
-                const option = document.createElement('option'); // Crear un elemento opción
-                option.value = value; // Establecer el valor de la opción
-                option.text = label; // Establecer el texto visible de la opción
-                return option; // Devolver la opción creada
-            });
+        const tbody = data.map(result => {
+            // Inserta aquí la lógica para generar las filas de la tabla según tus requerimientos
+            return ``; // Aquí deberías retornar la fila de la tabla generada con los datos correspondientes
+        }).join('');
 
-            // Agregar las opciones al elemento select
-            opcionesEstadoCivil.forEach(option => {
-                selectEstadoCivil.appendChild(option); // Agregar la opción al select
-            });
+        searchResults.innerHTML = tbody;
 
-
-            const selectExtranjero = document.getElementById('extranjero'); // Obtener el elemento select por su ID
-            const selectLicenciaConducir = document.getElementById('licencia_conducir'); // Obtener el elemento select por su ID
-
-            // Iterar sobre el objeto generos y crear opciones para cada elemento
-            const opcionesSiNo = Object.entries(opciones_dict).map(([value, label]) => {
-                const option = document.createElement('option'); // Crear un elemento opción
-                option.value = value; // Establecer el valor de la opción
-                option.text = label; // Establecer el texto visible de la opción
-                return option; // Devolver la opción creada
-            });
-
-            // Agregar las opciones al elemento select
-            opcionesSiNo.forEach(option => {
-                selectExtranjero.appendChild(option); // Agregar la opción al select
-                selectLicenciaConducir.appendChild(option); // Agregar la opción al select
-            });
-
-
-            const selectTipoEstudiosDict = document.getElementById('tipo_estudios');
-
-            // Iterar sobre el objeto generos y crear opciones para cada elemento
-            const opcionesTipoEstudiosDict = Object.entries(tipo_estudios_dict).map(([value, label]) => {
-                const option = document.createElement('option'); // Crear un elemento opción
-                option.value = value; // Establecer el valor de la opción
-                option.text = label; // Establecer el texto visible de la opción
-                return option; // Devolver la opción creada
-            });
-
-            // Agregar las opciones al elemento select
-            opcionesTipoEstudiosDict.forEach(option => {
-                selectTipoEstudiosDict.appendChild(option); // Agregar la opción al select
-            });
-
-
-
-        })
-        .catch(error => {
-            console.error('Error en la solicitud:', error.message);
-        });
-
-
-// Agregar un listener para el evento 'click'
-datos_personales.addEventListener('click', function() {
-    // Acciones a realizar cuando se hace clic en el div
-    // Puedes agregar aquí la lógica que deseas ejecutar al hacer clic en el div
-
-    const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
-
-    axios.get(endpoint)
-        .then(response => {
-            
-        })
-        .catch(error => {
-            console.error('Error en la solicitud:', error.message);
-        });
+    } catch (error) {
+        console.error('Error en la solicitud:', error.message);
+    }
 });
+
 
 </script>
 {% endblock %}
