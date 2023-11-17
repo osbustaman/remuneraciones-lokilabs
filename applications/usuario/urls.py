@@ -1,5 +1,5 @@
 from django.urls import path
-from applications.usuario.api.api import AfpDetailApiView, ApiGetDataUserPage, ApiGetPersonalData, ListColaborate
+from applications.usuario.api.api import AfpDetailApiView, ApiGetDataUserPage, ApiGetPersonalData, ApiLoadPageColaborator, ListColaborate
 
 from applications.usuario.views import (
     add_forecast_data,
@@ -43,6 +43,7 @@ urlpatterns = [
     path('mi-perfil/<pk>/', ApiGetDataUserPage.as_view(), name='mi_perfil'),
     path('lista-colaboradores/<pk>', ListColaborate.as_view(), name='ListColaborate'),
     path('datos-personales/<pk>', ApiGetPersonalData.as_view(), name='ApiGetPersonalData'),
+    path('api-editar-colaborador', ApiLoadPageColaborator.as_view(), name='ApiLoadPageColaborator'),
 
 
 

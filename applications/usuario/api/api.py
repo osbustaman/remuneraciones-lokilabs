@@ -1,5 +1,6 @@
 
 from applications.empresa.models import Afp
+from applications.security.models import Rol
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities
 from applications.usuario.api.serializer import AfpSerializer, PersonalDataSerializer
 
@@ -11,7 +12,43 @@ from rest_framework.response import Response
 from rest_framework import generics, status, serializers
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
-from applications.base.models import Comuna, Region
+from applications.base.models import Comuna, Pais, Region
+
+
+@permission_classes([AllowAny])
+class ApiLoadPageColaborator(generics.ListAPIView):
+
+    def get(self, request, *args, **kwargs):
+
+        object_pais = Pais.objects.all()
+        dicc_paises = list(object_pais.values())
+
+        object_region = Region.objects.all()
+        dicc_region = list(object_region.values())
+
+        sexo_dict = {key: value for key, value in Colaborador.SEXO}
+        estado_civil_dict = {key: value for key, value in Colaborador.ESTADO_CIVIL}
+        opciones_dict = {key: value for key, value in Colaborador.OPCIONES}
+        estados_estudios_dict = {key: value for key, value in Colaborador.ESTADO_ESTUDIOS}
+        tipo_estudios_dict = {key: value for key, value in Colaborador.TIPO_ESTUDIOS}
+
+
+        object_rol = Rol.objects.filter(rol_active = 'S', rol_client = 'S')
+        dicc_object_rol = list(object_rol.values())
+
+        response_data = {
+            "paises": dicc_paises,
+            "regiones": dicc_region,
+            "sexo_dict": sexo_dict,
+            "estado_civil_dict": estado_civil_dict,
+            "opciones_dict": opciones_dict,
+            "estados_estudios_dict": estados_estudios_dict,
+            "tipo_estudios_dict": tipo_estudios_dict,
+            "dicc_object_rol": dicc_object_rol
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
+
 
 @permission_classes([AllowAny])
 class ApiGetPersonalData(generics.GenericAPIView):
@@ -50,9 +87,9 @@ class ApiGetPersonalData(generics.GenericAPIView):
             serializer.is_valid()  # Validar los datos
             serialized_data = serializer.data  # Obtener los datos serializados
 
-            serialized_data["pais"] = data_objects[0].pais_id
-            serialized_data["region"] = data_objects[0].region_id
-            serialized_data["comuna"] = data_objects[0].comuna_id
+            serialized_data[0]["pais"] = data_objects[0].pais_id
+            serialized_data[0]["region"] = data_objects[0].region_id
+            serialized_data[0]["comuna"] = data_objects[0].comuna_id
 
             response_data = {
                 "pk": id_user,
@@ -88,7 +125,8 @@ class AfpDetailApiView(generics.RetrieveAPIView):
                 raise IndexError("La AFP no existe")
         except IndexError as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        
+
+
 @permission_classes([AllowAny])
 class ListColaborate(generics.ListAPIView):
     queryset = None
@@ -121,7 +159,7 @@ class ListColaborate(generics.ListAPIView):
             return Response(list_user, status=status.HTTP_200_OK)
         except IndexError as e:
             return Response({"error": str(e)}, status=status.HTTP_404_NOT_FOUND)
-        
+
 
 @permission_classes([AllowAny])
 class ApiGetDataUserPage(generics.ListAPIView):
