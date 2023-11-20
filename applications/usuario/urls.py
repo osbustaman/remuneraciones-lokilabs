@@ -10,7 +10,8 @@ from applications.usuario.views import (
     , contact_delete
     , add_personal_information
     , add_form_payment
-    , add_family_responsibilities
+    , add_family_responsibilities,
+    edit_collaborator_file_old
     , edit_family_responsibilities
     , family_responsibilities_delete,
     init_page
@@ -26,6 +27,8 @@ urlpatterns = [
     path('collaborator/file/', collaborator_file, name='collaborator_file'),
     path('collaborator/file/add/', add_collaborator_file, name='add_collaborator_file'),
     path('editar-colaborador/<str:id>/<str:col_id>', edit_collaborator_file, name='edit_collaborator_file'),
+
+    path('editar-colaborador/old/<str:id>/<str:col_id>', edit_collaborator_file_old, name='edit_collaborator_file_old'),
 
     path('collaborator/add/contact/<int:user_id>/<int:col_id>/', add_contact, name='add_contact'),
     path('collaborator/delete/contact/<int:con_id>/<int:user_id>/<int:col_id>/', contact_delete, name='contact_delete'),

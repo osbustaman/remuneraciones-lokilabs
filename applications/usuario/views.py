@@ -189,7 +189,7 @@ def edit_collaborator_file_old(request, id, col_id):
         'objects_concepts': objects_concepts,
         'conceppts_user_objects': conceppts_user_objects,
     }
-    return render(request, 'client/page/usuario/add_collaborator_file.html', data)
+    return render(request, 'client/page/usuario/add_collaborator_file_old.html', data)
 
 @login_required
 def edit_collaborator_file(request, id, col_id):
@@ -198,6 +198,7 @@ def edit_collaborator_file(request, id, col_id):
         "col_id": col_id
     }
     return render(request, 'client/page/usuario/add_collaborator_file.html', data)
+
 
 @login_required
 def add_contact(request, user_id, col_id):
