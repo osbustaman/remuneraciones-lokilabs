@@ -218,7 +218,7 @@ s
                         </div>
                     </div>
 
-                    <div id="datos_laborales">adadasd</div>
+                    <div id="div_datos_laborales">adadasd</div>
                 </div>
             </div><!-- card -->
         </div><!-- col-8 -->
@@ -248,10 +248,14 @@ $('.fc-datepicker').datepicker({
 
 const datos_personales = document.getElementById('datos_personales');
 const datos_laborales = document.getElementById('datos_laborales');
+
+const div_datos_personales = document.getElementById('div_datos_personales');
+const div_datos_laborales = document.getElementById('div_datos_laborales');
+
 const formulario = document.getElementById('form');
 
-datos_personales.style.display = 'none';
-datos_laborales.style.display = 'none';
+div_datos_personales.style.display = 'none';
+div_datos_laborales.style.display = 'none';
 
 const load_page = "{% url 'usuario_app:ApiLoadPageColaborator' %}";
 
@@ -268,8 +272,8 @@ const handleResponse = async (response) => {
         const selectTipoEstudiosDict = document.getElementById('tipo_estudios');
         const selectEstadosEstudiosDict = document.getElementById('estado_estudios');
         const selectObjectRolDict = document.getElementById('rol');
-        const selectPaises = document.getElementById('pais');
-        const selectRegiones = document.getElementById('region');
+        //const selectPaises = document.getElementById('pais');
+        //const selectRegiones = document.getElementById('region');
 
         const createOptions = (obj, selectElement) => {
             const options = Object.entries(obj).map(([value, label]) => {
@@ -284,7 +288,7 @@ const handleResponse = async (response) => {
             });
         };
 
-        const opcionesRegiones = Object.entries(regiones).map(value => {
+        /*const opcionesRegiones = Object.entries(regiones).map(value => {
             const option = document.createElement('option');
             option.value = value[1].re_id;
             option.text = value[1].re_nombre;
@@ -304,7 +308,7 @@ const handleResponse = async (response) => {
 
         opcionesPaises.forEach(option => {
             selectPaises.appendChild(option);
-        });
+        });*/
 
         createOptions(object_rol_dict, selectObjectRolDict);
         createOptions(sexo_dict, selectSexo);
@@ -327,17 +331,81 @@ axios.get(load_page)
     });
 
 
-    datos_personales.addEventListener('click', async () => {
+datos_personales.addEventListener('click', async () => {
     try {
         const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
         const response = await axios.get(endpoint);
 
-        const tbody = data.map(result => {
-            // Inserta aquí la lógica para generar las filas de la tabla según tus requerimientos
-            return ``; // Aquí deberías retornar la fila de la tabla generada con los datos correspondientes
-        }).join('');
+        const { data: { data } } = response;
+        const { data: { regions, comuns, countries } } = response;
+        const { col_rut, col_extranjero, col_nacionalidad, col_sexo, col_fechanacimiento, email } = data[0]
+        const { col_estadocivil, col_direccion, pais, region, comuna, first_name, last_name } = data[0]
+        const { col_estudios, col_estadoestudios, col_titulo, col_licenciaconducir, col_tipolicencia, col_tipousuario } = data[0]
+        
+        const select_pais = document.getElementById('pais');
+        const select_regiones = document.getElementById('region');
+        const select_comuns = document.getElementById('comuna');
 
-        searchResults.innerHTML = tbody;
+        document.getElementById('rut').value = col_rut;
+        document.getElementById('apellidos').value = first_name;
+        document.getElementById('nombres').value = last_name;
+        document.getElementById('email').value = email;
+        document.getElementById('direccion').value = col_direccion;
+
+        const options_pais = countries.map(result => {
+            return `
+            <option value="${result.pa_id}">${result.pa_nombre}</option>
+            `; 
+        }).join('');
+        select_pais.innerHTML = options_pais;
+        select_pais.value = pais;
+
+        const options_select = regions.map(result => {
+            return `
+            <option value="${result.re_id}">${result.re_nombre}</option>
+            `; 
+        }).join('');
+        select_regiones.innerHTML = options_select;
+        select_regiones.value = region;
+
+        const options_comuns = comuns.map(result => {
+            return `
+            <option value="${result.com_id}">${result.com_nombre}</option>
+            `; 
+        }).join('');
+        select_comuns.innerHTML = options_comuns;
+        select_comuns.value = comuna;
+
+        document.getElementById('sexo').value = col_sexo;
+        document.getElementById('estado_civil').value = col_estadocivil;
+        document.getElementById('extranjero').value = col_extranjero;
+        document.getElementById('nacionalidad').value = col_nacionalidad;
+        document.getElementById('fechanacimiento').value = col_fechanacimiento;
+        document.getElementById('tipo_estudios').value = col_estadoestudios;
+
+        /*
+            {
+                "col_rut": "17255241-2",
+                "col_extranjero": 0,
+                "col_nacionalidad": "chileno",
+                "col_sexo": "M",
+                "col_fechanacimiento": "1985-10-11",
+                "col_estadocivil": 1,
+                "col_direccion": "ines matte urrejola 848",
+                "pais": 1,
+                "region": 6,
+                "comuna": 103,
+                "col_estudios": 2,
+                "col_estadoestudios": 1,
+                "col_titulo": "analista programador",
+                "col_licenciaconducir": 1,
+                "col_tipolicencia": "B",
+                "col_tipousuario": 5
+            }
+        */
+
+        div_datos_personales.style.display = 'block';
+        div_datos_laborales.style.display = 'none';
 
     } catch (error) {
         console.error('Error en la solicitud:', error.message);

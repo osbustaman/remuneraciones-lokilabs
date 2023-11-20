@@ -93,10 +93,20 @@ class ApiGetPersonalData(generics.GenericAPIView):
             serialized_data[0]["pais"] = data_objects[0].pais_id
             serialized_data[0]["region"] = data_objects[0].region_id
             serialized_data[0]["comuna"] = data_objects[0].comuna_id
+            serialized_data[0]["first_name"] = data_objects[0].user.first_name
+            serialized_data[0]["last_name"] = data_objects[0].user.last_name
+            serialized_data[0]["email"] = data_objects[0].user.email
+
+            object_pais = Pais.objects.all()
+            object_regions = Region.objects.filter(pais = data_objects[0].pais)
+            object_comuns = Comuna.objects.filter(region = data_objects[0].region)
 
             response_data = {
                 "pk": id_user,
-                "data": serialized_data
+                "data": serialized_data,
+                "regions": list(object_regions.values()),
+                "comuns": list(object_comuns.values()),
+                "countries": list(object_pais.values())
             }
             return Response(response_data, status=status.HTTP_200_OK)
 
