@@ -187,16 +187,16 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Licencia Conducir:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="licencia_conducir" class="form-control form-control-sm">
+                                    <select id="licencia_conducir" class="form-control form-control-sm" onchange="change_validation()">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
                             </div><!-- row -->
 
                             <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Clase Licencia:</label>
+                                <label class="col-sm-3 form-control-label"><span class="tx-danger"></span> Clase Licencia:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="clase_licencia">
+                                    <input type="text" class="form-control form-control-sm not-required" id="clase_licencia">
                                 </div>
                             </div><!-- row -->
 
@@ -382,7 +382,6 @@ datos_personales.addEventListener('click', async () => {
 });
 
 const validate_inputs = (form_name) => {
-
     const formulario = document.getElementById(form_name);
     const elementos = formulario.elements;
     let is_vacio = true;
@@ -393,7 +392,10 @@ const validate_inputs = (form_name) => {
         if(elemento.type === "button"){
         }else{
             const value = elemento.value.trim();
-            if ((elemento.value).length === 0) {
+            const classes = elemento.className.split(' ');
+            const hasRequiredClass = classes.includes('not-required');
+
+            if (!hasRequiredClass && (elemento.value).length === 0) {
                 is_vacio = false;
             }
         }
@@ -402,7 +404,6 @@ const validate_inputs = (form_name) => {
     if(!is_vacio){
         return false;
     }
-
     return true;
 }
 
@@ -414,11 +415,15 @@ const get_dict_form = (form_name) => {
         const elemento = elementos[i];
         let key = elemento.id;
 
-        diccionario[key] = elemento.value;
+        const classes = elemento.className.split(' ');
+        const hasRequiredClass = classes.includes('not-required');
+
+        if (!hasRequiredClass) {
+            diccionario[key] = elemento.value;
+        }
     }
     return diccionario;
 }
-
 
 const save_data = (form_name) => {
     const dict_form = get_dict_form(form_name);
@@ -428,10 +433,23 @@ const save_data = (form_name) => {
 
     if(!_validate_inputs){
         console.log(`no se envian datos`);
+
+
     }else{
         console.log(`se envia datos`);
     }
 }
+
+const change_validation = () => {
+    const input = document.getElementById('licencia_conducir');
+    const input_txt = document.getElementById('clase_licencia');
+
+    if(input.value === '1'){
+        input_txt.classList.remove('not-required');
+    }else{
+        input_txt.classList.add('not-required');
+    }
+};
 
 
 </script>
