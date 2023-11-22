@@ -16,6 +16,39 @@ from applications.base.models import Comuna, Pais, Region
 
 
 @permission_classes([AllowAny])
+class PersonalDataEditView(generics.RetrieveUpdateAPIView):
+    queryset = Colaborador.objects.all()
+    serializer_class = PersonalDataSerializer
+    lookup_field = 'user'  # El campo que filtra por el usuario (puedes cambiarlo al campo correcto)
+
+    def get_object(self):
+        user_id = self.kwargs.get(self.lookup_field)
+        obj = Colaborador.objects.filter(user_id=user_id).first()
+        return obj
+
+    def put(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+
+@permission_classes([AllowAny])
+class PersonalDataCreateView(generics.CreateAPIView):
+    queryset = Colaborador.objects.all()
+    serializer_class = PersonalDataSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
+
+
+
+@permission_classes([AllowAny])
 class ApiLoadPageColaborator(generics.ListAPIView):
     """
     

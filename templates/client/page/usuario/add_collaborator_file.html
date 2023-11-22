@@ -444,19 +444,35 @@ const get_dict_form = (form_name) => {
     return diccionario;
 }
 
+// 1-225757424028
+
+
 const save_data = (form_name) => {
     const dict_form = get_dict_form(form_name);
     const _validate_inputs = validate_inputs(form_name);
-
-    console.log(`${_validate_inputs}`);
 
     if(!_validate_inputs){
         console.log(`no se envian datos`);
 
 
     }else{
+
+        const link_to = `{% url 'usuario_app:PersonalDataEditView' user_id %}`
+    
         console.log(`se envia datos`);
+        axios.put(load_page, dict_form)
+            .then(response => handleResponse(response))
+            .catch(error => {
+                console.error('Error en la solicitud:', error.message);
+            });
+
     }
+
+    $.alert({
+        title: 'Alert!',
+        content: 'Simple alert!',
+    });
+
 }
 
 const change_validation = () => {
