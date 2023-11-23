@@ -16,10 +16,9 @@ from applications.base.models import Comuna, Pais, Region
 
 
 @permission_classes([AllowAny])
-class PersonalDataEditView(generics.RetrieveUpdateAPIView):
+class PersonalDataEditView(generics.UpdateAPIView):
     queryset = Colaborador.objects.all()
     serializer_class = PersonalDataSerializer
-    lookup_field = 'user'  # El campo que filtra por el usuario (puedes cambiarlo al campo correcto)
 
     def get_object(self):
         user_id = self.kwargs.get(self.lookup_field)
@@ -28,12 +27,31 @@ class PersonalDataEditView(generics.RetrieveUpdateAPIView):
 
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data)
+
+        # Actualización del modelo User
+        try:
+            user = User.objects.get(username=request.data['col_rut'])
+            user.last_name = request.data['nombres']
+            user.first_name = request.data['apellidos']
+            user.email = request.data['email']
+            user.save()
+        except User.DoesNotExist:
+            return Response({"message": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        
 
 
+
+        
+
+        # Validación y actualización del modelo Colaborador
+        serializer = self.serializer_class(instance, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+        
 @permission_classes([AllowAny])
 class PersonalDataCreateView(generics.CreateAPIView):
     queryset = Colaborador.objects.all()

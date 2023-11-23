@@ -74,7 +74,7 @@ s
                             <div class="row row-xs">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Rut:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="rut">
+                                    <input type="text" class="form-control form-control-sm" id="col_rut">
                                 </div>
                             </div><!-- row -->
                             <div class="row row-xs mg-t-20">
@@ -98,7 +98,7 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Dirección:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="direccion">
+                                    <input type="text" class="form-control form-control-sm" id="col_direccion">
                                 </div>
                             </div><!-- row -->
                             <div class="row row-xs mg-t-20">
@@ -128,7 +128,7 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Sexo:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="sexo" class="form-control form-control-sm">
+                                    <select id="col_sexo" class="form-control form-control-sm">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
@@ -136,7 +136,7 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Estado Civil:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="estado_civil" class="form-control form-control-sm">
+                                    <select id="col_estadocivil" class="form-control form-control-sm">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
@@ -144,7 +144,7 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Es Extranjero?:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="extranjero" class="form-control form-control-sm">
+                                    <select id="col_extranjero" class="form-control form-control-sm">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
@@ -152,19 +152,19 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Nacionalidad:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="nacionalidad" value="Chileno">
+                                    <input type="text" class="form-control form-control-sm" id="col_nacionalidad" value="Chileno">
                                 </div>
                             </div><!-- row -->
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Fecha Nacimiento:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" name="fechanacimiento" class="form-control fc-datepicker form-control-sm" placeholder="YYYY-MM-DD" required id="fechanacimiento">
+                                    <input type="text" class="form-control fc-datepicker form-control-sm" placeholder="YYYY-MM-DD" required id="col_fechanacimiento">
                                 </div>
                             </div><!-- row -->
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Tipo Estudios:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="tipo_estudios" class="form-control form-control-sm">
+                                    <select id="col_estudios" class="form-control form-control-sm">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
@@ -172,7 +172,7 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Estado Estudios:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="estado_estudios" class="form-control form-control-sm">
+                                    <select id="col_estadoestudios" class="form-control form-control-sm">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
@@ -180,14 +180,14 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Título:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="titulo">
+                                    <input type="text" class="form-control form-control-sm" id="col_titulo">
                                 </div>
                             </div><!-- row -->
 
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Licencia Conducir:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="licencia_conducir" class="form-control form-control-sm" onchange="change_validation()">
+                                    <select id="col_licenciaconducir" class="form-control form-control-sm" onchange="change_validation()">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
@@ -196,14 +196,14 @@ s
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger"></span> Clase Licencia:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm not-required" id="clase_licencia">
+                                    <input type="text" class="form-control form-control-sm not-required" id="col_tipolicencia">
                                 </div>
                             </div><!-- row -->
 
                             <div class="row row-xs mg-t-20">
                                 <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Rol:</label>
                                 <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="rol" class="form-control form-control-sm">
+                                    <select id="col_tipousuario" class="form-control form-control-sm">
                                         <option value="">[Seleccione]</option>
                                     </select>
                                 </div>
@@ -284,13 +284,13 @@ const handleResponse = async (response) => {
             data: { sexo_dict, estado_civil_dict, opciones_dict, tipo_estudios_dict, estados_estudios_dict, object_rol_dict, paises, regiones }
         } = response;
 
-        const selectSexo = document.getElementById('sexo');
-        const selectEstadoCivil = document.getElementById('estado_civil');
-        const selectExtranjero = document.getElementById('extranjero');
-        const selectLicenciaConducir = document.getElementById('licencia_conducir');
-        const selectTipoEstudiosDict = document.getElementById('tipo_estudios');
-        const selectEstadosEstudiosDict = document.getElementById('estado_estudios');
-        const selectObjectRolDict = document.getElementById('rol');
+        const selectSexo = document.getElementById('col_sexo');
+        const selectEstadoCivil = document.getElementById('col_estadocivil');
+        const selectExtranjero = document.getElementById('col_extranjero');
+        const selectLicenciaConducir = document.getElementById('col_licenciaconducir');
+        const selectTipoEstudiosDict = document.getElementById('col_estudios');
+        const selectEstadosEstudiosDict = document.getElementById('col_estadoestudios');
+        const selectObjectRolDict = document.getElementById('col_tipousuario');
 
         const createOptions = (obj, selectElement) => {
             const options = Object.entries(obj).map(([value, label]) => {
@@ -350,11 +350,11 @@ datos_personales.addEventListener('click', async () => {
         const select_regiones = document.getElementById('region');
         const select_comuns = document.getElementById('comuna');
 
-        document.getElementById('rut').value = col_rut;
+        document.getElementById('col_rut').value = col_rut;
         document.getElementById('apellidos').value = first_name;
         document.getElementById('nombres').value = last_name;
         document.getElementById('email').value = email;
-        document.getElementById('direccion').value = col_direccion;
+        document.getElementById('col_direccion').value = col_direccion;
 
         const options_pais = countries.map(result => {
             return `
@@ -380,17 +380,17 @@ datos_personales.addEventListener('click', async () => {
         select_comuns.innerHTML = options_comuns;
         select_comuns.value = comuna;
 
-        document.getElementById('sexo').value = col_sexo;
-        document.getElementById('estado_civil').value = col_estadocivil;
-        document.getElementById('extranjero').value = col_extranjero;
-        document.getElementById('nacionalidad').value = col_nacionalidad;
-        document.getElementById('fechanacimiento').value = col_fechanacimiento;
-        document.getElementById('tipo_estudios').value = col_estudios;
-        document.getElementById('estado_estudios').value = col_estadoestudios;
-        document.getElementById('titulo').value = col_titulo;
-        document.getElementById('licencia_conducir').value = col_licenciaconducir;
-        document.getElementById('clase_licencia').value = col_tipolicencia;
-        document.getElementById('rol').value = col_tipousuario;
+        document.getElementById('col_sexo').value = col_sexo;
+        document.getElementById('col_estadocivil').value = col_estadocivil;
+        document.getElementById('col_extranjero').value = col_extranjero;
+        document.getElementById('col_nacionalidad').value = col_nacionalidad;
+        document.getElementById('col_fechanacimiento').value = col_fechanacimiento;
+        document.getElementById('col_estudios').value = col_estudios;
+        document.getElementById('col_estadoestudios').value = col_estadoestudios;
+        document.getElementById('col_titulo').value = col_titulo;
+        document.getElementById('col_licenciaconducir').value = col_licenciaconducir;
+        document.getElementById('col_tipolicencia').value = col_tipolicencia;
+        document.getElementById('col_tipousuario').value = col_tipousuario;
 
         div_datos_personales.style.display = 'block';
         div_datos_laborales.style.display = 'none';
@@ -432,15 +432,23 @@ const get_dict_form = (form_name) => {
     const diccionario = {};
     for (let i = 0; i < elementos.length; i++) {
         const elemento = elementos[i];
-        let key = elemento.id;
 
-        const classes = elemento.className.split(' ');
-        const hasRequiredClass = classes.includes('not-required');
+        if((elemento.value).length != 0){
+            let key = elemento.id;
 
-        if (!hasRequiredClass) {
-            diccionario[key] = elemento.value;
+            console.log(elemento.type)
+
+            const classes = elemento.className.split(' ');
+            const hasRequiredClass = classes.includes('not-required');
+
+            if (!hasRequiredClass) {
+                diccionario[key] = elemento.value;
+            }
         }
     }
+
+    console.log(diccionario)
+
     return diccionario;
 }
 
@@ -452,32 +460,77 @@ const save_data = (form_name) => {
     const _validate_inputs = validate_inputs(form_name);
 
     if(!_validate_inputs){
-        console.log(`no se envian datos`);
-
-
+        $.alert({
+            title: 'Mensaje!',
+            content: 'El formulario no esta completo, favor de revisar y volver a intentar',
+        });
     }else{
 
+        let apellidos = document.getElementById('apellidos').value;
+        let nombres = document.getElementById('nombres').value;
+        let email = document.getElementById('email').value;
+
+        let col_rut = document.getElementById('col_rut').value;
+        let col_sexo = document.getElementById('col_sexo').value;
+        let col_estadocivil = document.getElementById('col_estadocivil').value;
+        let col_extranjero = document.getElementById('col_extranjero').value;
+        let col_nacionalidad = document.getElementById('col_nacionalidad').value;
+        let col_fechanacimiento = document.getElementById('col_fechanacimiento').value;
+        let col_estudios = document.getElementById('col_estudios').value;
+        let col_estadoestudios = document.getElementById('col_estadoestudios').value;
+        let col_titulo = document.getElementById('col_titulo').value;
+        let col_licenciaconducir = document.getElementById('col_licenciaconducir').value;
+        let col_tipolicencia = document.getElementById('col_tipolicencia').value;
+        let col_tipousuario = document.getElementById('col_tipousuario').value;
+        let col_direccion = document.getElementById('col_direccion').value;
+
+        let pais = document.getElementById('pais').value;
+        let region = document.getElementById('region').value;
+        let comuna = document.getElementById('comuna').value;
+
         const link_to = `{% url 'usuario_app:PersonalDataEditView' user_id %}`
-    
-        console.log(`se envia datos`);
-        axios.put(load_page, dict_form)
-            .then(response => handleResponse(response))
+
+
+        let dict_form = {
+            "col_rut": col_rut,
+            "apellidos": apellidos,
+            "nombres": nombres,
+            "email": email,
+            "col_direccion": col_direccion,
+            "pais": Number(pais),
+            "region": Number(region),
+            "comuna": Number(comuna),
+            "col_sexo": col_sexo,
+            "col_estadocivil": Number(col_estadocivil),
+            "col_extranjero": Number(col_extranjero),
+            "col_nacionalidad": col_nacionalidad,
+            "col_fechanacimiento": col_fechanacimiento,
+            "col_estudios": Number(col_estudios),
+            "col_estadoestudios": Number(col_estadoestudios),
+            "col_titulo": col_titulo,
+            "col_licenciaconducir": Number(col_licenciaconducir),
+            "col_tipousuario": Number(col_tipousuario)
+        }
+
+        axios.put(link_to, dict_form)
+            .then(response => {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: 'Los datos del colaborador fueron actualizados con éxito!',
+                });
+            })
             .catch(error => {
-                console.error('Error en la solicitud:', error.message);
+                $.alert({
+                    title: 'Mensaje!',
+                    content: `Error en la solicitud: ${error.message}`,
+                });
             });
-
     }
-
-    $.alert({
-        title: 'Alert!',
-        content: 'Simple alert!',
-    });
-
 }
 
 const change_validation = () => {
-    const input = document.getElementById('licencia_conducir');
-    const input_txt = document.getElementById('clase_licencia');
+    const input = document.getElementById('col_licenciaconducir');
+    const input_txt = document.getElementById('col_tipolicencia');
 
     if(input.value === '1'){
         input_txt.classList.remove('not-required');
