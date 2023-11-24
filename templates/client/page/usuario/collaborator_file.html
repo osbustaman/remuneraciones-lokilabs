@@ -11,16 +11,13 @@
 
 {% block title_page %} Listado Colaboradores {% endblock %}
 {% block buttons %}
-
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'usuario_app:add_collaborator_file'  %}')">Nuevo Colaborador <i
+    class="icon ion-plus-circled"></i></button>
 {% endblock %}
 
 {% block content_page %}
 
 <style>
-    button{
-        cursor: pointer;
-    }
-
     .input-group-addon {
         color: #FFF;
         background-color: #007bff;
@@ -162,12 +159,6 @@ axios.get(endpoint)
     .catch(error => {
         console.error('Error en la solicitud:', error.message);
     });
-
-
-    const redirectToUrl = (url) => {
-        location.href = url;
-    }
-
 
     searchInput.addEventListener('input', debounce(handleSearch, 300));
 </script>

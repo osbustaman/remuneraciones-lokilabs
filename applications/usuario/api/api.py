@@ -1,4 +1,5 @@
 
+from applications.base.utils import validarRut, validate_mail
 from applications.empresa.models import Afp
 from applications.security.models import Rol
 from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities
@@ -26,8 +27,26 @@ class PersonalDataEditView(generics.UpdateAPIView):
         return obj
 
     def put(self, request, *args, **kwargs):
+
+        """
+        Actualiza un colaborador existente.
+        
+        :param self: instancia de la clase.
+        :param request: objeto de solicitud HTTP.
+        :param args: argumentos posicionales adicionales.
+        :param kwargs: argumentos de palabra clave adicionales.
+        :return: respuesta HTTP con los resultados de la actualización o mensajes de error.
+        """
+
+
         instance = self.get_object()
 
+        if not validarRut(request.data['col_rut']):
+            return Response({"message": "Rut no válido"}, status=status.HTTP_404_NOT_FOUND)
+        
+        if not validate_mail(request.data['email']):
+            return Response({"message": "Correo no válido"}, status=status.HTTP_404_NOT_FOUND)
+        
         # Actualización del modelo User
         try:
             user = User.objects.get(username=request.data['col_rut'])
@@ -36,18 +55,43 @@ class PersonalDataEditView(generics.UpdateAPIView):
             user.email = request.data['email']
             user.save()
         except User.DoesNotExist:
-            return Response({"message": "Usuario no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-        
-
-
-
-        
+            return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
         # Validación y actualización del modelo Colaborador
         serializer = self.serializer_class(instance, data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+
+            try:
+                object_colaborador = Colaborador.objects.get(user=user)
+                object_colaborador.col_extranjero = request.data['col_extranjero']
+                object_colaborador.col_nacionalidad = request.data['col_nacionalidad']
+                object_colaborador.col_sexo = request.data['col_sexo']
+                object_colaborador.col_fechanacimiento = request.data['col_fechanacimiento']
+                object_colaborador.col_estadocivil = request.data['col_estadocivil']
+                object_colaborador.col_direccion = request.data['col_direccion']
+                object_colaborador.pais = Pais.objects.get(pa_id = request.data['pais'])
+                object_colaborador.region = Region.objects.get(re_id = request.data['region'])
+                object_colaborador.comuna = Comuna.objects.get(com_id = request.data['comuna'])
+                object_colaborador.col_estudios = request.data['col_estudios']
+                object_colaborador.col_estadoestudios = request.data['col_estadoestudios']
+                object_colaborador.col_titulo = request.data['col_titulo']
+                object_colaborador.col_licenciaconducir = request.data['col_licenciaconducir']
+                object_colaborador.col_tipolicencia = request.data['col_tipolicencia']
+                object_colaborador.col_tipousuario = Rol.objects.get(rol_id = request.data['col_tipousuario'])
+
+                object_colaborador.save()
+            except Colaborador.DoesNotExist:
+                return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            except Pais.DoesNotExist:
+                return Response({"message": "Pais no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+            except Region.DoesNotExist:
+                return Response({"message": "Región no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+            except Comuna.DoesNotExist:
+                return Response({"message": "Comuna no encontrada"}, status=status.HTTP_404_NOT_FOUND)
+            except Rol.DoesNotExist:
+                return Response({"message": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         

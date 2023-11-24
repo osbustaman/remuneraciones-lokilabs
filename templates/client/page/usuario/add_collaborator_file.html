@@ -11,7 +11,7 @@
 
 {% block title_page %} NOMBRE COLABORADOR {% endblock %}
 {% block buttons %}
-s
+<button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'usuario_app:collaborator_file' %}')">Volver <i class="icon ion-arrow-left-a"></i></button>
 {% endblock %}
 
 {% block content_page %}
@@ -67,188 +67,24 @@ s
         </div><!-- col-4 -->
 
         <div class="col-lg-9">
-            <div class="card">
+            <div class="card table-responsive div-scroll-500">
                 <div class="card pd-10 pd-sm-20 form-layout form-layout-5">
-                    <form method="post" id="form-datos-personales">
-                        <div id="div_datos_personales">
-                            <div class="row row-xs">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Rut:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="col_rut">
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Apellidos:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="apellidos">
-                                </div>
-                            </div>
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Nombres:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="nombres">
-                                </div>
-                            </div>
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Email:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="email">
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Dirección:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="col_direccion">
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> País:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="pais" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Región:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="region" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Comuna:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="comuna" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Sexo:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="col_sexo" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Estado Civil:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="col_estadocivil" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Es Extranjero?:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="col_extranjero" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Nacionalidad:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="col_nacionalidad" value="Chileno">
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Fecha Nacimiento:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control fc-datepicker form-control-sm" placeholder="YYYY-MM-DD" required id="col_fechanacimiento">
-                                </div>
-                            </div><!-- row -->
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Tipo Estudios:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="col_estudios" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Estado Estudios:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="col_estadoestudios" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Título:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm" id="col_titulo">
-                                </div>
-                            </div><!-- row -->
-
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Licencia Conducir:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="col_licenciaconducir" class="form-control form-control-sm" onchange="change_validation()">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger"></span> Clase Licencia:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <input type="text" class="form-control form-control-sm not-required" id="col_tipolicencia">
-                                </div>
-                            </div><!-- row -->
-
-                            <div class="row row-xs mg-t-20">
-                                <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Rol:</label>
-                                <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                                    <select id="col_tipousuario" class="form-control form-control-sm">
-                                        <option value="">[Seleccione]</option>
-                                    </select>
-                                </div>
-                            </div><!-- row -->
-                            
-                            <div class="row row-xs mg-t-30">
-                                <div class="col-sm-10 mg-l-auto">
-                                    <div class="form-layout-footer">
-                                        <button type="button" class="btn btn-info mg-r-5" onclick="save_data('form-datos-personales')">Guardar</button>
-                                    </div><!-- form-layout-footer -->
-                                </div><!-- col-8 -->
-                            </div>
-                        </div>
-                    </form>
-                    <div id="div_datos_laborales">adadasd</div>
+                    {% include "client/page/usuario/forms/colaboradores/datos_personales.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/datos_laborales.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/datos_previsionales.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/cargas_familiares.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/horario.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/datos_pago.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/vacaciones_ausencia.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/finiquito.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/documentos.html" %}
+                    {% include "client/page/usuario/forms/colaboradores/remuneraciones.html" %}
                 </div>
             </div><!-- card -->
         </div><!-- col-8 -->
 
         
     </div>
-
-
-    <div id="modaldemo1" class="modal fade">
-        <div class="modal-dialog modal-dialog-vertical-center" role="document">
-            <div class="modal-content bd-0 tx-14">
-                <div class="modal-header pd-y-20 pd-x-25">
-                    <h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Message Preview</h6>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body pd-25">
-                    <h4 class="lh-3 mg-b-20"><a href="" class="tx-inverse hover-primary">Why We Use Electoral College, Not Popular Vote</a></h4>
-                    <p class="mg-b-5">It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. </p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-info pd-x-20">Save changes</button>
-                    <button type="button" class="btn btn-secondary pd-x-20" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div><!-- modal-dialog -->
-    </div><!-- modal -->
-
-
 {% endblock %}
 
 {% block static_down %}
@@ -270,11 +106,29 @@ const datos_laborales = document.getElementById('datos_laborales');
 
 const div_datos_personales = document.getElementById('div_datos_personales');
 const div_datos_laborales = document.getElementById('div_datos_laborales');
+const div_datos_previsionales = document.getElementById('div_datos_previsionales');
+const div_cargas_familiares = document.getElementById('div_cargas_familiares');
+const div_horario = document.getElementById('div_horario');
+const div_datos_pago = document.getElementById('div_datos_pago');
+const div_vacaciones_ausencia = document.getElementById('div_vacaciones_ausencia');
+const div_finiquito = document.getElementById('div_finiquito');
+const div_documentos = document.getElementById('div_documentos');
+const div_remuneraciones = document.getElementById('div_remuneraciones');
 
 const formulario = document.getElementById('form');
 
 div_datos_personales.style.display = 'none';
 div_datos_laborales.style.display = 'none';
+div_datos_previsionales.style.display = 'none';
+div_cargas_familiares.style.display = 'none';
+div_horario.style.display = 'none';
+div_vacaciones_ausencia.style.display = 'none';                 
+div_datos_pago.style.display = 'none';                 
+div_finiquito.style.display = 'none';
+div_documentos.style.display = 'none';
+div_remuneraciones.style.display = 'none';
+
+{% if user_id %} 
 
 const load_page = "{% url 'usuario_app:ApiLoadPageColaborator' %}";
 
@@ -333,8 +187,7 @@ axios.get(load_page)
     .catch(error => {
         console.error('Error en la solicitud:', error.message);
     });
-
-
+   
 datos_personales.addEventListener('click', async () => {
     try {
         const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
@@ -452,11 +305,7 @@ const get_dict_form = (form_name) => {
     return diccionario;
 }
 
-// 1-225757424028
-
-
 const save_data = (form_name) => {
-    const dict_form = get_dict_form(form_name);
     const _validate_inputs = validate_inputs(form_name);
 
     if(!_validate_inputs){
@@ -493,23 +342,24 @@ const save_data = (form_name) => {
 
         let dict_form = {
             "col_rut": col_rut,
-            "apellidos": apellidos,
-            "nombres": nombres,
-            "email": email,
+            "col_extranjero": Number(col_extranjero),
+            "col_nacionalidad": col_nacionalidad,
+            "col_sexo": col_sexo,
+            "col_fechanacimiento": col_fechanacimiento,
+            "col_estadocivil": Number(col_estadocivil),
             "col_direccion": col_direccion,
             "pais": Number(pais),
             "region": Number(region),
             "comuna": Number(comuna),
-            "col_sexo": col_sexo,
-            "col_estadocivil": Number(col_estadocivil),
-            "col_extranjero": Number(col_extranjero),
-            "col_nacionalidad": col_nacionalidad,
-            "col_fechanacimiento": col_fechanacimiento,
             "col_estudios": Number(col_estudios),
             "col_estadoestudios": Number(col_estadoestudios),
             "col_titulo": col_titulo,
             "col_licenciaconducir": Number(col_licenciaconducir),
-            "col_tipousuario": Number(col_tipousuario)
+            "col_tipolicencia": col_tipolicencia,
+            "col_tipousuario": Number(col_tipousuario),
+            "apellidos": apellidos,
+            "nombres": nombres,
+            "email": email
         }
 
         axios.put(link_to, dict_form)
@@ -522,7 +372,7 @@ const save_data = (form_name) => {
             .catch(error => {
                 $.alert({
                     title: 'Mensaje!',
-                    content: `Error en la solicitud: ${error.message}`,
+                    content: `${error.response.data.message}`,
                 });
             });
     }
@@ -539,6 +389,35 @@ const change_validation = () => {
     }
 };
 
+{% else %}
 
+// Esperar a que se cargue el DOM
+document.addEventListener('DOMContentLoaded', function() {
+    // Obtener todos los elementos li dentro del contenedor ul
+    var elementosLi = document.querySelectorAll('.nav-item');
+
+    // Recorrer cada elemento li y agregar un evento clic
+    elementosLi.forEach(function(li) {
+        li.addEventListener('click', function(event) {
+            // Obtener el id del elemento li que se ha hecho clic
+            var idClickeado = event.currentTarget.id;
+
+            // Ocultar todos los divs relacionados con los elementos li
+            var divs = document.querySelectorAll('[id^="div_"]');
+            divs.forEach(function(div) {
+                div.style.display = 'none';
+            });
+
+            // Mostrar el div relacionado con el elemento li clickeado
+            var divRelacionado = document.getElementById('div_' + idClickeado);
+            if (divRelacionado) {
+                divRelacionado.style.display = 'block';
+            }
+        });
+    });
+});
+ 
+
+{% endif %} 
 </script>
 {% endblock %}

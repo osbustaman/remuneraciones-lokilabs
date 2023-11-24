@@ -10,6 +10,7 @@ import datetime
 import pandas as pd
 import pdfkit
 import base64
+import re
 
 from django.conf import settings
 
@@ -71,3 +72,15 @@ def validarRut(rut):
     return dv == dv_calculado
 
 
+def validate_mail(correo):
+    # Patrón de expresión regular para validar un correo electrónico
+    patron = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+
+    # Se compila el patrón
+    patron_compilado = re.compile(patron)
+
+    # Se verifica si el correo coincide con el patrón
+    if patron_compilado.match(correo):
+        return True
+    else:
+        return False
