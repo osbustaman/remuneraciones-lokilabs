@@ -51,6 +51,7 @@
                     <div class="pd-10 bd">
                         <ul class="nav nav-pills flex-column" role="tablist">
                             <li id="datos_personales" class="nav-item"><a class="nav-link active" data-toggle="tab" href="#" role="tab" aria-expanded="true">Datos Personales</a></li>
+                            {% if user_id %} 
                             <li id="datos_laborales" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Datos Laborales</a></li>
                             <li id="datos_previsionales" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Datos Previsionales</a></li>
                             <li id="cargas_familiares" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Cargas Familiares</a></li>
@@ -60,6 +61,7 @@
                             <li id="finiquito" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Finiquito</a></li>
                             <li id="documentos" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Documentos</a></li>
                             <li id="conceptos_remuneraciones" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Concepto Remuneraciones</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
@@ -101,21 +103,6 @@ $('.fc-datepicker').datepicker({
     dateFormat: 'yy-mm-dd',
 });
 
-const datos_personales = document.getElementById('datos_personales');
-const datos_laborales = document.getElementById('datos_laborales');
-
-const div_datos_personales = document.getElementById('div_datos_personales');
-const div_datos_laborales = document.getElementById('div_datos_laborales');
-const div_datos_previsionales = document.getElementById('div_datos_previsionales');
-const div_cargas_familiares = document.getElementById('div_cargas_familiares');
-const div_horario = document.getElementById('div_horario');
-const div_datos_pago = document.getElementById('div_datos_pago');
-const div_vacaciones_ausencia = document.getElementById('div_vacaciones_ausencia');
-const div_finiquito = document.getElementById('div_finiquito');
-const div_documentos = document.getElementById('div_documentos');
-const div_remuneraciones = document.getElementById('div_remuneraciones');
-
-const formulario = document.getElementById('form');
 
 div_datos_personales.style.display = 'none';
 div_datos_laborales.style.display = 'none';
@@ -128,182 +115,70 @@ div_finiquito.style.display = 'none';
 div_documentos.style.display = 'none';
 div_remuneraciones.style.display = 'none';
 
-{% if user_id %} 
 
-const load_page = "{% url 'usuario_app:ApiLoadPageColaborator' %}";
+// Esperar a que se cargue el DOM
+document.addEventListener('DOMContentLoaded', function() {
+    // Obtener todos los elementos li dentro del contenedor ul
+    var elementosLi = document.querySelectorAll('.nav-item');
 
-const handleResponse = async (response) => {
-    try {
-        let {
-            data: { sexo_dict, estado_civil_dict, opciones_dict, tipo_estudios_dict, estados_estudios_dict, object_rol_dict, paises, regiones }
-        } = response;
+    // Recorrer cada elemento li y agregar un evento clic
+    elementosLi.forEach(function(li) {
+        li.addEventListener('click', function(event) {
+            // Obtener el id del elemento li que se ha hecho clic
+            var idClickeado = event.currentTarget.id;
 
-        const selectSexo = document.getElementById('col_sexo');
-        const selectEstadoCivil = document.getElementById('col_estadocivil');
-        const selectExtranjero = document.getElementById('col_extranjero');
-        const selectLicenciaConducir = document.getElementById('col_licenciaconducir');
-        const selectTipoEstudiosDict = document.getElementById('col_estudios');
-        const selectEstadosEstudiosDict = document.getElementById('col_estadoestudios');
-        const selectObjectRolDict = document.getElementById('col_tipousuario');
-
-        const createOptions = (obj, selectElement) => {
-            const options = Object.entries(obj).map(([value, label]) => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.text = label;
-                return option;
+            // Ocultar todos los divs relacionados con los elementos li
+            var divs = document.querySelectorAll('[id^="div_"]');
+            divs.forEach(function(div) {
+                div.style.display = 'none';
             });
 
-            options.forEach(option => {
-                selectElement.appendChild(option);
-            });
-        };
+            // Mostrar el div relacionado con el elemento li clickeado
+            var divRelacionado = document.getElementById('div_' + idClickeado);
 
-        const createOptionsRol = (obj, selectRol) => {
-            const options_rol_select = obj.map(result => {
-                return `
-                <option value="${result.rol_id}">${result.rol_name}</option>
-                `; 
-            }).join('');
-            selectRol.innerHTML = options_rol_select;
-        };
+            if (divRelacionado) {
+                divRelacionado.style.display = 'block';
 
-        createOptionsRol(object_rol_dict, selectObjectRolDict);
-        createOptions(sexo_dict, selectSexo);
-        createOptions(estado_civil_dict, selectEstadoCivil);
-        createOptions(opciones_dict, selectExtranjero);
-        createOptions(opciones_dict, selectLicenciaConducir);
-        createOptions(tipo_estudios_dict, selectTipoEstudiosDict);
-        createOptions(estados_estudios_dict, selectEstadosEstudiosDict);
+                switch (idClickeado) {
+                    case 'datos_personales':
+                        load_datos_personales_ini();
+                        load_datos_personales();
+                    break;
+                    case 'datos_laborales':
+                        console.log('La opción es datos_laborales');
+                    break;
+                    case 'datos_previsionales':
+                        console.log('La opción es datos_previsionales');
+                    break;
+                    case 'cargas_familiares':
+                        console.log('La opción es cargas_familiares');
+                    break;
+                    case 'horario':
+                        console.log('La opción es horario');
+                    break;
+                    case 'datos_pago':
+                        console.log('La opción es datos_pago');
+                    break;
+                    case 'vacaciones_ausencia':
+                        console.log('La opción es vacaciones_ausencia');
+                    break;
+                    case 'finiquito':
+                        console.log('La opción es finiquito');
+                    break;
+                    case 'documentos':
+                        console.log('La opción es documentos');
+                    break;
+                    case 'remuneraciones':
+                        console.log('La opción es remuneraciones');
+                    break;
 
-    } catch (error) {
-        console.error('Error en la solicitud:', error.message);
-    }
-};
-
-
-axios.get(load_page)
-    .then(response => handleResponse(response))
-    .catch(error => {
-        console.error('Error en la solicitud:', error.message);
+                    default:
+                        console.log('Opción no reconocida');
+                }
+            }
+        });
     });
-   
-datos_personales.addEventListener('click', async () => {
-    try {
-        const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
-        const response = await axios.get(endpoint);
-
-        const { data: { data } } = response;
-        const { data: { regions, comuns, countries } } = response;
-        const { col_rut, col_extranjero, col_nacionalidad, col_sexo, col_fechanacimiento, email } = data[0]
-        const { col_estadocivil, col_direccion, pais, region, comuna, first_name, last_name } = data[0]
-        const { col_estudios, col_estadoestudios, col_titulo, col_licenciaconducir, col_tipolicencia, col_tipousuario } = data[0]
-        
-        const select_pais = document.getElementById('pais');
-        const select_regiones = document.getElementById('region');
-        const select_comuns = document.getElementById('comuna');
-
-        document.getElementById('col_rut').value = col_rut;
-        document.getElementById('apellidos').value = first_name;
-        document.getElementById('nombres').value = last_name;
-        document.getElementById('email').value = email;
-        document.getElementById('col_direccion').value = col_direccion;
-
-        const options_pais = countries.map(result => {
-            return `
-            <option value="${result.pa_id}">${result.pa_nombre}</option>
-            `; 
-        }).join('');
-        select_pais.innerHTML = options_pais;
-        select_pais.value = pais;
-
-        const options_select = regions.map(result => {
-            return `
-            <option value="${result.re_id}">${result.re_nombre}</option>
-            `; 
-        }).join('');
-        select_regiones.innerHTML = options_select;
-        select_regiones.value = region;
-
-        const options_comuns = comuns.map(result => {
-            return `
-            <option value="${result.com_id}">${result.com_nombre}</option>
-            `; 
-        }).join('');
-        select_comuns.innerHTML = options_comuns;
-        select_comuns.value = comuna;
-
-        document.getElementById('col_sexo').value = col_sexo;
-        document.getElementById('col_estadocivil').value = col_estadocivil;
-        document.getElementById('col_extranjero').value = col_extranjero;
-        document.getElementById('col_nacionalidad').value = col_nacionalidad;
-        document.getElementById('col_fechanacimiento').value = col_fechanacimiento;
-        document.getElementById('col_estudios').value = col_estudios;
-        document.getElementById('col_estadoestudios').value = col_estadoestudios;
-        document.getElementById('col_titulo').value = col_titulo;
-        document.getElementById('col_licenciaconducir').value = col_licenciaconducir;
-        document.getElementById('col_tipolicencia').value = col_tipolicencia;
-        document.getElementById('col_tipousuario').value = col_tipousuario;
-
-        div_datos_personales.style.display = 'block';
-        div_datos_laborales.style.display = 'none';
-
-    } catch (error) {
-        console.error('Error en la solicitud:', error.message);
-    }
 });
-
-const validate_inputs = (form_name) => {
-    const formulario = document.getElementById(form_name);
-    const elementos = formulario.elements;
-    let is_vacio = true;
-
-    for (let i = 0; i < elementos.length; i++) {
-        const elemento = elementos[i];
-        
-        if(elemento.type === "button"){
-        }else{
-            const value = elemento.value.trim();
-            const classes = elemento.className.split(' ');
-            const hasRequiredClass = classes.includes('not-required');
-
-            if (!hasRequiredClass && (elemento.value).length === 0) {
-                is_vacio = false;
-            }
-        }
-    }
-
-    if(!is_vacio){
-        return false;
-    }
-    return true;
-}
-
-const get_dict_form = (form_name) => {
-    const formulario = document.getElementById(form_name);
-    const elementos = formulario.elements;
-    const diccionario = {};
-    for (let i = 0; i < elementos.length; i++) {
-        const elemento = elementos[i];
-
-        if((elemento.value).length != 0){
-            let key = elemento.id;
-
-            console.log(elemento.type)
-
-            const classes = elemento.className.split(' ');
-            const hasRequiredClass = classes.includes('not-required');
-
-            if (!hasRequiredClass) {
-                diccionario[key] = elemento.value;
-            }
-        }
-    }
-
-    console.log(diccionario)
-
-    return diccionario;
-}
 
 const save_data = (form_name) => {
     const _validate_inputs = validate_inputs(form_name);
@@ -337,8 +212,11 @@ const save_data = (form_name) => {
         let region = document.getElementById('region').value;
         let comuna = document.getElementById('comuna').value;
 
+        {% if user_id %} 
         const link_to = `{% url 'usuario_app:PersonalDataEditView' user_id %}`
-
+        {% else %}
+        const link_to = ``
+        {% endif %}
 
         let dict_form = {
             "col_rut": col_rut,
@@ -378,6 +256,32 @@ const save_data = (form_name) => {
     }
 }
 
+const validate_inputs = (form_name) => {
+    const formulario = document.getElementById(form_name);
+    const elementos = formulario.elements;
+    let is_vacio = true;
+
+    for (let i = 0; i < elementos.length; i++) {
+        const elemento = elementos[i];
+        
+        if(elemento.type === "button"){
+        }else{
+            const value = elemento.value.trim();
+            const classes = elemento.className.split(' ');
+            const hasRequiredClass = classes.includes('not-required');
+
+            if (!hasRequiredClass && (elemento.value).length === 0) {
+                is_vacio = false;
+            }
+        }
+    }
+
+    if(!is_vacio){
+        return false;
+    }
+    return true;
+}
+
 const change_validation = () => {
     const input = document.getElementById('col_licenciaconducir');
     const input_txt = document.getElementById('col_tipolicencia');
@@ -389,35 +293,5 @@ const change_validation = () => {
     }
 };
 
-{% else %}
-
-// Esperar a que se cargue el DOM
-document.addEventListener('DOMContentLoaded', function() {
-    // Obtener todos los elementos li dentro del contenedor ul
-    var elementosLi = document.querySelectorAll('.nav-item');
-
-    // Recorrer cada elemento li y agregar un evento clic
-    elementosLi.forEach(function(li) {
-        li.addEventListener('click', function(event) {
-            // Obtener el id del elemento li que se ha hecho clic
-            var idClickeado = event.currentTarget.id;
-
-            // Ocultar todos los divs relacionados con los elementos li
-            var divs = document.querySelectorAll('[id^="div_"]');
-            divs.forEach(function(div) {
-                div.style.display = 'none';
-            });
-
-            // Mostrar el div relacionado con el elemento li clickeado
-            var divRelacionado = document.getElementById('div_' + idClickeado);
-            if (divRelacionado) {
-                divRelacionado.style.display = 'block';
-            }
-        });
-    });
-});
- 
-
-{% endif %} 
 </script>
 {% endblock %}

@@ -1,0 +1,406 @@
+const datos_personales = document.getElementById('datos_personales');
+const datos_laborales = document.getElementById('datos_laborales');
+
+const div_datos_personales = document.getElementById('div_datos_personales');
+const div_datos_laborales = document.getElementById('div_datos_laborales');
+const div_datos_previsionales = document.getElementById('div_datos_previsionales');
+const div_cargas_familiares = document.getElementById('div_cargas_familiares');
+const div_horario = document.getElementById('div_horario');
+const div_datos_pago = document.getElementById('div_datos_pago');
+const div_vacaciones_ausencia = document.getElementById('div_vacaciones_ausencia');
+const div_finiquito = document.getElementById('div_finiquito');
+const div_documentos = document.getElementById('div_documentos');
+const div_remuneraciones = document.getElementById('div_remuneraciones');
+
+const formulario = document.getElementById('form');
+
+div_datos_personales.style.display = 'none';
+div_datos_laborales.style.display = 'none';
+div_datos_previsionales.style.display = 'none';
+div_cargas_familiares.style.display = 'none';
+div_horario.style.display = 'none';
+div_vacaciones_ausencia.style.display = 'none';                 
+div_datos_pago.style.display = 'none';                 
+div_finiquito.style.display = 'none';
+div_documentos.style.display = 'none';
+div_remuneraciones.style.display = 'none';
+
+{% if user_id %} 
+
+const load_page = "{% url 'usuario_app:ApiLoadPageColaborator' %}";
+
+const handleResponse = async (response) => {
+    try {
+        let {
+            data: { sexo_dict, estado_civil_dict, opciones_dict, tipo_estudios_dict, estados_estudios_dict, object_rol_dict, paises, regiones }
+        } = response;
+
+        const selectSexo = document.getElementById('col_sexo');
+        const selectEstadoCivil = document.getElementById('col_estadocivil');
+        const selectExtranjero = document.getElementById('col_extranjero');
+        const selectLicenciaConducir = document.getElementById('col_licenciaconducir');
+        const selectTipoEstudiosDict = document.getElementById('col_estudios');
+        const selectEstadosEstudiosDict = document.getElementById('col_estadoestudios');
+        const selectObjectRolDict = document.getElementById('col_tipousuario');
+
+        const createOptions = (obj, selectElement) => {
+            const options = Object.entries(obj).map(([value, label]) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.text = label;
+                return option;
+            });
+
+            options.forEach(option => {
+                selectElement.appendChild(option);
+            });
+        };
+
+        const createOptionsRol = (obj, selectRol) => {
+            const options_rol_select = obj.map(result => {
+                return `
+                <option value="${result.rol_id}">${result.rol_name}</option>
+                `; 
+            }).join('');
+            selectRol.innerHTML = options_rol_select;
+        };
+
+        createOptionsRol(object_rol_dict, selectObjectRolDict);
+        createOptions(sexo_dict, selectSexo);
+        createOptions(estado_civil_dict, selectEstadoCivil);
+        createOptions(opciones_dict, selectExtranjero);
+        createOptions(opciones_dict, selectLicenciaConducir);
+        createOptions(tipo_estudios_dict, selectTipoEstudiosDict);
+        createOptions(estados_estudios_dict, selectEstadosEstudiosDict);
+
+    } catch (error) {
+        console.error('Error en la solicitud:', error.message);
+    }
+};
+
+
+axios.get(load_page)
+    .then(response => handleResponse(response))
+    .catch(error => {
+        console.error('Error en la solicitud:', error.message);
+    });
+   
+datos_personales.addEventListener('click', async () => {
+    try {
+        const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
+        const response = await axios.get(endpoint);
+
+        const { data: { data } } = response;
+        const { data: { regions, comuns, countries } } = response;
+        const { col_rut, col_extranjero, col_nacionalidad, col_sexo, col_fechanacimiento, email } = data[0]
+        const { col_estadocivil, col_direccion, pais, region, comuna, first_name, last_name } = data[0]
+        const { col_estudios, col_estadoestudios, col_titulo, col_licenciaconducir, col_tipolicencia, col_tipousuario } = data[0]
+        
+        const select_pais = document.getElementById('pais');
+        const select_regiones = document.getElementById('region');
+        const select_comuns = document.getElementById('comuna');
+
+        document.getElementById('col_rut').value = col_rut;
+        document.getElementById('apellidos').value = first_name;
+        document.getElementById('nombres').value = last_name;
+        document.getElementById('email').value = email;
+        document.getElementById('col_direccion').value = col_direccion;
+
+        const options_pais = countries.map(result => {
+            return `
+            <option value="${result.pa_id}">${result.pa_nombre}</option>
+            `; 
+        }).join('');
+        select_pais.innerHTML = options_pais;
+        select_pais.value = pais;
+
+        const options_select = regions.map(result => {
+            return `
+            <option value="${result.re_id}">${result.re_nombre}</option>
+            `; 
+        }).join('');
+        select_regiones.innerHTML = options_select;
+        select_regiones.value = region;
+
+        const options_comuns = comuns.map(result => {
+            return `
+            <option value="${result.com_id}">${result.com_nombre}</option>
+            `; 
+        }).join('');
+        select_comuns.innerHTML = options_comuns;
+        select_comuns.value = comuna;
+
+        document.getElementById('col_sexo').value = col_sexo;
+        document.getElementById('col_estadocivil').value = col_estadocivil;
+        document.getElementById('col_extranjero').value = col_extranjero;
+        document.getElementById('col_nacionalidad').value = col_nacionalidad;
+        document.getElementById('col_fechanacimiento').value = col_fechanacimiento;
+        document.getElementById('col_estudios').value = col_estudios;
+        document.getElementById('col_estadoestudios').value = col_estadoestudios;
+        document.getElementById('col_titulo').value = col_titulo;
+        document.getElementById('col_licenciaconducir').value = col_licenciaconducir;
+        document.getElementById('col_tipolicencia').value = col_tipolicencia;
+        document.getElementById('col_tipousuario').value = col_tipousuario;
+
+        div_datos_personales.style.display = 'block';
+        div_datos_laborales.style.display = 'none';
+
+    } catch (error) {
+        console.error('Error en la solicitud:', error.message);
+    }
+});
+
+const get_dict_form = (form_name) => {
+    const formulario = document.getElementById(form_name);
+    const elementos = formulario.elements;
+    const diccionario = {};
+    for (let i = 0; i < elementos.length; i++) {
+        const elemento = elementos[i];
+
+        if((elemento.value).length != 0){
+            let key = elemento.id;
+
+            console.log(elemento.type)
+
+            const classes = elemento.className.split(' ');
+            const hasRequiredClass = classes.includes('not-required');
+
+            if (!hasRequiredClass) {
+                diccionario[key] = elemento.value;
+            }
+        }
+    }
+
+    console.log(diccionario)
+
+    return diccionario;
+}
+
+{% else %}
+
+// Esperar a que se cargue el DOM
+document.addEventListener('DOMContentLoaded', function() {
+    // Obtener todos los elementos li dentro del contenedor ul
+    var elementosLi = document.querySelectorAll('.nav-item');
+
+    // Recorrer cada elemento li y agregar un evento clic
+    elementosLi.forEach(function(li) {
+        li.addEventListener('click', function(event) {
+            // Obtener el id del elemento li que se ha hecho clic
+            var idClickeado = event.currentTarget.id;
+
+            // Ocultar todos los divs relacionados con los elementos li
+            var divs = document.querySelectorAll('[id^="div_"]');
+            divs.forEach(function(div) {
+                div.style.display = 'none';
+            });
+
+            // Mostrar el div relacionado con el elemento li clickeado
+            var divRelacionado = document.getElementById('div_' + idClickeado);
+
+            console.log(idClickeado)
+
+            if (divRelacionado) {
+                divRelacionado.style.display = 'block';
+
+                switch (idClickeado) {
+                    case 'datos_personales':
+                        axios.get("{% url 'usuario_app:LoadPersonalDataPageView' %}")
+                        .then(response => {
+
+                            const { data: { regions, comuns, countries } } = response;
+                            const { data: { sexo_dict, estado_civil_dict, opciones_dict, estados_estudios_dict, tipo_estudios_dict, listado_roles } }= response
+
+                            const select_pais = document.getElementById('pais');
+                            const select_regiones = document.getElementById('region');
+                            const selectSexo = document.getElementById('col_sexo');
+                            const selectEstadoCivil = document.getElementById('col_estadocivil');
+                            const selectExtranjero = document.getElementById('col_extranjero');
+                            const selectLicenciaConducir = document.getElementById('col_licenciaconducir');
+                            const selectTipoEstudiosDict = document.getElementById('col_estudios');
+                            const selectEstadosEstudiosDict = document.getElementById('col_estadoestudios');
+                            const selectObjectRolDict = document.getElementById('col_tipousuario');
+
+
+                            const options_pais = countries.map(result => {
+                                return `
+                                <option value="${result.pa_id}">${result.pa_nombre}</option>
+                                `; 
+                            }).join('');
+                            select_pais.innerHTML = options_pais;
+                            select_pais.value = pais;
+
+                            const options_select = regions.map(result => {
+                                return `
+                                <option value="${result.re_id}">${result.re_nombre}</option>
+                                `; 
+                            }).join('');
+                            select_regiones.innerHTML = options_select;
+                            select_regiones.value = region;
+
+                            const createOptions = (obj, selectElement) => {
+
+                                const options = Object.entries(obj).map(([value, label]) => {
+                                    const option = document.createElement('option');
+                                    option.value = value;
+                                    option.text = label;
+                                    return option;
+                                });
+
+                                options.forEach(option => {
+                                    selectElement.appendChild(option);
+                                });
+                            };
+
+                            const createOptionsRol = (obj, selectRol) => {
+                                const options_rol_select = obj.map(result => {
+                                    return `
+                                    <option value="${result.rol_id}">${result.rol_name}</option>
+                                    `; 
+                                }).join('');
+                                selectRol.innerHTML = options_rol_select;
+                            };
+
+                            createOptionsRol(listado_roles, selectObjectRolDict);
+                            createOptions(sexo_dict, selectSexo);
+                            createOptions(estado_civil_dict, selectEstadoCivil);
+                            createOptions(opciones_dict, selectExtranjero);
+                            createOptions(opciones_dict, selectLicenciaConducir);
+                            createOptions(tipo_estudios_dict, selectTipoEstudiosDict);
+                            createOptions(estados_estudios_dict, selectEstadosEstudiosDict);
+                        })
+                        .catch(error => {
+                            console.error('Error en la solicitud:', error.message);
+                        });
+                    break;
+                    case 'datos_laborales':
+                        console.log('La opción es B');
+                    break;
+                    case 'datos_previsionales':
+                        console.log('La opción es C');
+                    break;
+                    default:
+                        console.log('Opción no reconocida');
+                }
+
+            }
+        });
+    });
+});
+ 
+
+{% endif %} 
+
+const save_data = (form_name) => {
+    const _validate_inputs = validate_inputs(form_name);
+
+    if(!_validate_inputs){
+        $.alert({
+            title: 'Mensaje!',
+            content: 'El formulario no esta completo, favor de revisar y volver a intentar',
+        });
+    }else{
+
+        let apellidos = document.getElementById('apellidos').value;
+        let nombres = document.getElementById('nombres').value;
+        let email = document.getElementById('email').value;
+
+        let col_rut = document.getElementById('col_rut').value;
+        let col_sexo = document.getElementById('col_sexo').value;
+        let col_estadocivil = document.getElementById('col_estadocivil').value;
+        let col_extranjero = document.getElementById('col_extranjero').value;
+        let col_nacionalidad = document.getElementById('col_nacionalidad').value;
+        let col_fechanacimiento = document.getElementById('col_fechanacimiento').value;
+        let col_estudios = document.getElementById('col_estudios').value;
+        let col_estadoestudios = document.getElementById('col_estadoestudios').value;
+        let col_titulo = document.getElementById('col_titulo').value;
+        let col_licenciaconducir = document.getElementById('col_licenciaconducir').value;
+        let col_tipolicencia = document.getElementById('col_tipolicencia').value;
+        let col_tipousuario = document.getElementById('col_tipousuario').value;
+        let col_direccion = document.getElementById('col_direccion').value;
+
+        let pais = document.getElementById('pais').value;
+        let region = document.getElementById('region').value;
+        let comuna = document.getElementById('comuna').value;
+
+
+        {% if user_id %} 
+        const link_to = `{% url 'usuario_app:PersonalDataEditView' user_id %}`
+        {% else %}
+        const link_to = ``
+        {% endif %}
+
+        let dict_form = {
+            "col_rut": col_rut,
+            "col_extranjero": Number(col_extranjero),
+            "col_nacionalidad": col_nacionalidad,
+            "col_sexo": col_sexo,
+            "col_fechanacimiento": col_fechanacimiento,
+            "col_estadocivil": Number(col_estadocivil),
+            "col_direccion": col_direccion,
+            "pais": Number(pais),
+            "region": Number(region),
+            "comuna": Number(comuna),
+            "col_estudios": Number(col_estudios),
+            "col_estadoestudios": Number(col_estadoestudios),
+            "col_titulo": col_titulo,
+            "col_licenciaconducir": Number(col_licenciaconducir),
+            "col_tipolicencia": col_tipolicencia,
+            "col_tipousuario": Number(col_tipousuario),
+            "apellidos": apellidos,
+            "nombres": nombres,
+            "email": email
+        }
+
+        axios.put(link_to, dict_form)
+            .then(response => {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: 'Los datos del colaborador fueron actualizados con éxito!',
+                });
+            })
+            .catch(error => {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: `${error.response.data.message}`,
+                });
+            });
+    }
+}
+
+const validate_inputs = (form_name) => {
+    const formulario = document.getElementById(form_name);
+    const elementos = formulario.elements;
+    let is_vacio = true;
+
+    for (let i = 0; i < elementos.length; i++) {
+        const elemento = elementos[i];
+        
+        if(elemento.type === "button"){
+        }else{
+            const value = elemento.value.trim();
+            const classes = elemento.className.split(' ');
+            const hasRequiredClass = classes.includes('not-required');
+
+            if (!hasRequiredClass && (elemento.value).length === 0) {
+                is_vacio = false;
+            }
+        }
+    }
+
+    if(!is_vacio){
+        return false;
+    }
+    return true;
+}
+
+const change_validation = () => {
+    const input = document.getElementById('col_licenciaconducir');
+    const input_txt = document.getElementById('col_tipolicencia');
+
+    if(input.value === '1'){
+        input_txt.classList.remove('not-required');
+    }else{
+        input_txt.classList.add('not-required');
+    }
+};
