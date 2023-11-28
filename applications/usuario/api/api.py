@@ -59,16 +59,6 @@ class PersonalDataCreateView(generics.CreateAPIView):
 
     def post(self, request, *args, **kwargs):
 
-        """
-        Actualiza un colaborador existente.
-        
-        :param self: instancia de la clase.
-        :param request: objeto de solicitud HTTP.
-        :param args: argumentos posicionales adicionales.
-        :param kwargs: argumentos de palabra clave adicionales.
-        :return: respuesta HTTP con los resultados de la actualización o mensajes de error.
-        """
-
 
         instance = self.get_object()
 
@@ -81,9 +71,9 @@ class PersonalDataCreateView(generics.CreateAPIView):
         # Actualización del modelo User
         try:
             user = User()
-            user.last_name = request.data['nombres']
-            user.first_name = request.data['apellidos']
-            user.email = request.data['email']
+            user.is_staff = True
+            user.is_superuser = False
+            user.set_password(request.POST['password'])
             user.save()
         except User.DoesNotExist:
             return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
