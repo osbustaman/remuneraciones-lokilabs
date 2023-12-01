@@ -33,7 +33,7 @@
         <div class="row row-xs mg-t-20">
             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> País:</label>
             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                <select id="pais" class="form-control form-control-sm">
+                <select id="pais" class="form-control form-control-sm select2-show-search">
                     <option value="">[Seleccione]</option>
                 </select>
             </div>
@@ -41,7 +41,7 @@
         <div class="row row-xs mg-t-20">
             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Región:</label>
             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                <select id="region" class="form-control form-control-sm">
+                <select id="region" class="form-control form-control-sm select2-show-search">
                     <option value="">[Seleccione]</option>
                 </select>
             </div>
@@ -49,7 +49,7 @@
         <div class="row row-xs mg-t-20">
             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Comuna:</label>
             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                <select id="comuna" class="form-control form-control-sm">
+                <select id="comuna" class="form-control form-control-sm select2-show-search">
                     <option value="">[Seleccione]</option>
                 </select>
             </div>
@@ -159,6 +159,63 @@ const load_datos_personales = async () => {
     try {
 
         {% if user_id %}
+        const handleResponse = async (response) => {
+            try {
+                let {
+                    data: { sexo_dict, estado_civil_dict, opciones_dict, tipo_estudios_dict, estados_estudios_dict, object_rol_dict, paises, regiones }
+                } = response;
+
+                const selectSexo = document.getElementById('col_sexo');
+                const selectEstadoCivil = document.getElementById('col_estadocivil');
+                const selectExtranjero = document.getElementById('col_extranjero');
+                const selectLicenciaConducir = document.getElementById('col_licenciaconducir');
+                const selectTipoEstudiosDict = document.getElementById('col_estudios');
+                const selectEstadosEstudiosDict = document.getElementById('col_estadoestudios');
+                const selectObjectRolDict = document.getElementById('col_tipousuario');
+
+                const createOptions = (obj, selectElement) => {
+                    const options = Object.entries(obj).map(([value, label]) => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.text = label;
+                        return option;
+                    });
+
+                    options.forEach(option => {
+                        selectElement.appendChild(option);
+                    });
+                };
+
+                const createOptionsRol = (obj, selectRol) => {
+                    const options_rol_select = obj.map(result => {
+                        return `
+                        <option value="${result.rol_id}">${result.rol_name}</option>
+                        `; 
+                    }).join('');
+                    selectRol.innerHTML = options_rol_select;
+                };
+
+                createOptionsRol(object_rol_dict, selectObjectRolDict);
+                createOptions(sexo_dict, selectSexo);
+                createOptions(estado_civil_dict, selectEstadoCivil);
+                createOptions(opciones_dict, selectExtranjero);
+                createOptions(opciones_dict, selectLicenciaConducir);
+                createOptions(tipo_estudios_dict, selectTipoEstudiosDict);
+                createOptions(estados_estudios_dict, selectEstadosEstudiosDict);
+
+            } catch (error) {
+                console.error('Error en la solicitud:', error.message);
+            }
+        };
+
+        const load_page = "{% url 'usuario_app:ApiLoadPageColaborator' %}";
+        axios.get(load_page)
+        .then(response => handleResponse(response))
+        .catch(error => {
+            console.error('Error en la solicitud:', error.message);
+        });
+
+
         const endpoint = "{% url 'usuario_app:ApiGetPersonalData' user_id %}";
         const response = await axios.get(endpoint);
 
@@ -202,6 +259,20 @@ const load_datos_personales = async () => {
         select_comuns.innerHTML = options_comuns;
         select_comuns.value = comuna;
 
+        const createOptions = (obj, selectElement) => {
+            const options = Object.entries(obj).map(([value, label]) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.text = label;
+                return option;
+            });
+
+            options.forEach(option => {
+                selectElement.appendChild(option);
+            });
+        };
+
+
         document.getElementById('col_sexo').value = col_sexo;
         document.getElementById('col_estadocivil').value = col_estadocivil;
         document.getElementById('col_extranjero').value = col_extranjero;
@@ -213,14 +284,191 @@ const load_datos_personales = async () => {
         document.getElementById('col_licenciaconducir').value = col_licenciaconducir;
         document.getElementById('col_tipolicencia').value = col_tipolicencia;
         document.getElementById('col_tipousuario').value = col_tipousuario;
+        
+        {% else %}
 
-        div_datos_personales.style.display = 'block';
-        div_datos_laborales.style.display = 'none';
+        axios.get("{% url 'usuario_app:LoadPersonalDataPageView' %}")
+        .then(response => {
+
+            const { data: { regions, comuns, countries } } = response;
+            const { data: { sexo_dict, estado_civil_dict, opciones_dict, estados_estudios_dict, tipo_estudios_dict, listado_roles } }= response
+
+            const select_pais = document.getElementById('pais');
+            const select_regiones = document.getElementById('region');
+            const selectSexo = document.getElementById('col_sexo');
+            const selectEstadoCivil = document.getElementById('col_estadocivil');
+            const selectExtranjero = document.getElementById('col_extranjero');
+            const selectLicenciaConducir = document.getElementById('col_licenciaconducir');
+            const selectTipoEstudiosDict = document.getElementById('col_estudios');
+            const selectEstadosEstudiosDict = document.getElementById('col_estadoestudios');
+            const selectObjectRolDict = document.getElementById('col_tipousuario');
+
+
+            const options_pais = countries.map(result => {
+                return `
+                <option value="${result.pa_id}">${result.pa_nombre}</option>
+                `; 
+            }).join('');
+            select_pais.innerHTML = options_pais;
+            select_pais.value = pais;
+
+            const options_select = regions.map(result => {
+                return `
+                <option value="${result.re_id}">${result.re_nombre}</option>
+                `; 
+            }).join('');
+            select_regiones.innerHTML = options_select;
+            select_regiones.value = region;
+
+            const createOptions = (obj, selectElement) => {
+
+                const options = Object.entries(obj).map(([value, label]) => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.text = label;
+                    return option;
+                });
+
+                options.forEach(option => {
+                    selectElement.appendChild(option);
+                });
+            };
+
+            const createOptionsRol = (obj, selectRol) => {
+                const options_rol_select = obj.map(result => {
+                    return `
+                    <option value="${result.rol_id}">${result.rol_name}</option>
+                    `; 
+                }).join('');
+                selectRol.innerHTML = options_rol_select;
+            };
+
+            createOptionsRol(listado_roles, selectObjectRolDict);
+            createOptions(sexo_dict, selectSexo);
+            createOptions(estado_civil_dict, selectEstadoCivil);
+            createOptions(opciones_dict, selectExtranjero);
+            createOptions(opciones_dict, selectLicenciaConducir);
+            createOptions(tipo_estudios_dict, selectTipoEstudiosDict);
+            createOptions(estados_estudios_dict, selectEstadosEstudiosDict);
+        })
+        .catch(error => {
+            console.error('Error en la solicitud:', error.message);
+        })
+
         {% endif %}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     } catch (error) {
         console.error('Error en la solicitud:', error.message);
     }
 
 };
+
+
+const save_data = (form_name) => {
+    const _validate_inputs = validate_inputs(form_name);
+
+    if(!_validate_inputs){
+        $.alert({
+            title: 'Mensaje!',
+            content: 'El formulario no esta completo, favor de revisar y volver a intentar',
+        });
+    }else{
+
+        let apellidos = document.getElementById('apellidos').value;
+        let nombres = document.getElementById('nombres').value;
+        let email = document.getElementById('email').value;
+
+        let col_rut = document.getElementById('col_rut').value;
+        let col_sexo = document.getElementById('col_sexo').value;
+        let col_estadocivil = document.getElementById('col_estadocivil').value;
+        let col_extranjero = document.getElementById('col_extranjero').value;
+        let col_nacionalidad = document.getElementById('col_nacionalidad').value;
+        let col_fechanacimiento = document.getElementById('col_fechanacimiento').value;
+        let col_estudios = document.getElementById('col_estudios').value;
+        let col_estadoestudios = document.getElementById('col_estadoestudios').value;
+        let col_titulo = document.getElementById('col_titulo').value;
+        let col_licenciaconducir = document.getElementById('col_licenciaconducir').value;
+        let col_tipolicencia = document.getElementById('col_tipolicencia').value;
+        let col_tipousuario = document.getElementById('col_tipousuario').value;
+        let col_direccion = document.getElementById('col_direccion').value;
+
+        let pais = document.getElementById('pais').value;
+        let region = document.getElementById('region').value;
+        let comuna = document.getElementById('comuna').value;
+
+        {% if user_id %} 
+        const link_to = `{% url 'usuario_app:PersonalDataEditView' user_id %}`
+        {% else %}
+        const link_to = ``
+        {% endif %}
+
+        let dict_form = {
+            "col_rut": col_rut,
+            "col_extranjero": Number(col_extranjero),
+            "col_nacionalidad": col_nacionalidad,
+            "col_sexo": col_sexo,
+            "col_fechanacimiento": col_fechanacimiento,
+            "col_estadocivil": Number(col_estadocivil),
+            "col_direccion": col_direccion,
+            "pais": Number(pais),
+            "region": Number(region),
+            "comuna": Number(comuna),
+            "col_estudios": Number(col_estudios),
+            "col_estadoestudios": Number(col_estadoestudios),
+            "col_titulo": col_titulo,
+            "col_licenciaconducir": Number(col_licenciaconducir),
+            "col_tipolicencia": col_tipolicencia,
+            "col_tipousuario": Number(col_tipousuario),
+            "apellidos": apellidos,
+            "nombres": nombres,
+            "email": email
+        }
+
+        axios.put(link_to, dict_form)
+            .then(response => 
+                {% if user_id %} {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: 'Los datos del colaborador fueron actualizados con éxito!',
+                });
+                {% else %}
+                $.confirm({
+                    title: 'Mensaje!',
+                    content: 'Los datos del colaborador fueron creados con éxito!',
+                    aceptar: {
+                        aceptar: function () {
+                            location.href = ``
+                        }
+                    }
+                });
+                {% endif %}
+            })
+            .catch(error => {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: `${error.response.data.message}`,
+                });
+            });
+    }
+}
 </script>

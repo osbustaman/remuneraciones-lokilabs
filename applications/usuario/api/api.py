@@ -8,6 +8,7 @@ from applications.usuario.api.serializer import AfpSerializer, PersonalDataSeria
 from django.contrib.auth.models import User
 from django.db.models import F, Value, CharField, Q
 from django.db.models.functions import Concat
+from django.urls import reverse
 
 from rest_framework.response import Response
 from rest_framework import generics, status, serializers
@@ -101,6 +102,15 @@ class PersonalDataCreateView(generics.CreateAPIView):
                 object_colaborador.col_tipousuario = Rol.objects.get(rol_id = request.data['col_tipousuario'])
 
                 object_colaborador.save()
+
+                url = reverse('edit_collaborator_file', args=[object_colaborador.col_id, user.id])
+
+                response_data = {
+                    "url": url
+                }
+
+                return Response(response_data, status=status.HTTP_201_CREATED)
+            
             except Colaborador.DoesNotExist:
                 return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
             except Pais.DoesNotExist:
@@ -112,7 +122,7 @@ class PersonalDataCreateView(generics.CreateAPIView):
             except Rol.DoesNotExist:
                 return Response({"message": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

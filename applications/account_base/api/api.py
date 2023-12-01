@@ -1,4 +1,4 @@
-from applications.attendance.api.serializers import (
+from applications.account_base.api.serializers import (
     CustomTokenObtainPairSerializer
     , CustomUserSerializer
 )

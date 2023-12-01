@@ -97,11 +97,19 @@
 {% block script_tag %}
 <script>
 
-$('.fc-datepicker').datepicker({
-    showOtherMonths: true,
-    selectOtherMonths: true,
-    dateFormat: 'yy-mm-dd',
-});
+    $('.fc-datepicker').datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        dateFormat: 'dd-mm-yy',
+    });
+
+    $('.select2-show-search').select2({
+        minimumResultsForSearch: ''
+    });
+
+    $('.select2-one').select2({
+        minimumResultsForSearch: Infinity
+    });
 
 
 div_datos_personales.style.display = 'none';
@@ -180,81 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-const save_data = (form_name) => {
-    const _validate_inputs = validate_inputs(form_name);
 
-    if(!_validate_inputs){
-        $.alert({
-            title: 'Mensaje!',
-            content: 'El formulario no esta completo, favor de revisar y volver a intentar',
-        });
-    }else{
-
-        let apellidos = document.getElementById('apellidos').value;
-        let nombres = document.getElementById('nombres').value;
-        let email = document.getElementById('email').value;
-
-        let col_rut = document.getElementById('col_rut').value;
-        let col_sexo = document.getElementById('col_sexo').value;
-        let col_estadocivil = document.getElementById('col_estadocivil').value;
-        let col_extranjero = document.getElementById('col_extranjero').value;
-        let col_nacionalidad = document.getElementById('col_nacionalidad').value;
-        let col_fechanacimiento = document.getElementById('col_fechanacimiento').value;
-        let col_estudios = document.getElementById('col_estudios').value;
-        let col_estadoestudios = document.getElementById('col_estadoestudios').value;
-        let col_titulo = document.getElementById('col_titulo').value;
-        let col_licenciaconducir = document.getElementById('col_licenciaconducir').value;
-        let col_tipolicencia = document.getElementById('col_tipolicencia').value;
-        let col_tipousuario = document.getElementById('col_tipousuario').value;
-        let col_direccion = document.getElementById('col_direccion').value;
-
-        let pais = document.getElementById('pais').value;
-        let region = document.getElementById('region').value;
-        let comuna = document.getElementById('comuna').value;
-
-        {% if user_id %} 
-        const link_to = `{% url 'usuario_app:PersonalDataEditView' user_id %}`
-        {% else %}
-        const link_to = ``
-        {% endif %}
-
-        let dict_form = {
-            "col_rut": col_rut,
-            "col_extranjero": Number(col_extranjero),
-            "col_nacionalidad": col_nacionalidad,
-            "col_sexo": col_sexo,
-            "col_fechanacimiento": col_fechanacimiento,
-            "col_estadocivil": Number(col_estadocivil),
-            "col_direccion": col_direccion,
-            "pais": Number(pais),
-            "region": Number(region),
-            "comuna": Number(comuna),
-            "col_estudios": Number(col_estudios),
-            "col_estadoestudios": Number(col_estadoestudios),
-            "col_titulo": col_titulo,
-            "col_licenciaconducir": Number(col_licenciaconducir),
-            "col_tipolicencia": col_tipolicencia,
-            "col_tipousuario": Number(col_tipousuario),
-            "apellidos": apellidos,
-            "nombres": nombres,
-            "email": email
-        }
-
-        axios.put(link_to, dict_form)
-            .then(response => {
-                $.alert({
-                    title: 'Mensaje!',
-                    content: 'Los datos del colaborador fueron actualizados con éxito!',
-                });
-            })
-            .catch(error => {
-                $.alert({
-                    title: 'Mensaje!',
-                    content: `${error.response.data.message}`,
-                });
-            });
-    }
-}
 
 const validate_inputs = (form_name) => {
     const formulario = document.getElementById(form_name);
