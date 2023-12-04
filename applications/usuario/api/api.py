@@ -1,11 +1,19 @@
 
 from applications.base.utils import validarRut, validate_mail
-from applications.empresa.models import Afp
+from applications.empresa.models import Afp, Cargo, CentroCosto, Empresa, Sucursal
 from applications.security.models import Rol
-from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities
-from applications.usuario.api.serializer import AfpSerializer, PersonalDataSerializer
+from applications.usuario.models import Colaborador, Contact, FamilyResponsibilities, UsuarioEmpresa
+from applications.usuario.api.serializer import (
+    AfpSerializer
+    , CentroCostosSerializer
+    , CentroSucursalSerializer
+    , ComunsSerializer
+    , PersonalDataSerializer
+    , CargosSerializer
+)
 
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.db.models import F, Value, CharField, Q
 from django.db.models.functions import Concat
 from django.urls import reverse
@@ -15,6 +23,68 @@ from rest_framework import generics, status, serializers
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from applications.base.models import Comuna, Pais, Region
+
+
+@permission_classes([AllowAny])
+class GetSucursalApiView(generics.ListAPIView):
+    serializer_class = CentroSucursalSerializer
+
+    def get_object(self):
+        list_sucursal = Sucursal.objects.filter(suc_estado = "S")
+        return list_sucursal
+
+    def get(self, request, *args, **kwargs):
+        list_sucursal = self.get_object()
+        dict_sucursal = list(list_sucursal.values())
+        return Response(dict_sucursal, status=status.HTTP_200_OK)
+
+
+@permission_classes([AllowAny])
+class GetCentroCostosApiView(generics.ListAPIView):
+    serializer_class = CentroCostosSerializer
+
+    def get_object(self):
+        list_ccostos = CentroCosto.objects.filter(cencost_activo = "S")
+        return list_ccostos
+
+    def get(self, request, *args, **kwargs):
+        list_ccostos = self.get_object()
+        dict_ccostos = list(list_ccostos.values())
+        return Response(dict_ccostos, status=status.HTTP_200_OK)
+
+
+@permission_classes([AllowAny])
+class GetCargosApiView(generics.ListAPIView):
+    serializer_class = CargosSerializer
+
+    def get_object(self):
+        list_cargos = Cargo.objects.filter(car_activa = "S")
+        return list_cargos
+
+    def get(self, request, *args, **kwargs):
+        list_cargos = self.get_object()
+        dict_cargos = list(list_cargos.values())
+        return Response(dict_cargos, status=status.HTTP_200_OK)
+
+
+@permission_classes([AllowAny])
+class GetComunsListApiView(generics.ListAPIView):
+    queryset = Comuna.objects.all()
+    serializer_class = ComunsSerializer
+
+    def get_object(self):
+        region_id = int(self.kwargs.get(self.lookup_field))
+        list_comunas = Comuna.objects.filter(region__re_id = region_id)
+
+        if not list_comunas:
+            return Response({"message": "No existen comunas asociadas a la región"}, status=status.HTTP_404_NOT_FOUND)
+        return list_comunas
+    
+    def get(self, request, *args, **kwargs):
+        list_comunas = self.get_object()
+        dict_comunas = list(list_comunas.values())
+        return Response(dict_comunas, status=status.HTTP_200_OK)
+
 
 @permission_classes([AllowAny])
 class LoadPersonalDataPageView(generics.GenericAPIView):
@@ -44,24 +114,31 @@ class LoadPersonalDataPageView(generics.GenericAPIView):
         }
         return Response(response_data, status=status.HTTP_200_OK)
 
+
 @permission_classes([AllowAny])
 class PersonalDataCreateView(generics.CreateAPIView):
     serializer_class = PersonalDataSerializer
 
-    def get_object(self):
-        user_id = self.kwargs.get(self.lookup_field)
-        obj = Colaborador.objects.filter(user_id=user_id)
-
-        if obj.exists():
-            return Response({"message": "El colaborador ya existe"}, status=status.HTTP_409_CONFLICT)
-
-
+    def get_object(self, request):
+        obj = Colaborador.objects.filter(col_rut=request.data['col_rut']).first()
         return obj
 
     def post(self, request, *args, **kwargs):
 
+        """
+        Actualiza un colaborador existente.
+        
+        :param self: instancia de la clase.
+        :param request: objeto de solicitud HTTP.
+        :param args: argumentos posicionales adicionales.
+        :param kwargs: argumentos de palabra clave adicionales.
+        :return: respuesta HTTP con los resultados de la actualización o mensajes de error.
+        """
 
-        instance = self.get_object()
+        user_colaborator = self.get_object(request)
+
+        if user_colaborator:
+            return Response({"message": "El colaborador ya existe"}, status=status.HTTP_409_CONFLICT)
 
         if not validarRut(request.data['col_rut']):
             return Response({"message": "Rut no válido"}, status=status.HTTP_404_NOT_FOUND)
@@ -72,19 +149,26 @@ class PersonalDataCreateView(generics.CreateAPIView):
         # Actualización del modelo User
         try:
             user = User()
+            user.username = request.data['col_rut']
+            user.last_name = request.data['nombres']
+            user.first_name = request.data['apellidos']
+            user.email = request.data['email']
             user.is_staff = True
             user.is_superuser = False
-            user.set_password(request.POST['password'])
+            user.set_password(request.data['col_rut'])
             user.save()
         except User.DoesNotExist:
+            transaction.set_rollback(True)
             return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
 
         # Validación y actualización del modelo Colaborador
-        serializer = self.serializer_class(instance, data=request.data)
+        serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
 
             try:
-                object_colaborador = Colaborador.objects.get(user=user)
+                object_colaborador = Colaborador()
+                object_colaborador.user = user
+                object_colaborador.col_rut = request.data['col_rut']
                 object_colaborador.col_extranjero = request.data['col_extranjero']
                 object_colaborador.col_nacionalidad = request.data['col_nacionalidad']
                 object_colaborador.col_sexo = request.data['col_sexo']
@@ -103,29 +187,36 @@ class PersonalDataCreateView(generics.CreateAPIView):
 
                 object_colaborador.save()
 
-                url = reverse('edit_collaborator_file', args=[object_colaborador.col_id, user.id])
+                object_empresa = Empresa.objects.get(emp_id = int(request.session['la_empresa']))
+                usuario_empresa = UsuarioEmpresa()
+                usuario_empresa.user = user
+                usuario_empresa.empresa = object_empresa
+                usuario_empresa.save()
 
                 response_data = {
-                    "url": url
+                    "user_id": user.id,
+                    "col_id": object_colaborador.col_id,
                 }
 
                 return Response(response_data, status=status.HTTP_201_CREATED)
-            
             except Colaborador.DoesNotExist:
+                transaction.set_rollback(True)
                 return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
             except Pais.DoesNotExist:
+                transaction.set_rollback(True)
                 return Response({"message": "Pais no encontrado"}, status=status.HTTP_404_NOT_FOUND)
             except Region.DoesNotExist:
+                transaction.set_rollback(True)
                 return Response({"message": "Región no encontrada"}, status=status.HTTP_404_NOT_FOUND)
             except Comuna.DoesNotExist:
+                transaction.set_rollback(True)
                 return Response({"message": "Comuna no encontrada"}, status=status.HTTP_404_NOT_FOUND)
             except Rol.DoesNotExist:
+                transaction.set_rollback(True)
                 return Response({"message": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
-
-            
-        
+        transaction.set_rollback(True)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 
 @permission_classes([AllowAny])
 class PersonalDataEditView(generics.UpdateAPIView):
@@ -205,20 +296,6 @@ class PersonalDataEditView(generics.UpdateAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        
-@permission_classes([AllowAny])
-class PersonalDataCreateView(generics.CreateAPIView):
-    queryset = Colaborador.objects.all()
-    serializer_class = PersonalDataSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=201, headers=headers)
-
 
 
 @permission_classes([AllowAny])
@@ -361,7 +438,7 @@ class ListColaborate(generics.ListAPIView):
                 full_name=Concat('user__first_name', Value(' '), 'user__last_name'),
                 cargo_nombre=F('user__usuarioempresa__cargo__car_nombre'),
                 centro_costo_nombre=F('user__usuarioempresa__centrocosto__cencost_nombre'),
-            )
+            ).order_by('full_name', 'rut')
 
             list_user = []
             for value in list_objects:
@@ -369,11 +446,10 @@ class ListColaborate(generics.ListAPIView):
                     "user_id": value.id_user,
                     "id_col": value.id_col,
                     "full_name": value.full_name.title(),
-                    "cargo": value.cargo_nombre.title(),
-                    "centro_costo_nombre": value.centro_costo_nombre.title(),
+                    "cargo": value.cargo_nombre.title() if value.cargo_nombre and value.cargo_nombre.strip() else "Sin asignar",
+                    "centro_costo_nombre": value.centro_costo_nombre.title() if value.centro_costo_nombre and value.centro_costo_nombre.strip() else "Sin asignar",
                     "rut": value.rut,
                 })
-
 
             return Response(list_user, status=status.HTTP_200_OK)
         except IndexError as e:

@@ -100,7 +100,7 @@
     $('.fc-datepicker').datepicker({
         showOtherMonths: true,
         selectOtherMonths: true,
-        dateFormat: 'dd-mm-yy',
+        dateFormat: 'yy-mm-dd',
     });
 
     $('.select2-show-search').select2({
@@ -153,7 +153,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         load_datos_personales();
                     break;
                     case 'datos_laborales':
-                        console.log('La opción es datos_laborales');
+                        
+                        select_cargo();
+
+
                     break;
                     case 'datos_previsionales':
                         console.log('La opción es datos_previsionales');
@@ -215,17 +218,5 @@ const validate_inputs = (form_name) => {
     }
     return true;
 }
-
-const change_validation = () => {
-    const input = document.getElementById('col_licenciaconducir');
-    const input_txt = document.getElementById('col_tipolicencia');
-
-    if(input.value === '1'){
-        input_txt.classList.remove('not-required');
-    }else{
-        input_txt.classList.add('not-required');
-    }
-};
-
 </script>
 {% endblock %}

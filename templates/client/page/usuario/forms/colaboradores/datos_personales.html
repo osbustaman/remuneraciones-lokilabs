@@ -41,7 +41,7 @@
         <div class="row row-xs mg-t-20">
             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Región:</label>
             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                <select id="region" class="form-control form-control-sm select2-show-search">
+                <select id="region" class="form-control form-control-sm select2-show-search" onchange="change_region()">
                     <option value="">[Seleccione]</option>
                 </select>
             </div>
@@ -357,25 +357,6 @@ const load_datos_personales = async () => {
 
         {% endif %}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
     } catch (error) {
         console.error('Error en la solicitud:', error.message);
@@ -419,7 +400,7 @@ const save_data = (form_name) => {
         {% if user_id %} 
         const link_to = `{% url 'usuario_app:PersonalDataEditView' user_id %}`
         {% else %}
-        const link_to = ``
+        const link_to = `{% url 'usuario_app:PersonalDataCreateView' %}`
         {% endif %}
 
         let dict_form = {
@@ -444,31 +425,86 @@ const save_data = (form_name) => {
             "email": email
         }
 
+
+        {% if user_id %} 
         axios.put(link_to, dict_form)
-            .then(response => 
-                {% if user_id %} {
+        {% else %}
+        axios.post(link_to, dict_form)
+        {% endif %}
+        
+            .then(response => {
+                {% if user_id %}
+
                 $.alert({
                     title: 'Mensaje!',
                     content: 'Los datos del colaborador fueron actualizados con éxito!',
                 });
+
                 {% else %}
+                
+                let url_to = `{% url 'usuario_app:edit_collaborator_file' '__user_id__' '__col_id__' %}`;
+
+                const { data: { user_id, col_id } } = response
+                url_to = url_to.replace("__user_id__", user_id).replace("__col_id__", col_id)
+
                 $.confirm({
                     title: 'Mensaje!',
                     content: 'Los datos del colaborador fueron creados con éxito!',
-                    aceptar: {
+                    buttons: {
                         aceptar: function () {
-                            location.href = ``
+                            location.href = url_to
                         }
                     }
                 });
+
                 {% endif %}
+                
             })
             .catch(error => {
+
+                console.log()
+
                 $.alert({
                     title: 'Mensaje!',
-                    content: `${error.response.data.message}`,
+                    content: `${error}`,
                 });
             });
     }
+}
+
+const change_validation = () => {
+    const input = document.getElementById('col_licenciaconducir');
+    const input_txt = document.getElementById('col_tipolicencia');
+
+    if(input.value === '1'){
+        input_txt.classList.remove('not-required');
+    }else{
+        input_txt.classList.add('not-required');
+    }
+};
+
+const change_region = () => {
+    let select_regions = document.getElementById('region');
+    let select_comuns = document.getElementById('comuna');
+    let apiUrl = `{% url 'usuario_app:GetComunsListApiView' 0 %}`;
+    apiUrl = apiUrl.replace(0, select_regions.value)
+
+    axios.get(apiUrl)
+    .then(response => {
+        const { data } = response; 
+        const options_comuns = data.map(result => {
+            return `
+            <option value="${result.com_id}">${result.com_nombre}</option>
+            `; 
+        }).join('');
+        select_comuns.innerHTML = "";
+        select_comuns.innerHTML = options_comuns;
+    })
+    .catch(error => {
+        $.alert({
+            title: 'Mensaje!',
+            content: `${error.response.data.message}`,
+        });
+    });
 }
 </script>

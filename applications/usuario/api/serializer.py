@@ -1,8 +1,34 @@
 from rest_framework import serializers
+from applications.base.models import Comuna
 from applications.base.utils import validarRut
 
-from applications.empresa.models import Afp
+from applications.empresa.models import Afp, Cargo, CentroCosto, Sucursal
 from applications.usuario.models import Colaborador
+
+
+class CentroSucursalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sucursal
+        fields = ('__all__')
+
+
+class CentroCostosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CentroCosto
+        fields = ('__all__')
+
+
+class CargosSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cargo
+        fields = ('__all__')
+
+
+class ComunsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comuna
+        fields = ('__all__')
+
 
 # Afp serializer
 class AfpSerializer(serializers.ModelSerializer):
@@ -11,7 +37,6 @@ class AfpSerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 
-# 
 class PersonalDataSerializer(serializers.ModelSerializer):
 
     col_rut = serializers.CharField(max_length=10)
