@@ -97,21 +97,6 @@
 {% block script_tag %}
 <script>
 
-    $('.fc-datepicker').datepicker({
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        dateFormat: 'yy-mm-dd',
-    });
-
-    $('.select2-show-search').select2({
-        minimumResultsForSearch: ''
-    });
-
-    $('.select2-one').select2({
-        minimumResultsForSearch: Infinity
-    });
-
-
 div_datos_personales.style.display = 'none';
 div_datos_laborales.style.display = 'none';
 div_datos_previsionales.style.display = 'none';
@@ -154,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     break;
                     case 'datos_laborales':
                         
-                        select_cargo();
+                        load_datos_laborales();
 
 
                     break;
@@ -190,6 +175,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+$('.fc-datepicker').datepicker({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        dateFormat: 'yy-mm-dd',
+    });
+
+    $('.select2-show-search').select2({
+        minimumResultsForSearch: ''
+    });
+
+    $('.select2-one').select2({
+        minimumResultsForSearch: Infinity
+    });
 
 
 

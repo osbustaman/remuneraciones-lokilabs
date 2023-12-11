@@ -164,6 +164,7 @@ class Colaborador(TimeStampedModel):
 
 class UsuarioEmpresa(TimeStampedModel):
     TIPO_TRABAJADOR = (
+        (0, '[seleccione]'),
         (1, 'Activo (no pensionado)'),
         (2, 'Pensionado y cotiza AFP'),
         (3, 'Pensionado y no cotiza AFP'),
@@ -191,6 +192,7 @@ class UsuarioEmpresa(TimeStampedModel):
     )
 
     TIPO_CONTRATO = (
+        ('', '[seleccione]'),
         ('PI', 'Plazo Indefinido'),
         ('PF', 'Plazo Fijo'),
         ('PI11', 'Plazo Indefinido 11 años o más'),
@@ -206,6 +208,7 @@ class UsuarioEmpresa(TimeStampedModel):
     )
 
     ESTATE_JOB = (
+        (0, '[seleccione]'),
         (1, 'Vigente'),
         (2, 'Desvinculado')
     )
@@ -231,7 +234,7 @@ class UsuarioEmpresa(TimeStampedModel):
     )
 
     WORKER_SECTOR = (
-        (0, '---------'),
+        (0, '[seleccione]'),
         (1, 'Público'),
         (2, 'Privado'),
     )

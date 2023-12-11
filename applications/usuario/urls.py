@@ -4,9 +4,11 @@ from applications.usuario.api.api import (
         , ApiGetDataUserPage
         , ApiGetPersonalData
         , ApiLoadPageColaborator,
+        EditLaboralDataPersonalApiView,
         GetCargosApiView,
         GetCentroCostosApiView,
         GetComunsListApiView,
+        GetListDataPageDatosLaborales,
         GetSucursalApiView
         , ListColaborate
         , LoadPersonalDataPageView
@@ -70,8 +72,6 @@ urlpatterns = [
     path('api/listar-cargos', GetCargosApiView.as_view(), name='GetCargosApiView'),
     path('api/listar-centros-costos', GetCentroCostosApiView.as_view(), name='GetCentroCostosApiView'),
     path('api/listar-sucursales', GetSucursalApiView.as_view(), name='GetSucursalApiView'),
-
-
-
-
+    path('api/get-page-datos-laborales/<pk>', GetListDataPageDatosLaborales.as_view(), name='GetListDataPageDatosLaborales'),
+    path('api/edit-datos-laborales/<pk>', EditLaboralDataPersonalApiView.as_view(), name='EditLaboralDataPersonalApiView'),
 ]

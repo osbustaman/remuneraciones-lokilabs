@@ -7,7 +7,8 @@ from applications.usuario.api.serializer import (
     AfpSerializer
     , CentroCostosSerializer
     , CentroSucursalSerializer
-    , ComunsSerializer
+    , ComunsSerializer,
+    LaboralDataPersonalSerializer
     , PersonalDataSerializer
     , CargosSerializer
 )
@@ -23,6 +24,75 @@ from rest_framework import generics, status, serializers
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from applications.base.models import Comuna, Pais, Region
+
+@permission_classes([AllowAny])
+class EditLaboralDataPersonalApiView(generics.UpdateAPIView):
+    serializer_class = LaboralDataPersonalSerializer
+
+    def get_queryset(self):
+        user_id = int(self.kwargs.get(self.lookup_field))
+        queryset = UsuarioEmpresa.objects.filter(user_id=user_id)
+        return queryset
+
+    def put(self, request, *args, **kwargs):
+        queryset = self.get_queryset().first()
+
+        if not queryset:
+            return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = self.get_serializer(queryset, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes([AllowAny])
+class GetListDataPageDatosLaborales(generics.ListAPIView):
+
+    serializer_class = LaboralDataPersonalSerializer
+    
+    def get_queryset(self):
+        try:
+            user_id = int(self.kwargs.get(self.lookup_field))
+        except ValueError:
+            return Response({"message": "Falta parametro de usuario para ejecutar el proceso"}, status=status.HTTP_404_NOT_FOUND)
+        
+        try:
+            queryset = UsuarioEmpresa.objects.filter(user_id = user_id)
+        except UsuarioEmpresa.DoesNotExist:
+            return Response({"message": "No existe colaborador asociado"}, status=status.HTTP_404_NOT_FOUND)
+        except TypeError as ex:
+            return Response({"message": str(ex)}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as ex:
+            return Response({"message": str(ex)}, status=status.HTTP_404_NOT_FOUND)
+        
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+
+        try:
+            queryset= self.get_queryset()
+            serializer = self.get_serializer(queryset, many = True)
+        except Exception as ex:
+            return Response({"message": str(ex)}, status=status.HTTP_404_NOT_FOUND)
+        
+        tipo_contrato_dict = {key: value for key, value in UsuarioEmpresa.TIPO_CONTRATO}
+        type_job_dict = {key: value for key, value in UsuarioEmpresa.TIPO_TRABAJADOR}
+        state_job_dict = {key: value for key, value in UsuarioEmpresa.ESTATE_JOB}
+        worker_sector_dict = {key: value for key, value in UsuarioEmpresa.WORKER_SECTOR}
+        all_days_dict = {key: value for key, value in UsuarioEmpresa.ALL_DAYS}
+
+        data_page = {
+            "tipo_contrato_dict": tipo_contrato_dict,
+            "type_job_dict": type_job_dict,
+            "state_job_dict": state_job_dict,
+            "worker_sector_dict": worker_sector_dict,
+            "all_days_dict": all_days_dict,
+            "data_colaborator": serializer.data,
+        }
+        return Response(data_page, status=status.HTTP_200_OK)
 
 
 @permission_classes([AllowAny])
@@ -216,7 +286,7 @@ class PersonalDataCreateView(generics.CreateAPIView):
                 return Response({"message": "Rol no encontrado"}, status=status.HTTP_404_NOT_FOUND)
         transaction.set_rollback(True)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
 
 @permission_classes([AllowAny])
 class PersonalDataEditView(generics.UpdateAPIView):

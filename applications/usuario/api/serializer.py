@@ -3,7 +3,7 @@ from applications.base.models import Comuna
 from applications.base.utils import validarRut
 
 from applications.empresa.models import Afp, Cargo, CentroCosto, Sucursal
-from applications.usuario.models import Colaborador
+from applications.usuario.models import Colaborador, UsuarioEmpresa
 
 
 class CentroSucursalSerializer(serializers.ModelSerializer):
@@ -35,6 +35,26 @@ class AfpSerializer(serializers.ModelSerializer):
     class Meta:
         model = Afp
         fields = ('__all__')
+
+
+class LaboralDataPersonalSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = UsuarioEmpresa
+        fields = (
+            'cargo',
+            'centrocosto',
+            'sucursal',
+            'ue_fechacontratacion',
+            'ue_fecharenovacioncontrato',
+            'ue_fechatermino',
+            'ue_tipocontrato',
+            'ue_tipotrabajdor',
+            'ue_estate',
+            'ue_workersector',
+            'ue_horassemanales',
+            'ue_agreedworkdays'
+            )
 
 
 class PersonalDataSerializer(serializers.ModelSerializer):

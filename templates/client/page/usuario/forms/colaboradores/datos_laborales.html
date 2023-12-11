@@ -34,13 +34,13 @@
         <div class="row row-xs mg-t-20">
             <label class="col-sm-3 form-control-label"><span class="tx-danger"></span> Fecha Renovación Contrato:</label>
             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                <input type="text" class="form-control fc-datepicker form-control-sm" placeholder="YYYY-MM-DD" required id="ue_fecharenovacioncontrato">
+                <input type="text" class="form-control fc-datepicker form-control-sm not-required" placeholder="YYYY-MM-DD" required id="ue_fecharenovacioncontrato">
             </div>
         </div><!-- row -->
         <div class="row row-xs mg-t-20">
             <label class="col-sm-3 form-control-label"><span class="tx-danger"></span> Fecha Termino Contrato:</label>
             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                <input type="text" class="form-control fc-datepicker form-control-sm" placeholder="YYYY-MM-DD" required id="ue_fechatermino">
+                <input type="text" class="form-control fc-datepicker form-control-sm not-required" placeholder="YYYY-MM-DD" required id="ue_fechatermino">
             </div>
         </div><!-- row -->
         <div class="row row-xs mg-t-20">
@@ -76,7 +76,9 @@
         <div class="row row-xs mg-t-20">
             <label class="col-sm-3 form-control-label"><span class="tx-danger">*</span> Dias Trabajo Pactados:</label>
             <div class="col-sm-4 mg-t-10 mg-sm-t-0">
-                <input type="text" class="form-control form-control-sm" id="ue_agreedworkdays">
+                <select id="ue_agreedworkdays" class="form-control select2-show-search form-control-sm" multiple>
+                    <option value="">[Seleccione]</option>
+                </select>
             </div>
         </div><!-- row -->
         <div class="row row-xs mg-t-20">
@@ -99,15 +101,122 @@
     </div>
 </form>
 <script>
-    const select_cargo = () => {
+
+    const save_data_laborales = (form_name) => {
+        const _validate_inputs = validate_inputs(form_name);
+
+        if(!_validate_inputs){
+            $.alert({
+                title: 'Mensaje!',
+                content: 'El formulario no esta completo, favor de revisar y volver a intentar',
+            });
+        }else{
+            let cargo = document.getElementById('cargo').value;
+            let centrocosto = document.getElementById('centrocosto').value;
+            let sucursal = document.getElementById('sucursal').value;
+            let ue_fechacontratacion = document.getElementById('ue_fechacontratacion').value;
+            let ue_fecharenovacioncontrato = document.getElementById('ue_fecharenovacioncontrato').value;
+            let ue_fechatermino = document.getElementById('ue_fechatermino').value;
+            let ue_tipocontrato = document.getElementById('ue_tipocontrato').value;
+            let ue_tipotrabajdor = document.getElementById('ue_tipotrabajdor').value;
+            let ue_estate = document.getElementById('ue_estate').value;
+            let ue_horassemanales = document.getElementById('ue_horassemanales').value;
+            let ue_agreedworkdays = document.getElementById('ue_agreedworkdays');
+
+            console.log(ue_agreedworkdays)
+
+            let ue_workersector = document.getElementById('ue_workersector').value;
+
+            const link_to = `{% url 'usuario_app:EditLaboralDataPersonalApiView' user_id %}`
+
+            let dict_form = {
+                "cargo": cargo,
+                "centrocosto": Number(centrocosto),
+                "sucursal": Number(sucursal),
+                "ue_fechacontratacion": ue_fechacontratacion,
+                "ue_fecharenovacioncontrato": ue_fecharenovacioncontrato,
+                "ue_fechatermino": ue_fechatermino,
+                "ue_tipocontrato": ue_tipocontrato,
+                "ue_tipotrabajdor": ue_tipotrabajdor,
+                "ue_estate": ue_estate,
+                "ue_horassemanales": ue_horassemanales,
+                "ue_agreedworkdays": ue_agreedworkdays,
+                "ue_workersector": ue_workersector
+            }
+
+            axios.put(link_to, dict_form)
+            .then(response => {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: 'Datos laborales actualizado con éxito!',
+                });
+            })
+            .catch(error => {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: `${error}`,
+                });
+            });
+
+        }
+
+    }
+
+    const load_datos_laborales = () => {
 
         let select_cargo = document.getElementById('cargo');   
         let select_centro_costo = document.getElementById('centrocosto');   
-        let select_sucursales = document.getElementById('sucursal');   
+        let select_sucursales = document.getElementById('sucursal'); 
+        
+        let select_ue_tipocontratos = document.getElementById('ue_tipocontrato');
+        let select_ue_tipotrabajdor = document.getElementById('ue_tipotrabajdor');
+        let select_ue_estate = document.getElementById('ue_estate');
+        let select_ue_workersector = document.getElementById('ue_workersector');
+        let select_ue_agreedworkdays = document.getElementById('ue_agreedworkdays');
 
         let apiUrlCargo = `{% url 'usuario_app:GetCargosApiView' %}`;
         let apiUrlCentroCOsto = `{% url 'usuario_app:GetCentroCostosApiView' %}`;
         let apiUrlSucursales = `{% url 'usuario_app:GetSucursalApiView' %}`;
+        let apiUrl = `{% url 'usuario_app:GetSucursalApiView' %}`;
+        let apiListDataPageDatosLaborales = `{% url 'usuario_app:GetListDataPageDatosLaborales' user_id %}`;
+
+        select_ue_tipocontratos.innerHTML = "";
+        select_ue_tipotrabajdor.innerHTML = "";
+        select_ue_estate.innerHTML = "";
+        select_ue_workersector.innerHTML = "";
+        select_ue_agreedworkdays.innerHTML = "";
+
+
+        axios.get(apiListDataPageDatosLaborales)
+        .then(response => {
+            const { data: { tipo_contrato_dict, type_job_dict, state_job_dict, worker_sector_dict, all_days_dict } } = response; 
+
+            const createOptions = (obj, selectElement) => {
+
+                const options = Object.entries(obj).map(([value, label]) => {
+                    const option = document.createElement('option');
+                    option.value = value;
+                    option.text = label;
+                    return option;
+                });
+
+                options.forEach(option => {
+                    selectElement.appendChild(option);
+                });
+            };
+
+            createOptions(tipo_contrato_dict, select_ue_tipocontratos);
+            createOptions(type_job_dict, select_ue_tipotrabajdor);
+            createOptions(state_job_dict, select_ue_estate);
+            createOptions(worker_sector_dict, select_ue_workersector);
+            createOptions(all_days_dict, select_ue_agreedworkdays);
+        })
+        .catch(error => {
+            $.alert({
+                title: 'Mensaje!',
+                content: `${error.response.data.message}`,
+            });
+        });
 
         axios.get(apiUrlCargo)
         .then(response => {
@@ -119,7 +228,7 @@
                 `; 
             }).join('');
             select_cargo.innerHTML = "";
-            select_cargo.innerHTML = options_cargos;
+            select_cargo.innerHTML = `<option value="">[Seleccione]</option>`+options_cargos;
         })
         .catch(error => {
             $.alert({
@@ -138,7 +247,7 @@
                 `; 
             }).join('');
             select_centro_costo.innerHTML = "";
-            select_centro_costo.innerHTML = options_centro_costo;
+            select_centro_costo.innerHTML = `<option value="">[Seleccione]</option>`+options_centro_costo;
         })
         .catch(error => {
             $.alert({
@@ -157,7 +266,7 @@
                 `; 
             }).join('');
             select_sucursales.innerHTML = "";
-            select_sucursales.innerHTML = options_sucursales;
+            select_sucursales.innerHTML = `<option value="">[Seleccione]</option>`+options_sucursales;
         })
         .catch(error => {
             $.alert({
@@ -165,5 +274,7 @@
                 content: `${error.response.data.message}`,
             });
         });
+
+        const select_ue_tipocontrato = document.getElementById('ue_tipocontrato');
     }
 </script>
