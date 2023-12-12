@@ -206,8 +206,23 @@ const validate_inputs = (form_name) => {
             const classes = elemento.className.split(' ');
             const hasRequiredClass = classes.includes('not-required');
 
-            if (!hasRequiredClass && (elemento.value).length === 0) {
-                is_vacio = false;
+            if(classes.includes('select2-search__field')){
+            }else{
+                if(!hasRequiredClass && classes.includes('select2-show-search')){
+                    try{
+                        let cant_chars_ue_agreedworkdays = (($('#ue_agreedworkdays').val()).join(', ')).length;
+                        if(cant_chars_ue_agreedworkdays === 0){
+                            is_vacio = false;
+                        }
+                    }catch (error){
+                        is_vacio = false;
+                    }
+                    
+                }else{
+                    if (!hasRequiredClass && (elemento.value).length === 0) {
+                        is_vacio = false;
+                    }
+                }
             }
         }
     }

@@ -121,7 +121,8 @@
             let ue_tipotrabajdor = document.getElementById('ue_tipotrabajdor').value;
             let ue_estate = document.getElementById('ue_estate').value;
             let ue_horassemanales = document.getElementById('ue_horassemanales').value;
-            let ue_agreedworkdays = document.getElementById('ue_agreedworkdays');
+            //let ue_agreedworkdays = document.getElementById('ue_agreedworkdays');
+            let ue_agreedworkdays = ($('#ue_agreedworkdays').val()).join(', ');
 
             console.log(ue_agreedworkdays)
 
@@ -137,11 +138,11 @@
                 "ue_fecharenovacioncontrato": ue_fecharenovacioncontrato,
                 "ue_fechatermino": ue_fechatermino,
                 "ue_tipocontrato": ue_tipocontrato,
-                "ue_tipotrabajdor": ue_tipotrabajdor,
-                "ue_estate": ue_estate,
-                "ue_horassemanales": ue_horassemanales,
+                "ue_tipotrabajdor": Number(ue_tipotrabajdor),
+                "ue_estate": Number(ue_estate),
+                "ue_horassemanales": Number(ue_horassemanales),
                 "ue_agreedworkdays": ue_agreedworkdays,
-                "ue_workersector": ue_workersector
+                "ue_workersector": Number(ue_workersector)
             }
 
             axios.put(link_to, dict_form)
@@ -152,6 +153,9 @@
                 });
             })
             .catch(error => {
+
+                console.log(error)
+
                 $.alert({
                     title: 'Mensaje!',
                     content: `${error}`,

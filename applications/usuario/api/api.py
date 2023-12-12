@@ -31,11 +31,11 @@ class EditLaboralDataPersonalApiView(generics.UpdateAPIView):
 
     def get_queryset(self):
         user_id = int(self.kwargs.get(self.lookup_field))
-        queryset = UsuarioEmpresa.objects.filter(user_id=user_id)
-        return queryset
+        objects_user_company = UsuarioEmpresa.objects.filter(user_id=user_id)
+        return objects_user_company
 
     def put(self, request, *args, **kwargs):
-        queryset = self.get_queryset().first()
+        queryset = self.get_queryset()
 
         if not queryset:
             return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
