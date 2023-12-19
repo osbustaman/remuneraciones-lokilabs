@@ -107,7 +107,7 @@ class ListUsersWorkDay(generics.ListAPIView):
         else:
             return Response({"message": "Not Found - 404"}, status=status.HTTP_404_NOT_FOUND)
 
-
+# @permission_classes([AllowAny])
 class MarkInAndOutAPIView(generics.CreateAPIView):
     serializer_class = MarkAttendanceSerializer
 
@@ -194,8 +194,11 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
         },
         security=[{"Bearer": []}]
     )
+    
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data = request.data)
+
+        locationData = []
         if serializer.is_valid():
             objectUser = User.objects.filter(id = request.data['user'])
 
@@ -203,8 +206,6 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                 # Obtener la fecha y hora actual en el formato de la base de datos
                 actualDate = datetime.strptime(request.data['ma_datemark'], "%Y-%m-%d").date()
                 objectMarkAttendance = MarkAttendance.objects.filter(user=objectUser.first(), ma_datemark=actualDate)
-                
-                
                 
                 if objectMarkAttendance:
 
@@ -224,7 +225,9 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                             , float(val['longitud'])
                             , float(request.data['ma_latitude'])
                             , float(request.data['ma_longitude']))
-                        if itsRadio:
+                        if not itsRadio:
+                            break
+                        elif itsRadio:
                             locationData.append(
                                 {
                                     "lugar": "sucursal",
@@ -236,7 +239,7 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                             break
                         
                     if not itsRadio:
-                        return Response({"error": "Not Found - 404", "message": "No se encuantra en el rango del lugar de trabajo"}, status=status.HTTP_404_NOT_FOUND)
+                        return Response({"message": "No se encuantra en el rango del lugar de trabajo"}, status=status.HTTP_404_NOT_FOUND)
                     
                     locationData.append(
                         {
@@ -247,11 +250,11 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                     )
 
                     if len(objectMarkAttendance) >= 2:
-                        return Response({"error": "No Content - 204", "message": f"ya existen marcas de ENTRADA y SALIDA para el dia { request.data['ma_datemark'] }"}, status=status.HTTP_204_NO_CONTENT)
+                        return Response({"message": f"ya existen marcas de ENTRADA y SALIDA para el dia { request.data['ma_datemark'] }"}, status=status.HTTP_400_BAD_REQUEST)
                     else:
                         for mark in objectMarkAttendance:
                             if mark.ma_typeattendance == int(request.data['ma_typeattendance']):
-                                return Response({"error": "No Content - 204", "message": f"ya existe una marca de { mark.get_ma_typeattendance_display() }"}, status=status.HTTP_204_NO_CONTENT)
+                                return Response({"message": f"ya existe una marca de { mark.get_ma_typeattendance_display() }"}, status=status.HTTP_400_BAD_REQUEST)
                             else:
                                 serializer.save()
                                 response_to_page = {
@@ -261,7 +264,7 @@ class MarkInAndOutAPIView(generics.CreateAPIView):
                                 return Response(response_to_page, status=status.HTTP_201_CREATED)
                 else:
                     if not objectMarkAttendance and int(request.data['ma_typeattendance']) == 2:
-                        return Response({"error": "No Content - 204", "message": f"para marcar la SALIDA debe existir una ENTRADA"}, status=status.HTTP_204_NO_CONTENT)
+                        return Response({"message": f"para marcar la SALIDA debe existir una ENTRADA"}, status=status.HTTP_400_BAD_REQUEST)
                     else:
                         serializer.save()
                         response_to_page = {

@@ -250,7 +250,7 @@ class Cargo(models.Model):
     car_nombre = models.CharField("Nombre cargo", max_length=255)
     car_activa = models.CharField(
         "Cargo activa", max_length=1, choices=OPCIONES, default="S")
-    # empresa = models.ManyToManyField(Empresa)
+    empresa = models.ManyToManyField(Empresa)
 
     def __int__(self):
         return self.car_id

@@ -19,6 +19,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'first_name', 'last_name')
 
 class MarkAttendanceSerializer(serializers.ModelSerializer):
+    ma_datemark = serializers.DateField(format="%Y-%m-%d")
     class Meta:
         model = MarkAttendance
         fields = '__all__'

@@ -8,7 +8,7 @@ from applications.attendance.models import MarkAttendance
 
 class MarkAttendanceTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='testuser')
+        self.user = User.objects.create(username='19306862-6')
         self.today = date.today()
 
     def test_mark_attendance_creation(self):

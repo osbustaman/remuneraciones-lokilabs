@@ -8,7 +8,7 @@ from applications.attendance.models import MarkAttendance
 
 class MarkAttendanceTestCase(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='17452821-7')
+        self.user = User.objects.create(username='19306862-6')
         self.latitud = '-33.43476615714285'
         self.longitud = '-70.68733879999999'
         self.ma_place = 'oficina principal'
