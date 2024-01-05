@@ -5,6 +5,7 @@ db.sqlite3
 .vscode/launch.json
 __pycache__
 env
+chorme_dev
 *.pyc
 *.jpg
 *.png

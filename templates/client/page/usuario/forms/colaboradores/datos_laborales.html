@@ -153,12 +153,15 @@
                 });
             })
             .catch(error => {
-
-                console.log(error)
-
+                let data_error = error.response.data;
+                let listado_keys = Object.keys(data_error);
+                let message_error = "";
+                listado_keys.forEach((element) => {
+                    message_error += `<strong>${element}:</strong> ${data_error[element][0]}<br/>`
+                });
                 $.alert({
-                    title: 'Mensaje!',
-                    content: `${error}`,
+                    title: 'ERROR <span id="text-danger"><i class="fa fa-close"></i></span>!',
+                    content: `${message_error}`,
                 });
             });
 
@@ -193,7 +196,7 @@
 
         axios.get(apiListDataPageDatosLaborales)
         .then(response => {
-            const { data: { tipo_contrato_dict, type_job_dict, state_job_dict, worker_sector_dict, all_days_dict } } = response; 
+            const { data: { tipo_contrato_dict, type_job_dict, state_job_dict, worker_sector_dict, all_days_dict, data_colaborator } } = response; 
 
             const createOptions = (obj, selectElement) => {
 
@@ -208,6 +211,11 @@
                     selectElement.appendChild(option);
                 });
             };
+
+            const { cargo, centrocosto, sucursal, ue_agreedworkdays, ue_estate, ue_fechacontratacion, ue_fecharenovacioncontrato, ue_horassemanales, ue_tipocontrato, ue_tipotrabajdor, ue_workersector } = data_colaborator[0]; 
+
+            console.log(cargo)
+            document.getElementById('cargo').value = cargo;
 
             createOptions(tipo_contrato_dict, select_ue_tipocontratos);
             createOptions(type_job_dict, select_ue_tipotrabajdor);
