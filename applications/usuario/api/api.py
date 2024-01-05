@@ -1,4 +1,4 @@
-
+import datetime
 from applications.base.utils import validarRut, validate_mail
 from applications.empresa.models import Afp, Cargo, CentroCosto, Empresa, Sucursal
 from applications.security.models import Rol
@@ -19,6 +19,7 @@ from django.db.models import F, Value, CharField, Q
 from django.db.models.functions import Concat
 from django.urls import reverse
 
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework import generics, status, serializers
 from rest_framework.decorators import permission_classes
@@ -37,12 +38,18 @@ class EditLaboralDataPersonalApiView(generics.UpdateAPIView):
     def put(self, request, *args, **kwargs):
         queryset = self.get_queryset()
 
-        if not queryset:
-            return Response({"message": "Colaborador no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+        if not queryset.exists():
+            raise NotFound(detail="Colaborador no encontrado")
 
-        serializer = self.get_serializer(queryset, data=request.data)
+        serializer = self.get_serializer(queryset.first(), data=request.data)
         if serializer.is_valid():
             serializer.save()
+            ue_fechatermino = request.data.get('ue_fechatermino')
+            if ue_fechatermino:
+                first_object = queryset.first()
+                first_object.ue_fechatermino = datetime.datetime.strptime(ue_fechatermino, '%Y-%m-%d').date()
+                first_object.save()
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

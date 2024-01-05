@@ -39,11 +39,6 @@ class AfpSerializer(serializers.ModelSerializer):
 
 class LaboralDataPersonalSerializer(serializers.ModelSerializer):
 
-    ue_fechatermino = serializers.DateField(required=False, allow_null=True, input_formats=["%Y-%m-%d"])
-    ue_fecharenovacioncontrato = serializers.DateField(required=False, allow_null=True, input_formats=["%Y-%m-%d"])
-
-    def validate(self, value):
-        return value.strftime('%Y-%m-%d') if value else value
     
     class Meta:
         model = UsuarioEmpresa
@@ -53,7 +48,6 @@ class LaboralDataPersonalSerializer(serializers.ModelSerializer):
             'sucursal',
             'ue_fechacontratacion',
             'ue_fecharenovacioncontrato',
-            'ue_fechatermino',
             'ue_tipocontrato',
             'ue_tipotrabajdor',
             'ue_estate',
