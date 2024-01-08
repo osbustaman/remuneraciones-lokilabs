@@ -91,6 +91,8 @@ class GetListDataPageDatosLaborales(generics.ListAPIView):
         worker_sector_dict = {key: value for key, value in UsuarioEmpresa.WORKER_SECTOR}
         all_days_dict = {key: value for key, value in UsuarioEmpresa.ALL_DAYS}
 
+        serializer.data[0]["ue_fechatermino"] = queryset.first().ue_fechatermino
+
         data_page = {
             "tipo_contrato_dict": tipo_contrato_dict,
             "type_job_dict": type_job_dict,

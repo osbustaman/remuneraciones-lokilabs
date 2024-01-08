@@ -102,6 +102,7 @@
 </form>
 <script>
 
+    {% if user_id %}
     const save_data_laborales = (form_name) => {
         const _validate_inputs = validate_inputs(form_name);
 
@@ -164,129 +165,181 @@
                     content: `${message_error}`,
                 });
             });
-
         }
-
     }
+    
 
-    const load_datos_laborales = () => {
+    const load_datos_laborales = async () => {
 
-        let select_cargo = document.getElementById('cargo');   
-        let select_centro_costo = document.getElementById('centrocosto');   
-        let select_sucursales = document.getElementById('sucursal'); 
-        
-        let select_ue_tipocontratos = document.getElementById('ue_tipocontrato');
-        let select_ue_tipotrabajdor = document.getElementById('ue_tipotrabajdor');
-        let select_ue_estate = document.getElementById('ue_estate');
-        let select_ue_workersector = document.getElementById('ue_workersector');
-        let select_ue_agreedworkdays = document.getElementById('ue_agreedworkdays');
+        try{
 
-        let apiUrlCargo = `{% url 'usuario_app:GetCargosApiView' %}`;
-        let apiUrlCentroCOsto = `{% url 'usuario_app:GetCentroCostosApiView' %}`;
-        let apiUrlSucursales = `{% url 'usuario_app:GetSucursalApiView' %}`;
-        let apiUrl = `{% url 'usuario_app:GetSucursalApiView' %}`;
-        let apiListDataPageDatosLaborales = `{% url 'usuario_app:GetListDataPageDatosLaborales' user_id %}`;
+            let select_cargo = document.getElementById('cargo');   
+            let select_centro_costo = document.getElementById('centrocosto');   
+            let select_sucursales = document.getElementById('sucursal'); 
+            
+            let select_ue_tipocontratos = document.getElementById('ue_tipocontrato');
+            let select_ue_tipotrabajdor = document.getElementById('ue_tipotrabajdor');
+            let select_ue_estate = document.getElementById('ue_estate');
+            let select_ue_workersector = document.getElementById('ue_workersector');
+            let select_ue_agreedworkdays = document.getElementById('ue_agreedworkdays');
 
-        select_ue_tipocontratos.innerHTML = "";
-        select_ue_tipotrabajdor.innerHTML = "";
-        select_ue_estate.innerHTML = "";
-        select_ue_workersector.innerHTML = "";
-        select_ue_agreedworkdays.innerHTML = "";
+            let apiUrlCargo = `{% url 'usuario_app:GetCargosApiView' %}`;
+            let apiUrlCentroCOsto = `{% url 'usuario_app:GetCentroCostosApiView' %}`;
+            let apiUrlSucursales = `{% url 'usuario_app:GetSucursalApiView' %}`;
+            let apiUrl = `{% url 'usuario_app:GetSucursalApiView' %}`;
+            let apiListDataPageDatosLaborales = `{% url 'usuario_app:GetListDataPageDatosLaborales' user_id %}`;
+
+            select_ue_tipocontratos.innerHTML = "";
+            select_ue_tipotrabajdor.innerHTML = "";
+            select_ue_estate.innerHTML = "";
+            select_ue_workersector.innerHTML = "";
+            select_ue_agreedworkdays.innerHTML = "";
 
 
-        axios.get(apiListDataPageDatosLaborales)
-        .then(response => {
-            const { data: { tipo_contrato_dict, type_job_dict, state_job_dict, worker_sector_dict, all_days_dict, data_colaborator } } = response; 
+            axios.get(apiListDataPageDatosLaborales)
+            .then(response => {
+                const { data: { tipo_contrato_dict, type_job_dict, state_job_dict, worker_sector_dict, all_days_dict, data_colaborator } } = response; 
 
-            const createOptions = (obj, selectElement) => {
+                const createOptions = (obj, selectElement) => {
 
-                const options = Object.entries(obj).map(([value, label]) => {
-                    const option = document.createElement('option');
-                    option.value = value;
-                    option.text = label;
-                    return option;
+                    const options = Object.entries(obj).map(([value, label]) => {
+                        const option = document.createElement('option');
+                        option.value = value;
+                        option.text = label;
+                        return option;
+                    });
+
+                    options.forEach(option => {
+                        selectElement.appendChild(option);
+                    });
+                };
+
+                const { cargo, centrocosto, sucursal, ue_agreedworkdays, ue_estate, ue_fechacontratacion, ue_fecharenovacioncontrato, ue_horassemanales, ue_tipocontrato, ue_tipotrabajdor, ue_workersector } = data_colaborator[0]; 
+
+                createOptions(tipo_contrato_dict, select_ue_tipocontratos);
+                createOptions(type_job_dict, select_ue_tipotrabajdor);
+                createOptions(state_job_dict, select_ue_estate);
+                createOptions(worker_sector_dict, select_ue_workersector);
+                createOptions(all_days_dict, select_ue_agreedworkdays);
+
+                axios.get(apiUrlCargo)
+                .then(response => {
+
+                    const { data } = response; 
+                    const options_cargos = data.map(result => {
+                        return `
+                        <option value="${result.car_id}">${result.car_nombre}</option>
+                        `; 
+                    }).join('');
+                    select_cargo.innerHTML = "";
+                    select_cargo.innerHTML = `<option value="">[Seleccione]</option>`+options_cargos;
+                    select_cargo.value = cargo;
+                })
+                .catch(error => {
+                    $.alert({
+                        title: 'Mensaje!',
+                        content: `${error.response.data.message}`,
+                    });
                 });
 
-                options.forEach(option => {
-                    selectElement.appendChild(option);
+                axios.get(apiUrlCentroCOsto)
+                .then(response => {
+
+                    const { data } = response; 
+                    const options_centro_costo = data.map(result => {
+                        return `
+                        <option value="${result.cencost_id}">${result.cencost_nombre}</option>
+                        `; 
+                    }).join('');
+                    select_centro_costo.innerHTML = "";
+                    select_centro_costo.innerHTML = `<option value="">[Seleccione]</option>`+options_centro_costo;
+                    select_centro_costo.value = centrocosto;
+                })
+                .catch(error => {
+                    $.alert({
+                        title: 'Mensaje!',
+                        content: `${error.response.data.message}`,
+                    });
                 });
-            };
 
-            const { cargo, centrocosto, sucursal, ue_agreedworkdays, ue_estate, ue_fechacontratacion, ue_fecharenovacioncontrato, ue_horassemanales, ue_tipocontrato, ue_tipotrabajdor, ue_workersector } = data_colaborator[0]; 
+                axios.get(apiUrlSucursales)
+                .then(response => {
+                    const { data } = response; 
+                    const options_sucursales = data.map(result => {
+                        return `
+                        <option value="${result.suc_id}">${result.suc_descripcion}</option>
+                        `; 
+                    }).join('');
+                    select_sucursales.innerHTML = "";
+                    select_sucursales.innerHTML = `<option value="">[Seleccione]</option>`+options_sucursales;
+                    select_sucursales.value = sucursal;
+                })
+                .catch(error => {
+                    $.alert({
+                        title: 'Mensaje!',
+                        content: `${error.response.data.message}`,
+                    });
+                });
 
-            console.log(cargo)
-            document.getElementById('cargo').value = cargo;
+                axios.get(apiUrlSucursales)
+                .then(response => {
 
-            createOptions(tipo_contrato_dict, select_ue_tipocontratos);
-            createOptions(type_job_dict, select_ue_tipotrabajdor);
-            createOptions(state_job_dict, select_ue_estate);
-            createOptions(worker_sector_dict, select_ue_workersector);
-            createOptions(all_days_dict, select_ue_agreedworkdays);
-        })
-        .catch(error => {
-            $.alert({
-                title: 'Mensaje!',
-                content: `${error.response.data.message}`,
+                    const { data } = response; 
+                    const options_sucursales = data.map(result => {
+                        return `
+                        <option value="${result.suc_id}">${result.suc_descripcion}</option>
+                        `; 
+                    }).join('');
+                    select_sucursales.innerHTML = "";
+                    select_sucursales.innerHTML = `<option value="">[Seleccione]</option>`+options_sucursales;
+                    select_sucursales.value = sucursal;
+                })
+                .catch(error => {
+                    $.alert({
+                        title: 'Mensaje!',
+                        content: `${error.response.data.message}`,
+                    });
+                });
+
+
+                document.getElementById('ue_fechacontratacion').value = ue_fechacontratacion;
+                document.getElementById('ue_fecharenovacioncontrato').value = ue_fecharenovacioncontrato;
+                document.getElementById('ue_fechatermino').value = data_colaborator[0].ue_fechatermino;
+                document.getElementById('ue_tipocontrato').value = ue_tipocontrato;
+                document.getElementById('ue_tipotrabajdor').value = ue_tipotrabajdor;
+                document.getElementById('ue_estate').value = ue_estate;
+                document.getElementById('ue_horassemanales').value = ue_horassemanales;
+                document.getElementById('ue_workersector').value = ue_workersector;
+
+                const datosSeleccionados = ue_agreedworkdays
+                const diasSeleccionadosArray = datosSeleccionados.split(',').map(dia => dia.trim());
+
+                console.log(diasSeleccionadosArray)
+                $('#ue_agreedworkdays').val(diasSeleccionadosArray);
+                $('#ue_agreedworkdays').trigger('change');
+
+
+            })
+            .catch(error => {
+                $.alert({
+                    title: 'Mensaje!',
+                    content: `${error.response.data.message}`,
+                });
             });
-        });
 
-        axios.get(apiUrlCargo)
-        .then(response => {
+            
 
-            const { data } = response; 
-            const options_cargos = data.map(result => {
-                return `
-                <option value="${result.car_id}">${result.car_nombre}</option>
-                `; 
-            }).join('');
-            select_cargo.innerHTML = "";
-            select_cargo.innerHTML = `<option value="">[Seleccione]</option>`+options_cargos;
-        })
-        .catch(error => {
-            $.alert({
-                title: 'Mensaje!',
-                content: `${error.response.data.message}`,
-            });
-        });
+            
 
-        axios.get(apiUrlCentroCOsto)
-        .then(response => {
+            
 
-            const { data } = response; 
-            const options_centro_costo = data.map(result => {
-                return `
-                <option value="${result.cencost_id}">${result.cencost_nombre}</option>
-                `; 
-            }).join('');
-            select_centro_costo.innerHTML = "";
-            select_centro_costo.innerHTML = `<option value="">[Seleccione]</option>`+options_centro_costo;
-        })
-        .catch(error => {
-            $.alert({
-                title: 'Mensaje!',
-                content: `${error.response.data.message}`,
-            });
-        });
+            const select_ue_tipocontrato = document.getElementById('ue_tipocontrato');
 
-        axios.get(apiUrlSucursales)
-        .then(response => {
+            
 
-            const { data } = response; 
-            const options_sucursales = data.map(result => {
-                return `
-                <option value="${result.suc_id}">${result.suc_descripcion}</option>
-                `; 
-            }).join('');
-            select_sucursales.innerHTML = "";
-            select_sucursales.innerHTML = `<option value="">[Seleccione]</option>`+options_sucursales;
-        })
-        .catch(error => {
-            $.alert({
-                title: 'Mensaje!',
-                content: `${error.response.data.message}`,
-            });
-        });
-
-        const select_ue_tipocontrato = document.getElementById('ue_tipocontrato');
+        }catch{
+            
+        }
     }
+    {% endif %}
 </script>
