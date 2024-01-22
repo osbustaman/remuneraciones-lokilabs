@@ -11,7 +11,8 @@ from applications.usuario.api.api import (
         GetListDataPageDatosLaborales,
         GetSucursalApiView
         , ListColaborate
-        , LoadPersonalDataPageView
+        , LoadPersonalDataPageView,
+        LoadPersonlaDataPage
         , PersonalDataCreateView
         , PersonalDataEditView
 
@@ -63,6 +64,7 @@ urlpatterns = [
     path('lista-colaboradores/<pk>', ListColaborate.as_view(), name='ListColaborate'),
     path('datos-personales/<pk>', ApiGetPersonalData.as_view(), name='ApiGetPersonalData'),
     
+    path('api/data-user-page/<pk>', LoadPersonlaDataPage.as_view(), name='LoadPersonlaDataPage'),
     path('api-editar-colaborador', ApiLoadPageColaborator.as_view(), name='ApiLoadPageColaborator'),
     path('api/get-comunas/<pk>', GetComunsListApiView.as_view(), name='GetComunsListApiView'),
     path('api/edit-personal-data/<int:user>', PersonalDataEditView.as_view(), name='PersonalDataEditView'),

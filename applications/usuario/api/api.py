@@ -1,4 +1,5 @@
 import datetime
+from applications.base.api.serializer import UserSerializer
 from applications.base.utils import validarRut, validate_mail
 from applications.empresa.models import Afp, Cargo, CentroCosto, Empresa, Sucursal
 from applications.security.models import Rol
@@ -25,6 +26,36 @@ from rest_framework import generics, status, serializers
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import AllowAny
 from applications.base.models import Comuna, Pais, Region
+
+
+@permission_classes([AllowAny])
+class LoadPersonlaDataPage(generics.GenericAPIView):
+
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        try:
+            user_id = int(self.kwargs.get(self.lookup_field))
+            data_user = User.objects.get(id=user_id)
+            return data_user
+        except User.DoesNotExist:
+            return False
+
+    def get(self, request, *args, **kwargs):
+
+        data_user = self.get_queryset()
+
+        if not data_user:
+            raise NotFound(detail="Colaborador no encontrado")
+        
+        try:
+            get_serializer = self.serializer_class(data_user)
+            return Response(get_serializer.data, status=status.HTTP_200_OK)
+        except NotFound as ex:
+            return Response({"message": str(ex)}, status=status.HTTP_404_NOT_FOUND)
+
+
+
 
 @permission_classes([AllowAny])
 class EditLaboralDataPersonalApiView(generics.UpdateAPIView):

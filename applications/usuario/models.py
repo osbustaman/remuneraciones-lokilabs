@@ -39,6 +39,9 @@ class UsuarioTipoContrato(TimeStampedModel):
         ordering = ['utc_id']
 
 
+
+
+
 class Colaborador(TimeStampedModel):
 
     OPCIONES = (

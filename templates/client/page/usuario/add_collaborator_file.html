@@ -9,7 +9,7 @@
 
 {% endblock %}
 
-{% block title_page %} NOMBRE COLABORADOR {% endblock %}
+{% block title_page %} <span id="block_span_title_page"></span> {% endblock %}
 {% block buttons %}
 <button type="button" class="btn btn-orange" onclick="redirectToUrl('{% url 'usuario_app:collaborator_file' %}')">Volver <i class="icon ion-arrow-left-a"></i></button>
 {% endblock %}
@@ -53,6 +53,7 @@
                             <li id="datos_personales" class="nav-item"><a class="nav-link active" data-toggle="tab" href="#" role="tab" aria-expanded="true">Datos Personales</a></li>
                             {% if user_id %} 
                             <li id="datos_laborales" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Datos Laborales</a></li>
+                            {% if liberar_menu %}
                             <li id="datos_previsionales" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Datos Previsionales</a></li>
                             <li id="cargas_familiares" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Cargas Familiares</a></li>
                             <li id="horario" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Horario</a></li>
@@ -61,6 +62,7 @@
                             <li id="finiquito" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Finiquito</a></li>
                             <li id="documentos" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Documentos</a></li>
                             <li id="conceptos_remuneraciones" class="nav-item"><a class="nav-link" data-toggle="tab" href="#" role="tab">Concepto Remuneraciones</a></li>
+                            {% endif %}
                             {% endif %}
                         </ul>
                     </div>
@@ -73,6 +75,7 @@
                 <div class="card pd-10 pd-sm-20 form-layout form-layout-5">
                     {% include "client/page/usuario/forms/colaboradores/datos_personales.html" %}
                     {% include "client/page/usuario/forms/colaboradores/datos_laborales.html" %}
+
                     {% include "client/page/usuario/forms/colaboradores/datos_previsionales.html" %}
                     {% include "client/page/usuario/forms/colaboradores/cargas_familiares.html" %}
                     {% include "client/page/usuario/forms/colaboradores/horario.html" %}
@@ -81,6 +84,7 @@
                     {% include "client/page/usuario/forms/colaboradores/finiquito.html" %}
                     {% include "client/page/usuario/forms/colaboradores/documentos.html" %}
                     {% include "client/page/usuario/forms/colaboradores/remuneraciones.html" %}
+ 
                 </div>
             </div><!-- card -->
         </div><!-- col-8 -->
@@ -108,11 +112,22 @@ div_finiquito.style.display = 'none';
 div_documentos.style.display = 'none';
 div_remuneraciones.style.display = 'none';
 
-
 // Esperar a que se cargue el DOM
 document.addEventListener('DOMContentLoaded', function() {
     // Obtener todos los elementos li dentro del contenedor ul
     var elementosLi = document.querySelectorAll('.nav-item');
+
+    {% if user_id %}
+    axios.get("{% url 'usuario_app:LoadPersonlaDataPage' user_id %}")
+        .then(response => {
+            const { data: { username, email, first_name, last_name } } = response;
+            let block_span_title_page = document.getElementById('block_span_title_page')
+            block_span_title_page.innerHTML = `${first_name.toUpperCase()} ${last_name.toUpperCase()}`;
+        })
+        .catch(error => {
+            console.error('Error en la solicitud:', error.message);
+        })
+    {% endif %}
 
     // Recorrer cada elemento li y agregar un evento clic
     elementosLi.forEach(function(li) {
@@ -203,7 +218,7 @@ const validate_inputs = (form_name) => {
             const classes = elemento.className.split(' ');
             const hasRequiredClass = classes.includes('not-required');
 
-            if(classes.includes('select2-search__field')){
+            if(classes.includes('select2-search__field') || classes.includes('select2-show-search')){
             }else{
                 if(!hasRequiredClass && classes.includes('select2-show-search')){
                     try{

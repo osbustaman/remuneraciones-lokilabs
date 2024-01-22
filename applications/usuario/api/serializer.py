@@ -4,6 +4,7 @@ from applications.base.utils import validarRut
 
 from applications.empresa.models import Afp, Cargo, CentroCosto, Sucursal
 from applications.usuario.models import Colaborador, UsuarioEmpresa
+from applications.usuario.models import User
 
 
 class CentroSucursalSerializer(serializers.ModelSerializer):
@@ -86,3 +87,4 @@ class PersonalDataSerializer(serializers.ModelSerializer):
             , 'col_tipolicencia'
             , 'col_tipousuario'
             )
+
