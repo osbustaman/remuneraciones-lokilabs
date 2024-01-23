@@ -55,8 +55,6 @@ class LoadPersonlaDataPage(generics.GenericAPIView):
             return Response({"message": str(ex)}, status=status.HTTP_404_NOT_FOUND)
 
 
-
-
 @permission_classes([AllowAny])
 class EditLaboralDataPersonalApiView(generics.UpdateAPIView):
     serializer_class = LaboralDataPersonalSerializer

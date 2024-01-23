@@ -3,7 +3,7 @@ from applications.base.models import Comuna
 from applications.base.utils import validarRut
 
 from applications.empresa.models import Afp, Cargo, CentroCosto, Sucursal
-from applications.usuario.models import Colaborador, UsuarioEmpresa
+from applications.usuario.models import Colaborador, UserToken, UsuarioEmpresa
 from applications.usuario.models import User
 
 
@@ -39,8 +39,6 @@ class AfpSerializer(serializers.ModelSerializer):
 
 
 class LaboralDataPersonalSerializer(serializers.ModelSerializer):
-
-    
     class Meta:
         model = UsuarioEmpresa
         fields = (
@@ -88,3 +86,11 @@ class PersonalDataSerializer(serializers.ModelSerializer):
             , 'col_tipousuario'
             )
 
+class UserTokenSerializer(serializers.ModelSerializer):
+    usuario = serializers.CharField(source='user.username')
+    password = serializers.CharField(source='user.password')
+    token = serializers.CharField(source='token')
+
+    class Meta:
+        model = UserToken
+        fields = ('usuario', 'password', 'token')
