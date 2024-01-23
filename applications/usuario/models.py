@@ -40,6 +40,25 @@ class UsuarioTipoContrato(TimeStampedModel):
 
 
 
+class UserToken(TimeStampedModel):
+    ut_id = models.AutoField("Key", primary_key=True)
+    user = models.ForeignKey(User, verbose_name="Usuario", db_column="ut_usuario_id",
+                             on_delete=models.PROTECT)
+    ut_token = models.TextField("Token", null=True, blank=True)
+    ut_device = models.CharField("Dispositivo", max_length=255, null=True, blank=True)
+
+    def __int__(self):
+        return self.ut_id
+    
+    def __str__(self):
+        return f"{self.ut_id} - {self.user.username}"
+    
+    def save(self, *args, **kwargs):
+        super(UserToken, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = "usu_user_token"
+        ordering = ['ut_id']
 
 
 class Colaborador(TimeStampedModel):
