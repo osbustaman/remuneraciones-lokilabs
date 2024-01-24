@@ -87,10 +87,12 @@ class PersonalDataSerializer(serializers.ModelSerializer):
             )
 
 class UserTokenSerializer(serializers.ModelSerializer):
-    usuario = serializers.CharField(source='user.username')
+    username = serializers.CharField(source='user.username')
     password = serializers.CharField(source='user.password')
-    token = serializers.CharField(source='token')
+    ut_token = serializers.CharField(source='token')
+    ut_device = serializers.CharField()  # Eliminar la opción source
 
     class Meta:
         model = UserToken
-        fields = ('usuario', 'password', 'token')
+        fields = ('username', 'password', 'ut_token', 'ut_device')
+

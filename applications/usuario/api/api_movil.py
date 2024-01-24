@@ -1,33 +1,52 @@
-import datetime
-
-from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
-from rest_framework import generics, status, serializers
-from rest_framework.decorators import permission_classes
+from rest_framework import status
+from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import AllowAny
+from applications.usuario.api.serializer import UserTokenSerializer
+
+from django.contrib.auth import authenticate
+
 
 from applications.usuario.models import UserToken
 
-
-class LoginUserAppCreateView(generics.CreateAPIView):
-    """
-    Login user app
-    """
-    permission_classes = (AllowAny,)
+class LoginUserAppCreateView(CreateAPIView):
+    serializer_class = UserTokenSerializer
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        if serializer.is_valid():
-            user = serializer.validated_data.get('user')
-            token, created = UserToken.objects.get_or_create(user=user)
+        try:
+            username = request.data.get('username', '')
+            password = request.data.get('password', '')
+            user = authenticate(
+                username=username,
+                password=password
+            )
+
+            if user:
+                login_serializer = self.serializer_class(data=request.data)
+                if login_serializer.is_valid():
+
+                    user_token = UserToken.objects.filter(user=user)
+                    if user_token.exists():
+                        user_token.first().ut_token = login_serializer._kwargs['data']['ut_token']
+                        user_token.first().ut_device = login_serializer._kwargs['data']['ut_device']
+                        user_token.first().save()
+                    else:
+                        UserToken.objects.create(
+                            user=user,
+                            ut_token=login_serializer._kwargs['data']['ut_token'],
+                            ut_device=login_serializer._kwargs['data']['ut_device']
+                        )
+
+                    return Response({"mensaje": True}, status=status.HTTP_200_OK)
+                return Response({
+                    'error': 'Contraseña o nombre de usuario incorrectos'
+                }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            print(str(e))
             return Response({
-                'token': token.key,
-                'user': {
-                    'id': user.id,
-                    'username': user.username,
-                    'email': user.email,
-                    'first_name': user.first_name,
-                    'last_name': user.last_name
-                }
-            }, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    'error': 'Contraseña o nombre de usuario incorrectos'
+                }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Si los datos no son válidos, retornar mensajes de error
+        return Response({'error': 'Los datos proporcionados no son válidos.'}, status=status.HTTP_400_BAD_REQUEST)

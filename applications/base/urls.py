@@ -13,6 +13,7 @@ from applications.base.views import (
     , delete_admin
 )
 
+
 app_name = 'base_app'
 
 urlpatterns = [
@@ -30,6 +31,5 @@ urlpatterns = [
     # apis
     path('get-all-clients', ClientesListApiView.as_view(), name='get_all_clients'),
     path('get-all-names-clients', NamesClientesListApiView.as_view(), name='get_all_names_clients'),
-
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

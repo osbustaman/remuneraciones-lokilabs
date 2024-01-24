@@ -18,6 +18,8 @@ from applications.usuario.api.api import (
 
 )
 
+from applications.usuario.api.api_movil import LoginUserAppCreateView
+
 from applications.usuario.views import (
     add_forecast_data,
     collaborator_file
@@ -76,4 +78,7 @@ urlpatterns = [
     path('api/listar-sucursales', GetSucursalApiView.as_view(), name='GetSucursalApiView'),
     path('api/get-page-datos-laborales/<pk>', GetListDataPageDatosLaborales.as_view(), name='GetListDataPageDatosLaborales'),
     path('api/edit-datos-laborales/<pk>', EditLaboralDataPersonalApiView.as_view(), name='EditLaboralDataPersonalApiView'),
+
+    # apis moviles
+    path('api_movil/login-user-app', LoginUserAppCreateView.as_view(), name='login_user_app'),
 ]

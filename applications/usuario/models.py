@@ -42,7 +42,7 @@ class UsuarioTipoContrato(TimeStampedModel):
 
 class UserToken(TimeStampedModel):
     ut_id = models.AutoField("Key", primary_key=True)
-    user = models.ForeignKey(User, verbose_name="Usuario", db_column="ut_usuario_id",
+    user = models.ForeignKey(User, verbose_name="user", db_column="ut_usuario_id",
                              on_delete=models.PROTECT)
     ut_token = models.TextField("Token", null=True, blank=True)
     ut_device = models.CharField("Dispositivo", max_length=255, null=True, blank=True)
